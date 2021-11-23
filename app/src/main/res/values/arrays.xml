@@ -1,12 +1,60 @@
 <resources>
-    <!-- Reply Preference -->
-    <string-array name="reply_entries">
-        <item>Reply</item>
-        <item>Reply to all</item>
+    <!-- Colors - build the complete list dynamically in java code-->
+    <string-array name="color_entries">
+        <item>blue</item>
+        <item>red</item>
+        <item>green</item>
+        <item>yellow</item>
     </string-array>
 
-    <string-array name="reply_values">
-        <item>reply</item>
-        <item>reply_all</item>
+    <string-array name="color_values">
+        <item>@color/blue</item>
+        <item>@color/red</item>
+        <item>@color/green</item>
+        <item>@color/yellow</item>
     </string-array>
+
+    <!-- Gender -->
+    <string-array name="gender_entries">
+        <item>@string/gender_undefined</item>
+        <item>@string/gender_diverse</item>
+        <item>@string/gender_male</item>
+        <item>@string/gender_female</item>
+    </string-array>
+
+    <string-array name="gender_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <!-- Training Level -->
+    <string-array name="training_level_entries">
+        <item>@string/training_beginner</item>
+        <item>@string/training_amateur</item>
+        <item>@string/training_profi</item>
+    </string-array>
+    <string-array name="training_level_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <!-- Movement Types -->
+    <string-array name="movement_type_entries">
+        <item>@string/movement_type_pause</item>
+        <item>@string/movement_type_slowing_going</item>
+        <item>@string/movement_type_speedy_going</item>
+        <item>@string/movement_type_running</item>
+        <item>@string/movement_type_sprint</item>
+    </string-array>
+    <string-array name="movement_type_values">
+        <item>P</item>
+        <item>LG</item>
+        <item>ZG</item>
+        <item>L</item>
+        <item>R</item>
+    </string-array>
+
 </resources>

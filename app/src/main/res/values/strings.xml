@@ -1,22 +1,58 @@
 <resources>
-    <string name="app_name">RunningPlan</string>
-    <string name="title_home">Home</string>
+    <!-- App Data -->
+    <string name="app_name">Laufplan</string>
+
+    <!-- Common -->
+    <string name="color">Farbe</string>
+    <string name="pace">Geschwindigkeit (Pace)</string>
+
+    <!-- Titles -->
+    <!-- Navigation -->
+    <string name="title_home">Start</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <!-- Dialoge -->
+    <string name="title_user">Benutzer</string>
+    <string name="title_location">Standort</string>
+    <string name="title_training">Training</string>
+    <string name="title_movement_type">Bewegungsart</string>
 
-    <!-- Preference Titles -->
-    <string name="location_data_header">Location Data</string>
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
 
-    <!-- Location Data Preference -->
-    <string name="use_location_data">Use location data</string>
-    <string name="use_fine_location_data">Use accurate location data</string>
-    <string name="fine_location_data_summary_on">
-        The app can use the real time location data. Battery using can be higher.
+    <!-- User Data -->
+    <string name="email_address">E-Mail-Adresse</string>
+    <string name="gender">Geschlecht</string>
+    <string name="gender_undefined">unbestimmt</string>
+    <string name="gender_diverse">divers</string>
+    <string name="gender_male">männlich</string>
+    <string name="gender_female">weiblich</string>
+    <string name="birthday">Geburtstag</string>
+    <string name="max_pulse">maximale Herzfrequenz</string>
+    <string name="pulse_summary">Der Maximal-Puls wird nach der Formel 220 (Männer) bzw. 226 (Frauen) - Alter berechnet.</string>
+
+    <!-- Training Data -->
+    <string name="training_level">Stufe</string>
+    <string name="training_beginner">Starter</string>
+    <string name="training_amateur">Hobby-Sportler</string>
+    <string name="training_profi">Laufprofi</string>
+
+    <!-- Movement Data -->
+    <string name="movement_type_pause">Pause</string>
+    <string name="movement_type_slowing_going">Langsames Gehen</string>
+    <string name="movement_type_speedy_going">Zügiges Gehen</string>
+    <string name="movement_type_running">Laufen</string>
+    <string name="movement_type_sprint">Rennen</string>
+    <string name="movement_type_summary">Arten der Bewegung während des Lauftrainings</string>
+
+    <!-- Location Data -->
+    <string name="use_location_data">Standort-Daten nutzen</string>
+    <string name="use_fine_location_data">Hohe Genauigkeit</string>
+    <string name="fine_location_data_summary_on">Genauere Standortdaten werden genutzt. Die Akku-Nutzung kann erhöht
+        sein.
     </string>
-    <string name="fine_location_data_summary_off">
-        The app use less accurate location data. Using the battery slower.
+    <string name="fine_location_data_summary_off">Wenig genauere Standortdaten werden genutzt. Die Akku-Nutzung ist
+        geringer.
     </string>
 
     <!-- Messages Preferences -->
