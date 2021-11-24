@@ -1,13 +1,8 @@
 <resources>
     <string name="app_name">RunningPlan</string>
-    <string name="title_home">Start</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
 
     <!-- Preference Titles -->
     <string name="title_location">Location Data</string>
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
 
     <!-- Location Data Preference -->
     <string name="use_location_data">Use location data</string>
@@ -50,4 +45,8 @@
     <string name="movement_type_summary">Types of movements during the training</string>
     <string name="pulse_summary">-</string>
     <string name="max_pulse">maximal Pulse</string>
+    <string name="title_start">Start</string>
+    <string name="title_running_plans">Plans</string>
+    <string name="title_settings">Profile</string>
+    <string name="title_info">Info</string>
 </resources>

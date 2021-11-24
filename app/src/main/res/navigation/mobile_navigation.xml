@@ -3,23 +3,35 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/mobile_navigation"
-            app:startDestination="@+id/navigation_home">
+            app:startDestination="@+id/navigation_start">
 
     <fragment
-            android:id="@+id/navigation_home"
-            android:name="de.hirola.runningplan.ui.home.HomeFragment"
-            android:label="@string/title_home"
-            tools:layout="@layout/fragment_home"/>
+            android:id="@+id/navigation_start"
+            android:name="de.hirola.runningplan.ui.start.StartFragment"
+            android:label="@string/title_start"
+            tools:layout="@layout/fragment_start"/>
 
     <fragment
-            android:id="@+id/navigation_dashboard"
-            android:name="de.hirola.runningplan.ui.dashboard.DashboardFragment"
-            android:label="@string/title_dashboard"
-            tools:layout="@layout/fragment_dashboard"/>
+            android:id="@+id/navigation_training"
+            android:name="de.hirola.runningplan.ui.training.TrainingFragment"
+            android:label="@string/title_training"
+            tools:layout="@layout/fragment_training"/>
 
     <fragment
-            android:id="@+id/navigation_notifications"
-            android:name="de.hirola.runningplan.ui.notifications.NotificationsFragment"
-            android:label="@string/title_notifications"
-            tools:layout="@layout/fragment_notifications"/>
+            android:id="@+id/navigation_running_plans"
+            android:name="de.hirola.runningplan.ui.runningplans.RunningPlansFragment"
+            android:label="@string/title_running_plans"
+            tools:layout="@layout/fragment_running_plans"/>
+
+    <fragment
+            android:id="@+id/navigation_settings"
+            android:name="de.hirola.runningplan.ui.settings.UserSettingsFragment"
+            android:label="@string/title_settings"
+            tools:layout="@layout/fragment_settings"/>
+
+    <fragment
+            android:id="@+id/navigation_info"
+            android:name="de.hirola.runningplan.ui.info.InfoFragment"
+            android:label="@string/title_info"
+            tools:layout="@layout/fragment_info"/>
 </navigation>
