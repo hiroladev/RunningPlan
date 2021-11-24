@@ -10,7 +10,7 @@ public class RunningPlansViewModel extends ViewModel {
 
     public RunningPlansViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is training fragment");
+        mText.setValue("This is running plans fragment");
     }
 
     public LiveData<String> getText() {

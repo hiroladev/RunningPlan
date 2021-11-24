@@ -3,27 +3,27 @@
 
     <item
             android:id="@+id/navigation_start"
-            android:icon="@drawable/ic_start_black_24dp"
+            android:icon="@drawable/baseline_home_black_24"
             android:title="@string/title_start"/>
 
     <item
             android:id="@+id/navigation_training"
-            android:icon="@drawable/ic_training_black_24dp"
+            android:icon="@drawable/baseline_directions_run_black_24"
             android:title="@string/title_training"/>
 
     <item
             android:id="@+id/navigation_running_plans"
-            android:icon="@drawable/ic_running_plans_black_24dp"
+            android:icon="@drawable/baseline_article_black_24"
             android:title="@string/title_running_plans"/>
 
     <item
             android:id="@+id/navigation_settings"
-            android:icon="@drawable/ic_settings_black_24dp"
+            android:icon="@drawable/baseline_manage_accounts_black_24"
             android:title="@string/title_settings"/>
 
     <item
             android:id="@+id/navigation_info"
-            android:icon="@drawable/ic_info_black_24dp"
+            android:icon="@drawable/baseline_info_black_24"
             android:title="@string/title_info"/>
 
 </menu>
