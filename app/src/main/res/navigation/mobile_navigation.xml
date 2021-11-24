@@ -20,7 +20,7 @@
     <fragment
             android:id="@+id/navigation_running_plans"
             android:name="de.hirola.runningplan.ui.runningplans.RunningPlansFragment"
-            android:label="@string/title_running_plans"
+            android:label="@string/title_runningplans"
             tools:layout="@layout/fragment_running_plans"/>
 
     <fragment

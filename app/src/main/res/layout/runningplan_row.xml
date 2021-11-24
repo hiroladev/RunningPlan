@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <!--- Name des Laufplans-->
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <!--- Status des Laufplans, abgeschlossen, aktueller Plan, unvollständig-->
+        <ImageView
+                android:id="@+id/runningplan_row_state_imageview"
+                app:srcCompat="@android:drawable/presence_online"
+                android:contentDescription="@string/state"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"/>
+        <!--- Name des Laufplans-->
+        <TextView
+                android:id="@+id/runningplan_row_name_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        />
+    </LinearLayout>
+
+    <!--- Beschreibung des Laufplans-->
+    <TextView
+            android:id="@+id/runningplan_row_remarks_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+
+    <!--- Details des Laufplans-->
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <!--- Startdatum-->
+        <ImageView
+                android:id="@+id/runningplan_row_startdate_imageview"
+                app:srcCompat="@drawable/baseline_directions_run_black_24"
+                android:contentDescription="@string/startdate"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"/>
+        <TextView
+                android:id="@+id/runningplan_row_startdate_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+        <!--- Dauer des gesamten Plans-->
+        <ImageView
+                android:id="@+id/runningplan_row_duration_imageView"
+                app:srcCompat="?android:attr/listChoiceIndicatorSingle"
+                android:contentDescription="@string/duration"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"/>
+        <TextView
+                android:id="@+id/runningplan_row_duration_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+        <!--- bereits durchgeführter Anteil in Prozent-->
+        <ImageView
+                android:id="@+id/runningplan_row_completed_imageview"
+                app:srcCompat="@android:drawable/dialog_frame"
+                android:contentDescription="@string/duration"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"/>
+        <TextView
+                android:id="@+id/runningplan_row_completed_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+    </LinearLayout>
+
+</LinearLayout>

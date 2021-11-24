@@ -1,29 +1,13 @@
 <resources>
     <string name="app_name">RunningPlan</string>
-
-    <!-- Preference Titles -->
     <string name="title_location">Location Data</string>
-
-    <!-- Location Data Preference -->
     <string name="use_location_data">Use location data</string>
     <string name="use_fine_location_data">Use accurate location data</string>
     <string name="fine_location_data_summary_on">The app can use the real time location data. Battery using can be higher.</string>
     <string name="fine_location_data_summary_off">The app use less accurate location data. Using the battery slower.</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-    <string name="title_activity_user_settings">UserSettingsActivity</string>
     <string name="title_training">Training</string>
     <string name="training_level">Level</string>
-    <string name="title_movement_type">Movement Type</string>
+    <string name="title_movementtype">Movement Type</string>
     <string name="title_user">User</string>
     <string name="email_address">E-Mail</string>
     <string name="gender">Gender</string>
@@ -46,7 +30,14 @@
     <string name="pulse_summary">-</string>
     <string name="max_pulse">maximal Pulse</string>
     <string name="title_start">Start</string>
-    <string name="title_running_plans">Plans</string>
+    <string name="title_runningplans">Plans</string>
     <string name="title_settings">Profile</string>
     <string name="title_info">Info</string>
+    <string name="title_usersettings">User Settings</string>
+    <string name="title_othersettings">Other Settings</string>
+    <string name="state">State</string>
+    <string name="percent">Percent</string>
+    <string name="duration">Duration</string>
+    <string name="startdate">Start date</string>
+    <string name="completed">completed</string>
 </resources>

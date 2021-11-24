@@ -11,11 +11,11 @@
             android:theme="@style/Theme.RunningPlan">
         <activity
                 android:name=".ui.settings.UserSettingsActivity"
-                android:label="@string/title_activity_user_settings">
+                android:label="@string/title_usersettings">
         </activity>
         <activity
                 android:name=".ui.settings.OtherSettingsActivity"
-                android:label="@string/title_activity_settings">
+                android:label="@string/title_othersettings">
         </activity>
         <activity
                 android:name=".MainActivity"

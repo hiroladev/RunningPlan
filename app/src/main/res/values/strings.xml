@@ -6,18 +6,25 @@
     <!-- Navigation -->
     <string name="title_start">Start</string>
     <string name="title_training">Training</string>
-    <string name="title_running_plans">Laufpläne</string>
+    <string name="title_runningplans">Laufpläne</string>
     <string name="title_settings">Profil</string>
     <string name="title_info">Info</string>
 
     <!-- Dialoge -->
-    <string name="title_user">Benutzer</string>
+    <string name="title_user">Nutzer</string>
+    <string name="title_usersettings">Einstellungen Nutzer</string>
+    <string name="title_othersettings">Sonstige Einstellungen</string>
     <string name="title_location">Standort</string>
-    <string name="title_movement_type">Bewegungsart</string>
+    <string name="title_movementtype">Bewegungsart</string>
 
     <!-- Common -->
     <string name="color">Farbe</string>
     <string name="pace">Geschwindigkeit (Pace)</string>
+    <string name="startdate">Start-Datum</string>
+    <string name="state">Status</string>
+    <string name="percent">Prozent</string>
+    <string name="duration">Dauer</string>
+    <string name="completed">abgeschlossen</string>
 
     <!-- User Data -->
     <string name="email_address">E-Mail-Adresse</string>
@@ -55,14 +62,6 @@
     </string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-    <string name="title_activity_user_settings">UserSettingsActivity</string>
 </resources>
