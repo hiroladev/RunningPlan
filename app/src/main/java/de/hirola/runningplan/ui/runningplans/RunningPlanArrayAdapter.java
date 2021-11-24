@@ -37,17 +37,17 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
         RunningPlan runningPlan = values[position];
         // Name und Status
         // TODO: Status-Bild
-        TextView nameTextView = (TextView) rowView.findViewById(R.id.runningplan_row_name_textview);
+        TextView nameTextView = rowView.findViewById(R.id.runningplan_row_name_textview);
         nameTextView.setText(runningPlan.getName());
         // Anmerkungen
-        TextView remarksTextView = (TextView) rowView.findViewById(R.id.runningplan_row_remarks_textview);
+        TextView remarksTextView = rowView.findViewById(R.id.runningplan_row_remarks_textview);
         remarksTextView.setText(runningPlan.getRemarks());
         // Startdatum
-        TextView startDateTextView = (TextView) rowView.findViewById(R.id.runningplan_row_startdate_textview);
+        TextView startDateTextView = rowView.findViewById(R.id.runningplan_row_startdate_textview);
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
         startDateTextView.setText(formatter.format(runningPlan.getStartDate()));
         // Gesamtdauer des Trainings (komplette Trainingszeit in Minuten!)
-        TextView durationTextView = (TextView) rowView.findViewById(R.id.runningplan_row_duration_textView);
+        TextView durationTextView = rowView.findViewById(R.id.runningplan_row_duration_textView);
         durationTextView.setText("");
         int duration = runningPlan.duration();
         if (duration > 0) {
