@@ -77,7 +77,7 @@
                 android:layout_height="24dp"
                 android:layout_weight="1"/>
         <TextView
-                android:id="@+id/runningplan_row_completed_textview"
+                android:id="@+id/runningplan_row_percentcompleted_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>

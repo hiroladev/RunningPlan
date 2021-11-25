@@ -7,12 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Locale;
 
 /**
  * Custom Adapter for RunningPlans
@@ -49,18 +48,20 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
         // Gesamtdauer des Trainings (komplette Trainingszeit in Minuten!)
         TextView durationTextView = rowView.findViewById(R.id.runningplan_row_duration_textView);
         durationTextView.setText("");
-        int duration = runningPlan.duration();
+        int duration = runningPlan.getDuration();
         if (duration > 0) {
             //  Darstellung in hh:mm
             //  in h und min umrechnen
-            int hours = (int) duration / 60;
-            int minutes = (int) duration % 60;
-            durationTextView.setText(String.format("%d:%d",hours, minutes));
+            int hours = duration / 60;
+            int minutes = duration % 60;
+            durationTextView.setText(String.format(Locale.GERMANY,"%d:%d",hours, minutes));
         } else {
             durationTextView.setText("00h:00min");
         }
         // Laufplan abgeschlossen in Prozent
-
+        String percentCompleted = String.valueOf(runningPlan.percentCompleted()).concat(" %");
+        TextView percentCompletedTextView = rowView.findViewById(R.id.runningplan_row_percentcompleted_textview);
+        percentCompletedTextView.setText(percentCompleted);
         return rowView;
     }
 }
