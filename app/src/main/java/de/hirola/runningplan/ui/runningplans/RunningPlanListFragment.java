@@ -1,11 +1,7 @@
 package de.hirola.runningplan.ui.runningplans;
 
-import android.content.Context;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +9,11 @@ import de.hirola.runningplan.R;
 import de.hirola.sportslibrary.model.RunningPlan;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 /**
  * A fragment representing a list of Items.
  */
-public class RunningPlanListFragment extends Fragment {
+public class RunningPlanListFragment extends ListFragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -54,25 +49,28 @@ public class RunningPlanListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.runningplan_row, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            RunningPlan[] list = new RunningPlan[2];
-            RunningPlan r1 = new RunningPlan();
-            r1.setName("Laufplan 1");
-            r1.setRemarks("Erster Laufplan");
-            r1.setStartDate(LocalDate.now());
+        // sample data
+        RunningPlan[] list = new RunningPlan[2];
+        RunningPlan r1 = new RunningPlan();
+        r1.setName("Laufplan 1");
+        r1.setRemarks("Erster Laufplan");
+        r1.setStartDate(LocalDate.now());
+        RunningPlan r2 = new RunningPlan();
+        r2.setName("Laufplan 1");
+        r2.setRemarks("Erster Laufplan");
 
-            recyclerView.setAdapter(new RunningPlanArrayAdapter(context, list));
-        }
-        return view;
+        list[0] = r1;
+        list[1] = r2;
+
+        // adapter
+        RunningPlanArrayAdapter runningPlanArrayAdapter = new RunningPlanArrayAdapter(getContext(), list);
+
+        setListAdapter(runningPlanArrayAdapter);
+
+        return inflater.inflate(R.layout.fragment_running_plans, container, false);
+
     }
+
+
 }
