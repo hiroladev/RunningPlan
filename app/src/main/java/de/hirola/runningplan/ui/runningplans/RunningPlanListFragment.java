@@ -57,8 +57,8 @@ public class RunningPlanListFragment extends ListFragment {
         r1.setRemarks("Erster Laufplan");
         r1.setStartDate(LocalDate.now());
         RunningPlan r2 = new RunningPlan();
-        r2.setName("Laufplan 1");
-        r2.setRemarks("Erster Laufplan");
+        r2.setName("Laufplan 2");
+        r2.setRemarks("Zweiter Laufplan");
 
         list[0] = r1;
         list[1] = r2;
