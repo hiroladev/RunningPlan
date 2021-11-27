@@ -13,12 +13,12 @@
 
     <item
             android:id="@+id/navigation_running_plans"
-            android:icon="@drawable/baseline_article_black_24"
+            android:icon="@drawable/baseline_list_black_24"
             android:title="@string/title_runningplans"/>
 
     <item
             android:id="@+id/navigation_settings"
-            android:icon="@drawable/baseline_manage_accounts_black_24"
+            android:icon="@drawable/baseline_settings_black_24"
             android:title="@string/title_settings"/>
 
     <item

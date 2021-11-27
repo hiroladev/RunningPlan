@@ -43,7 +43,7 @@
         <!--- Startdatum-->
         <ImageView
                 android:id="@+id/runningplan_row_startdate_imageview"
-                app:srcCompat="@drawable/baseline_directions_run_black_24"
+                app:srcCompat="@drawable/baseline_calendar_today_black_24"
                 android:contentDescription="@string/startdate"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -57,7 +57,7 @@
         <!--- Dauer des gesamten Plans-->
         <ImageView
                 android:id="@+id/runningplan_row_duration_imageView"
-                app:srcCompat="?android:attr/listChoiceIndicatorSingle"
+                app:srcCompat="@drawable/baseline_schedule_black_24"
                 android:contentDescription="@string/duration"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -71,8 +71,8 @@
         <!--- bereits durchgeführter Anteil in Prozent-->
         <ImageView
                 android:id="@+id/runningplan_row_completed_imageview"
-                app:srcCompat="@android:drawable/dialog_frame"
-                android:contentDescription="@string/duration"
+                app:srcCompat="@drawable/baseline_percent_black_24"
+                android:contentDescription="@string/percent"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"/>
@@ -82,5 +82,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
     </LinearLayout>
+    <androidx.constraintlayout.widget.Barrier
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:barrierDirection="left" android:layout_weight="2"/>
 
 </LinearLayout>

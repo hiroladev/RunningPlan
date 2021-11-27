@@ -43,7 +43,7 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
         remarksTextView.setText(runningPlan.getRemarks());
         // Startdatum
         TextView startDateTextView = rowView.findViewById(R.id.runningplan_row_startdate_textview);
-        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         startDateTextView.setText(formatter.format(runningPlan.getStartDate()));
         // Gesamtdauer des Trainings (komplette Trainingszeit in Minuten!)
         TextView durationTextView = rowView.findViewById(R.id.runningplan_row_duration_textView);
