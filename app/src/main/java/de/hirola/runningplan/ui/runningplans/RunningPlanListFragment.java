@@ -1,6 +1,8 @@
 package de.hirola.runningplan.ui.runningplans;
 
 import android.os.Bundle;
+import android.widget.ListView;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,16 +11,14 @@ import de.hirola.runningplan.R;
 import de.hirola.sportslibrary.model.RunningPlan;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 /**
  * A fragment representing a list of Items.
  */
 public class RunningPlanListFragment extends ListFragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
+    ArrayList<RunningPlan> runningPlans;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -27,23 +27,9 @@ public class RunningPlanListFragment extends ListFragment {
     public RunningPlanListFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static RunningPlanListFragment newInstance(int columnCount) {
-        RunningPlanListFragment fragment = new RunningPlanListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -63,7 +49,7 @@ public class RunningPlanListFragment extends ListFragment {
         list[0] = r1;
         list[1] = r2;
 
-        // adapter
+        // Adapter initialisieren
         RunningPlanArrayAdapter runningPlanArrayAdapter = new RunningPlanArrayAdapter(getContext(), list);
 
         setListAdapter(runningPlanArrayAdapter);
@@ -72,5 +58,8 @@ public class RunningPlanListFragment extends ListFragment {
 
     }
 
-
+    @Override
+    public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
+        System.out.println("Click");
+    }
 }

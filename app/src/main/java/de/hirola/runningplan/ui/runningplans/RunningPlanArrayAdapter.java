@@ -2,6 +2,9 @@ package de.hirola.runningplan.ui.runningplans;
 
 import de.hirola.runningplan.R;
 import de.hirola.sportslibrary.model.RunningPlan;
+
+import android.content.res.Resources;
+import android.widget.ImageView;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +13,16 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.Locale;
 
 /**
- * Custom Adapter for RunningPlans
+ * Copyright 2021 by Michael Schmidt, Hirola Consulting
+ * This software us licensed under the AGPL-3.0 or later.
+ *
+ * Custom Adapter for RunningPlans to view in list.
+ *
+ * @author Michael Schmidt (Hirola)
+ * @since 1.1.1
  */
 public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
     private final Context context;
@@ -35,7 +43,19 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
         // Laufplan darstellen
         RunningPlan runningPlan = values[position];
         // Name und Status
-        // TODO: Status-Bild
+        // Status mittels Bild darstellen
+        ImageView statusImageView = rowView.findViewById(R.id.runningplan_row_state_imageview);
+        try {
+            if (runningPlan.isActive()) {
+                statusImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.active20x20, null));
+            }
+            if (runningPlan.completed()) {
+                statusImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.completed20x20, null));
+            }
+        } catch (Resources.NotFoundException exception) {
+            //TODO:Logging
+            exception.printStackTrace();
+        }
         TextView nameTextView = rowView.findViewById(R.id.runningplan_row_name_textview);
         nameTextView.setText(runningPlan.getName());
         // Anmerkungen
