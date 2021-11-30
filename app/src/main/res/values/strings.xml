@@ -26,6 +26,9 @@
     <string name="duration">Dauer</string>
     <string name="completed">abgeschlossen</string>
 
+    <!-- Actions -->
+    <string name="add">Hinzufügen</string>
+
     <!-- User Data -->
     <string name="email_address">E-Mail-Adresse</string>
     <string name="gender">Geschlecht</string>
@@ -47,6 +50,10 @@
     <string name="movement_type_pause">Pause</string>
     <string name="movement_type_slowing_going">Langsames Gehen</string>
     <string name="movement_type_speedy_going">Zügiges Gehen</string>
+    <string name="movement_type_slowing_running">Langsames Laufen</string>
+    <string name="movement_type_fast_running">Flottes Laufen</string>
+    <string name="movement_type_speedy_running">Schnelles Laufen</string>
+    <string name="movement_type_more_speedy_running">Sehr schnelles Laufen</string>
     <string name="movement_type_running">Laufen</string>
     <string name="movement_type_sprint">Rennen</string>
     <string name="movement_type_summary">Arten der Bewegung während des Lauftrainings</string>
@@ -61,7 +68,9 @@
         geringer.
     </string>
 
-    <!-- Messages Preferences -->
+    <!-- Running Plans -->
+    <string name="runningplan_start_remarks">Eine Vorlage zum Einstieg in das Laufen. Mit freundlicher Unterstützung von https://lauftipps.ch. Ohne Haftung und Gewährleistung.</string>
+    <string name="runningplan_start_60_remarks">Die 2.Stufe beim Einsteig in das Laufen. Mit freundlicher Unterstützung von https://lauftipps.ch. Ohne Haftung und Gewährleistung.</string>
 
     <!-- Sync Preferences -->
 </resources>

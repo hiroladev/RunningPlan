@@ -1,6 +1,7 @@
 package de.hirola.runningplan.ui.runningplans;
 
 import de.hirola.runningplan.R;
+import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.model.RunningPlan;
 
 import android.content.res.Resources;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -25,13 +27,14 @@ import java.util.Locale;
  * @since 1.1.1
  */
 public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
-    private final Context context;
-    private final RunningPlan[] values;
 
-    public RunningPlanArrayAdapter(Context context, RunningPlan[] values) {
-        super(context, R.layout.runningplan_row, values);
+    private final Context context;
+    private ArrayList<RunningPlan> runningPlans;
+
+    public RunningPlanArrayAdapter(Context context, ArrayList<RunningPlan> runningPlans) {
+        super(context, R.layout.runningplan_row, runningPlans);
         this.context = context;
-        this.values = values;
+        this.runningPlans = runningPlans;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
         View rowView = inflater.inflate(R.layout.runningplan_row, parent, false);
 
         // Laufplan darstellen
-        RunningPlan runningPlan = values[position];
+        RunningPlan runningPlan = runningPlans.get(position);
         // Name und Status
         // Status mittels Bild darstellen
         ImageView statusImageView = rowView.findViewById(R.id.runningplan_row_state_imageview);
@@ -83,5 +86,13 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
         TextView percentCompletedTextView = rowView.findViewById(R.id.runningplan_row_percentcompleted_textview);
         percentCompletedTextView.setText(percentCompleted);
         return rowView;
+    }
+
+
+    public void submitList(ArrayList<RunningPlan> runningPlans) {
+        // update the data
+        this.runningPlans = runningPlans;
+        // refresh the view
+        notifyDataSetChanged();
     }
 }

@@ -19,8 +19,8 @@
     <string name="training_beginner">Beginner</string>
     <string name="training_profi">Profi</string>
     <string name="movement_type_pause">Pause</string>
-    <string name="movement_type_slowing_going">Slow-Going</string>
-    <string name="movement_type_speedy_going">Speedy-Going</string>
+    <string name="movement_type_slowing_going">Slow Going</string>
+    <string name="movement_type_speedy_going">Speedy Going</string>
     <string name="movement_type_running">Running</string>
     <string name="movement_type_sprint">Sprint</string>
     <string name="color">Color</string>
@@ -40,4 +40,11 @@
     <string name="duration">Duration</string>
     <string name="startdate">Start date</string>
     <string name="completed">completed</string>
+    <string name="add">Add</string>
+    <string name="movement_type_slowing_running">Slow Running</string>
+    <string name="movement_type_fast_running">Fast Running</string>
+    <string name="movement_type_speedy_running">Speedy Running</string>
+    <string name="movement_type_more_speedy_running">More speedy Running</string>
+    <string name="runningplan_start_remarks">-</string>
+    <string name="runningplan_start_60_remarks">-</string>
 </resources>

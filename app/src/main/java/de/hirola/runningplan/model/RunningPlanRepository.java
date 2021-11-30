@@ -1,11 +1,10 @@
 package de.hirola.runningplan.model;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import de.hirola.kintojava.Kinto;
 import de.hirola.kintojava.KintoConfiguration;
 import de.hirola.kintojava.KintoException;
-import de.hirola.kintojava.logger.Logger;
-import de.hirola.kintojava.logger.LoggerConfiguration;
 import de.hirola.kintojava.model.KintoObject;
 import de.hirola.sportslibrary.model.*;
 
@@ -29,15 +28,9 @@ public class RunningPlanRepository {
     // the kinto data layer
     private Kinto kinto;
     // observe data changing in model to refresh the ui
-    private LiveData<ArrayList<RunningPlan>> runningPlans;
+    private MutableLiveData<ArrayList<RunningPlan>> runningPlans;
 
     public RunningPlanRepository(Application application) {
-
-        // create the app logger
-        LoggerConfiguration loggerConfiguration = new LoggerConfiguration.Builder("runningplan-logs")
-                .logggingDestination(LoggerConfiguration.LOGGING_DESTINATION.CONSOLE + LoggerConfiguration.LOGGING_DESTINATION.FILE)
-                .build();
-        Logger logger = Logger.init(loggerConfiguration);
 
         // add all types for managing by kinto java
         ArrayList<Class<? extends KintoObject>> typeList = new ArrayList<>();
@@ -53,17 +46,22 @@ public class RunningPlanRepository {
 
         // create a kinto java configuration
         try {
-            KintoConfiguration configuration = new KintoConfiguration.Builder("StoreTest")
+            KintoConfiguration configuration = new KintoConfiguration.Builder("RunningPlan")
                     .objectTypes(typeList)
                     .build();
             // create the kinto java instance
-           kinto = Kinto.getInstance(configuration);
+            kinto = Kinto.getInstance(configuration);
+            // load all running plans from local datastore
+            runningPlans = new MutableLiveData<>();
+            runningPlans.setValue((ArrayList<RunningPlan>) kinto.findAll(RunningPlan.class));
         } catch (KintoException exception) {
+            exception.printStackTrace();
+        } catch (ClassCastException exception) {
             exception.printStackTrace();
         }
     }
 
-    LiveData<ArrayList<RunningPlan>> getRunningPlans() {
+    public LiveData<ArrayList<RunningPlan>> getRunningPlans() {
         return runningPlans;
     }
 

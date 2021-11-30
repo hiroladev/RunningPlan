@@ -7,7 +7,9 @@ import androidx.fragment.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.R;
+import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.model.RunningPlan;
 
 import java.time.LocalDate;
@@ -18,7 +20,10 @@ import java.util.ArrayList;
  */
 public class RunningPlanListFragment extends ListFragment {
 
-    ArrayList<RunningPlan> runningPlans;
+    // visualize a running plan in list view
+    RunningPlanArrayAdapter runningPlanArrayAdapter;
+    // holds the data (model) for the app
+    private RunningPlanViewModel runningPlanViewModel;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -36,22 +41,16 @@ public class RunningPlanListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // sample data
-        RunningPlan[] list = new RunningPlan[2];
-        RunningPlan r1 = new RunningPlan();
-        r1.setName("Laufplan 1");
-        r1.setRemarks("Erster Laufplan");
-        r1.setStartDate(LocalDate.now());
-        RunningPlan r2 = new RunningPlan();
-        r2.setName("Laufplan 2");
-        r2.setRemarks("Zweiter Laufplan");
-
-        list[0] = r1;
-        list[1] = r2;
-
-        // Adapter initialisieren
-        RunningPlanArrayAdapter runningPlanArrayAdapter = new RunningPlanArrayAdapter(getContext(), list);
-
+        // initialize the view model
+        runningPlanViewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
+        // initialize the custom adapter
+        runningPlanArrayAdapter = new RunningPlanArrayAdapter(getContext(), runningPlanViewModel.getRunningPlans().getValue());
+        // register for changes to refresh the view
+        runningPlanViewModel.getRunningPlans().observe(this, runningPlans -> {
+            // Update the cached copy of the running plans in the adapter.
+            runningPlanArrayAdapter.submitList(runningPlans);
+        });
+        // bind the adapter to the fragment
         setListAdapter(runningPlanArrayAdapter);
 
         return inflater.inflate(R.layout.fragment_running_plans, container, false);
@@ -60,6 +59,9 @@ public class RunningPlanListFragment extends ListFragment {
 
     @Override
     public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
-        System.out.println("Click");
+        RunningPlan runningPlan = runningPlanViewModel.getRunningPlans().getValue().get(position);
+        if (runningPlan != null) {
+            System.out.println(runningPlan.getName());
+        }
     }
 }
