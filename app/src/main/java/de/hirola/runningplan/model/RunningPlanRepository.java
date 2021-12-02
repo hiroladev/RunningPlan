@@ -1,16 +1,20 @@
 package de.hirola.runningplan.model;
 
+import de.hirola.runningplan.RunningPlanApplication;
+
+import de.hirola.sportslibrary.DataRepository;
+import de.hirola.sportslibrary.PersistentObject;
+import de.hirola.sportslibrary.SportsLibrary;
+import de.hirola.sportslibrary.SportsLibraryException;
+import de.hirola.sportslibrary.model.*;
+import de.hirola.sportslibrary.util.Logger;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import de.hirola.kintojava.Kinto;
-import de.hirola.kintojava.KintoConfiguration;
-import de.hirola.kintojava.KintoException;
-import de.hirola.kintojava.model.KintoObject;
-import de.hirola.sportslibrary.model.*;
 
 import android.app.Application;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -25,54 +29,36 @@ import java.util.ArrayList;
  */
 public class RunningPlanRepository {
 
-    // the kinto data layer
-    private Kinto kinto;
+    // the datastore layer
+    private final DataRepository dataRepository;
+    // logging
+    private final Logger logger;
     // observe data changing in model to refresh the ui
-    private MutableLiveData<ArrayList<RunningPlan>> runningPlans;
+    private final MutableLiveData<List<RunningPlan>> runningPlans;
 
-    public RunningPlanRepository(Application application) {
-
-        // add all types for managing by kinto java
-        ArrayList<Class<? extends KintoObject>> typeList = new ArrayList<>();
-        typeList.add(User.class);
-        typeList.add(LocationData.class);
-        typeList.add(Track.class);
-        typeList.add(MovementType.class);
-        typeList.add(TrainingType.class);
-        typeList.add(Training.class);
-        typeList.add(RunningUnit.class);
-        typeList.add(RunningPlanEntry.class);
-        typeList.add(RunningPlan.class);
-
-        // create a kinto java configuration
+    public RunningPlanRepository(Application application) throws RuntimeException {
+        // initialize attributes
+        SportsLibrary sportsLibrary = ((RunningPlanApplication) application).getSportsLibrary();
+        dataRepository = sportsLibrary.getDataRepository();
+        logger = sportsLibrary.getLogger();
         try {
-            KintoConfiguration configuration = new KintoConfiguration.Builder("RunningPlan")
-                    .objectTypes(typeList)
-                    .build();
-            // create the kinto java instance
-            kinto = Kinto.getInstance(configuration);
-            // load all running plans from local datastore
+            // load all running plans from datastore
+            List<? extends PersistentObject> persistentObjects = dataRepository.findAll(RunningPlan.class);
             runningPlans = new MutableLiveData<>();
-            runningPlans.setValue((ArrayList<RunningPlan>) kinto.findAll(RunningPlan.class));
-        } catch (KintoException exception) {
-            exception.printStackTrace();
-        } catch (ClassCastException exception) {
-            exception.printStackTrace();
+            // noinspection unchecked
+            runningPlans.setValue((List<RunningPlan>) persistentObjects);
+        } catch (SportsLibraryException exception) {
+            // serious problems in data model
+            throw new RuntimeException("Error occurred while searching for data: "
+                    + exception);
         }
     }
 
-    public LiveData<ArrayList<RunningPlan>> getRunningPlans() {
+    public LiveData<List<RunningPlan>> getRunningPlans() {
         return runningPlans;
     }
 
-    /**
-     * Add an running plan to the local datastore.
-     * It must call this on a non-UI thread to avoid blocking the UI.
-     *
-     * @param runningPlan
-     * @throws KintoException
-     */
-    public void addRunningPlan(RunningPlan runningPlan) throws KintoException {
-        kinto.add(runningPlan);
+    public void add(PersistentObject persistentObject) throws SportsLibraryException {
+        dataRepository.add(persistentObject);
     }
 }

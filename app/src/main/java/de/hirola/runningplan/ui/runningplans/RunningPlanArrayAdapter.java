@@ -1,7 +1,6 @@
 package de.hirola.runningplan.ui.runningplans;
 
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.model.RunningPlan;
 
 import android.content.res.Resources;
@@ -14,7 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -29,9 +28,9 @@ import java.util.Locale;
 public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
 
     private final Context context;
-    private ArrayList<RunningPlan> runningPlans;
+    private List<RunningPlan> runningPlans;
 
-    public RunningPlanArrayAdapter(Context context, ArrayList<RunningPlan> runningPlans) {
+    public RunningPlanArrayAdapter(Context context, List<RunningPlan> runningPlans) {
         super(context, R.layout.runningplan_row, runningPlans);
         this.context = context;
         this.runningPlans = runningPlans;
@@ -42,11 +41,9 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.runningplan_row, parent, false);
-
         // Laufplan darstellen
         RunningPlan runningPlan = runningPlans.get(position);
-        // Name und Status
-        // Status mittels Bild darstellen
+        // Name und Status (mittels Bild darstellen)
         ImageView statusImageView = rowView.findViewById(R.id.runningplan_row_state_imageview);
         try {
             if (runningPlan.isActive()) {
@@ -89,7 +86,7 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
     }
 
 
-    public void submitList(ArrayList<RunningPlan> runningPlans) {
+    public void submitList(List<RunningPlan> runningPlans) {
         // update the data
         this.runningPlans = runningPlans;
         // refresh the view

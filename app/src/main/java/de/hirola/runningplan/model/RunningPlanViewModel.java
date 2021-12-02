@@ -1,13 +1,14 @@
 package de.hirola.runningplan.model;
 
-import de.hirola.kintojava.KintoException;
+import de.hirola.sportslibrary.PersistentObject;
+import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -22,9 +23,9 @@ import java.util.ArrayList;
 public class RunningPlanViewModel extends AndroidViewModel {
 
     // the repository for the app data
-    private RunningPlanRepository repository;
+    private final RunningPlanRepository repository;
     // observe data changing in model to refresh the ui
-    private LiveData<ArrayList<RunningPlan>> runningPlans;
+    private final LiveData<List<RunningPlan>> runningPlans;
 
     public RunningPlanViewModel(Application application) {
         super(application);
@@ -33,12 +34,12 @@ public class RunningPlanViewModel extends AndroidViewModel {
         runningPlans = repository.getRunningPlans();
     }
 
-    public LiveData<ArrayList<RunningPlan>> getRunningPlans() {
+    public LiveData<List<RunningPlan>> getRunningPlans() {
         return runningPlans;
     }
 
-    public void addRunningPlan(RunningPlan runningPlan) throws KintoException {
-        repository.addRunningPlan(runningPlan);
+    public void add(PersistentObject persistentObject) throws SportsLibraryException {
+        repository.add(persistentObject);
     }
 
 }

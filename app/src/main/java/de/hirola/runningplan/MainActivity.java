@@ -1,5 +1,8 @@
 package de.hirola.runningplan;
 
+import de.hirola.runningplan.databinding.ActivityMainBinding;
+import de.hirola.runningplan.model.RunningPlanViewModel;
+
 import android.os.Bundle;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -8,8 +11,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import de.hirola.runningplan.databinding.ActivityMainBinding;
-import de.hirola.runningplan.model.RunningPlanViewModel;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,4 +41,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
+    public String getStringTest() {
+        return "";
+    }
 }

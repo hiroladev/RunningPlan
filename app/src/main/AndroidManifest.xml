@@ -3,6 +3,7 @@
           package="de.hirola.runningplan">
 
     <application
+            android:name=".RunningPlanApplication"
             android:allowBackup="true"
             android:icon="@mipmap/ic_running_plan"
             android:label="@string/app_name"
