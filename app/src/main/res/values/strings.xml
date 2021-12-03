@@ -84,6 +84,15 @@
     <string name="title_activity_running_plan_detail_host">runningPlan Detail Host Activity</string>
     <string name="title_runningplan_list">runningPlans</string>
     <string name="title_runningplan_detail">runningPlan Detail</string>
+    <string name="title_activity_running_plan">RunningPlanActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
     <!-- Sync Preferences -->
 </resources>

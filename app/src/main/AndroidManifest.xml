@@ -11,6 +11,11 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.RunningPlan">
         <activity
+                android:name=".ui.runningplans.RunningPlanActivity"
+                android:label="@string/title_activity_running_plan"
+                android:theme="@style/Theme.RunningPlan.NoActionBar">
+        </activity>
+        <activity
                 android:name=".ui.settings.UserSettingsActivity"
                 android:label="@string/title_usersettings">
         </activity>
