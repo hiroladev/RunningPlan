@@ -47,4 +47,6 @@
     <string name="movement_type_more_speedy_running">More speedy Running</string>
     <string name="runningplan_start_remarks">-</string>
     <string name="runningplan_start_60_remarks">-</string>
+    <string name="name">Name</string>
+    <string name="remarks">Remarks</string>
 </resources>

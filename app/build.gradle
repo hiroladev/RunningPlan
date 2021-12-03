@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.ja'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
@@ -43,8 +43,6 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation files('C:\\Users\\lv13sch2\\IdeaProjects\\lib\\sports-library-1.1.1.jar')
-    implementation files('C:\\Users\\lv13sch2\\IdeaProjects\\lib\\kinto-java-1.1.1.jar')
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

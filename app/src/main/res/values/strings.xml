@@ -38,7 +38,9 @@
     <string name="gender_female">weiblich</string>
     <string name="birthday">Geburtstag</string>
     <string name="max_pulse">maximale Herzfrequenz</string>
-    <string name="pulse_summary">Der Maximal-Puls wird nach der Formel 220 (Männer) bzw. 226 (Frauen) - Alter berechnet.</string>
+    <string name="pulse_summary">Der Maximal-Puls wird nach der Formel 220 (Männer) bzw. 226 (Frauen) - Alter
+        berechnet.
+    </string>
 
     <!-- Training Data -->
     <string name="training_level">Stufe</string>
@@ -69,8 +71,19 @@
     </string>
 
     <!-- Running Plans -->
-    <string name="runningplan_start_remarks">Eine Vorlage zum Einstieg in das Laufen. Mit freundlicher Unterstützung von https://lauftipps.ch. Ohne Haftung und Gewährleistung.</string>
-    <string name="runningplan_start_60_remarks">Die 2.Stufe beim Einsteig in das Laufen. Mit freundlicher Unterstützung von https://lauftipps.ch. Ohne Haftung und Gewährleistung.</string>
+    <string name="runningplan_start_remarks">Eine Vorlage zum Einstieg in das Laufen. Mit freundlicher Unterstützung von
+        https://lauftipps.ch. Ohne Haftung und Gewährleistung.
+    </string>
+    <string name="runningplan_start_60_remarks">Die 2.Stufe beim Einsteig in das Laufen. Mit freundlicher Unterstützung
+        von https://lauftipps.ch. Ohne Haftung und Gewährleistung.
+    </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="name">Name</string>
+    <string name="remarks">Anmerkungen</string>
+    <string name="title_activity_running_plan_detail_host">runningPlan Detail Host Activity</string>
+    <string name="title_runningplan_list">runningPlans</string>
+    <string name="title_runningplan_detail">runningPlan Detail</string>
 
     <!-- Sync Preferences -->
 </resources>

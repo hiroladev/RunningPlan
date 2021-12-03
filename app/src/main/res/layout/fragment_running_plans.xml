@@ -3,7 +3,7 @@
 Copyright 2021 by Michael Schmidt, Hirola Consulting
 This software us licensed under the AGPL-3.0 or later.
 
-A list view to show running plans.
+The running plan view, contains different fragments.
 
 @author Michael Schmidt (Hirola)
 @since 1.1.1
@@ -28,7 +28,7 @@ A list view to show running plans.
             app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_runningplan_button"
+            android:id="@+id/button_add_runningplan"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="wrap_content"
@@ -36,5 +36,15 @@ A list view to show running plans.
             android:layout_margin="16dp"
             android:contentDescription="@string/add"
             android:src="@drawable/baseline_add_black_24"/>
+
+    <fragment
+            android:id="@+id/runningPlanDetailFragment"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            class="de.hirola.runningplan.ui.runningplans.RunningPlanDetailsFragment"
+            tools:ignore="MissingConstraints">
+    </fragment>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
