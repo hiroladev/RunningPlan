@@ -31,8 +31,6 @@ public class RunningPlanRepository {
 
     // the datastore layer
     private final DataRepository dataRepository;
-    // logging
-    private final Logger logger;
     // observe data changing in model to refresh the ui
     private final MutableLiveData<List<RunningPlan>> runningPlans;
 
@@ -40,7 +38,6 @@ public class RunningPlanRepository {
         // initialize attributes
         SportsLibrary sportsLibrary = ((RunningPlanApplication) application).getSportsLibrary();
         dataRepository = sportsLibrary.getDataRepository();
-        logger = sportsLibrary.getLogger();
         try {
             // load all running plans from datastore
             List<? extends PersistentObject> persistentObjects = dataRepository.findAll(RunningPlan.class);

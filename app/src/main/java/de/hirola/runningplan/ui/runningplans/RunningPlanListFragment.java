@@ -1,7 +1,9 @@
 package de.hirola.runningplan.ui.runningplans;
 
+import android.content.Intent;
 import android.widget.ListView;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.R;
 
@@ -33,21 +35,28 @@ public class RunningPlanListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // load th
+        // load the running plans
         RunningPlanViewModel viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
         runningPlans = (viewModel.getRunningPlans()).getValue();
+        // visualize th list of running plans
+        RunningPlanArrayAdapter listAdapter = new RunningPlanArrayAdapter(getContext(),runningPlans);
+        // refresh the ui when the observed data changes
+        viewModel.getRunningPlans().observe(this, runningPlans -> {
+            // Update the cached copy of the words in the adapter.
+            listAdapter.submitList(runningPlans);
+        });
         // determine the mode
-        View detailsFragment = getActivity().findViewById(R.id.fragment_runningplan_detail);
+        View detailsFragment = getActivity().findViewById(R.id.fragmentContainerViewRunningPlanDetails);
         if (detailsFragment != null && detailsFragment.getVisibility() == View.VISIBLE) {
             tabletMode = true;
             // select the first element in view to showing details
             if (runningPlans.size() > 0) {
-
+                showDetailsForRunningPlanAtIndex(0);
             }
         } else {
             tabletMode = false;
         }
-        setListAdapter(new RunningPlanArrayAdapter(getContext(),runningPlans));
+        setListAdapter(listAdapter);
     }
 
     @Override
@@ -70,6 +79,32 @@ public class RunningPlanListFragment extends ListFragment {
      */
     @Override
     public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+        showDetailsForRunningPlanAtIndex(position);
+    }
+
+    private void showDetailsForRunningPlanAtIndex(int index) {
+        if(tabletMode){
+            // the RunningPlanActivity has two fragments
+            // select the element at index in view to showing details
+            getListView().setItemChecked(index, true);
+            // get a reference from RunningPlanDetailsFragment
+            RunningPlanDetailsFragment detailsFragment =
+                    (RunningPlanDetailsFragment) getParentFragmentManager().findFragmentById(R.id.fragmentContainerViewRunningPlanDetails);
+            if (detailsFragment == null) {
+                // no details fragment still present
+                // create new details fragment
+                detailsFragment = new RunningPlanDetailsFragment();
+                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragmentContainerViewRunningPlanDetails,detailsFragment);
+                // make a transition
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                fragmentTransaction.commit();
+            }
+        } else {
+            // starts the RunningPlanDetailsActivity
+            Intent intent = new Intent();
+            intent.setClass(getActivity(), RunningPlanDetailsActivity.class);
+            startActivity(intent);
+        }
     }
 }

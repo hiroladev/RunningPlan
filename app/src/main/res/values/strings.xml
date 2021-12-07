@@ -18,6 +18,8 @@
     <string name="title_movementtype">Bewegungsart</string>
 
     <!-- Common -->
+    <string name="name">Name</string>
+    <string name="remarks">Anmerkungen</string>
     <string name="color">Farbe</string>
     <string name="pace">Geschwindigkeit (Pace)</string>
     <string name="startdate">Start-Datum</string>
@@ -77,22 +79,5 @@
     <string name="runningplan_start_60_remarks">Die 2.Stufe beim Einsteig in das Laufen. Mit freundlicher Unterstützung
         von https://lauftipps.ch. Ohne Haftung und Gewährleistung.
     </string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="name">Name</string>
-    <string name="remarks">Anmerkungen</string>
-    <string name="title_activity_running_plan_detail_host">runningPlan Detail Host Activity</string>
-    <string name="title_runningplan_list">runningPlans</string>
-    <string name="title_runningplan_detail">runningPlan Detail</string>
-    <string name="title_activity_running_plan">RunningPlanActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-
-    <!-- Sync Preferences -->
+    <string name="title_runningplan_details">Laufplan-Details</string>
 </resources>

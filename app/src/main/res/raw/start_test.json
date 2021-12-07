@@ -1,0 +1,12 @@
+{
+  "name": "Start-Test",
+  "orderNumber": 3,
+  "remarks":"runningplan_start_remarks",
+  "trainingUnits" : [{
+    "week": 1,
+    "day": 1,
+    "duration": 30,
+    "units": [ "30", "L" ]
+  }
+  ]
+}

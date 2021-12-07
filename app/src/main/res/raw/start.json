@@ -1,0 +1,421 @@
+{
+    "name": "Start",
+    "orderNumber": 1,
+    "remarks":"runningplan_start_remarks",
+    "trainingUnits" : [
+        {
+          "week": 1,
+          "day": 1,
+          "duration": 20,
+          "units": [ "20", "ZG" ]
+       },
+       {
+          "week": 1,
+          "day": 3,
+          "duration": 20,
+          "units": [ "20", "ZG" ]
+       },
+       {
+          "week": 1,
+          "day": 5,
+          "duration": 25,
+          "units": [ "25", "ZG" ]
+       },
+       {
+          "week": 1,
+          "day": 6,
+          "duration": 25,
+          "units": [ "25", "ZG" ]
+       },
+       {
+          "week": 1,
+          "day": 7,
+          "duration": 25,
+          "units": [ "25", "ZG" ]
+       },
+       {
+          "week": 2,
+          "day": 1,
+          "duration": 25,
+          "units": [ "25", "ZG" ]
+       },
+       {
+          "week": 2,
+          "day": 3,
+          "duration": 25,
+          "units": [ "25", "ZG" ]
+       },
+       {
+          "week": 2,
+          "day": 5,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 2,
+          "day": 6,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 2,
+          "day": 7,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 3,
+          "day": 1,
+          "duration": 25,
+          "units": [ "2","L","3","LG","2","L","3","LG","2","L","3","LG","2","L","3","LG","2","L","3","LG" ]
+       },
+       {
+          "week": 3,
+          "day": 3,
+          "duration": 25,
+          "units": [ "2","L","3","LG","2","L","3","LG","2","L","3","LG","2","L","3","LG","2","L","3","LG" ]
+       },
+       {
+          "week": 3,
+          "day": 5,
+          "duration": 25,
+          "units": [ "2","L","3","LG","2","L","3","LG","2","L","3","LG","2","L","3","LG","2","L","3","LG" ]
+       },
+       {
+          "week": 3,
+          "day": 6,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 3,
+          "day": 7,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 4,
+          "day": 1,
+          "duration": 24,
+          "units": [ "2","L","3","LG","2","L","3","LG","2","L","3","LG","2","L","3","LG" ]
+       },
+       {
+          "week": 4,
+          "day": 3,
+          "duration": 24,
+          "units": [ "2","L","3","LG","2","L","3","LG","2","L","3","LG","2","L","3","LG" ]
+       },
+       {
+          "week": 4,
+          "day": 5,
+          "duration": 24,
+          "units": [ "2","L","3","LG","2","L","3","LG","2","L","3","LG","2","L","3","LG" ]
+       },
+       {
+          "week": 4,
+          "day": 6,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 4,
+          "day": 7,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 5,
+          "day": 1,
+          "duration": 30,
+          "units": [ "3","L","3","LG","3","L","3","LG","3","L","3","LG","3","L","3","LG" ]
+       },
+       {
+          "week": 5,
+          "day": 3,
+          "duration": 30,
+          "units": [ "3","L","3","LG","3","L","3","LG","3","L","3","LG","3","L","3","LG" ]
+       },
+       {
+          "week": 5,
+          "day": 5,
+          "duration": 30,
+          "units": [ "3","L","3","LG","3","L","3","LG","3","L","3","LG","3","L","3","LG" ]
+       },
+       {
+          "week": 5,
+          "day": 6,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 5,
+          "day": 7,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 6,
+          "day": 1,
+          "duration": 35,
+          "units": [ "4","L","3","LG","4","L","3","LG","4","L","3","LG","4","L","3","LG" ]
+       },
+       {
+          "week": 6,
+          "day": 3,
+          "duration": 35,
+          "units": [ "4","L","3","LG","4","L","3","LG","4","L","3","LG","4","L","3","LG" ]
+       },
+       {
+          "week": 6,
+          "day": 5,
+          "duration": 35,
+          "units": [ "4","L","3","LG","4","L","3","LG","4","L","3","LG","4","L","3","LG" ]
+       },
+       {
+          "week": 6,
+          "day": 6,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 6,
+          "day": 7,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 7,
+          "day": 1,
+          "duration": 32,
+          "units": [ "6","L","2","LG","6","L","2","LG","6","L","2","LG","6","L","2","LG" ]
+       },
+       {
+          "week": 7,
+          "day": 3,
+          "duration": 32,
+          "units": [ "6","L","2","LG","6","L","2","LG","6","L","2","LG","6","L","2","LG" ]
+       },
+       {
+          "week": 7,
+          "day": 5,
+          "duration": 32,
+          "units": [ "6","L","2","LG","6","L","2","LG","6","L","2","LG","6","L","2","LG" ]
+       },
+       {
+          "week": 7,
+          "day": 6,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 7,
+          "day": 7,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 8,
+          "day": 1,
+          "duration": 30,
+          "units": [ "8","L","2","LG","8","L","2","LG","8","L","2","LG" ]
+       },
+       {
+          "week": 8,
+          "day": 3,
+          "duration": 30,
+          "units": [ "8","L","2","LG","8","L","2","LG","8","L","2","LG" ]
+       },
+       {
+          "week": 8,
+          "day": 5,
+          "duration": 30,
+          "units": [ "8","L","2","LG","8","L","2","LG","8","L","2","LG" ]
+       },
+       {
+          "week": 8,
+          "day": 6,
+          "duration": 40,
+          "units": [ "40", "ZG" ]
+       },
+       {
+          "week": 8,
+          "day": 7,
+          "duration": 40,
+          "units": [ "40", "ZG" ]
+       },
+       {
+          "week": 9,
+          "day": 1,
+          "duration": 33,
+          "units": [ "9","L","2","LG","9","L","2","LG","9","L","2","LG" ]
+       },
+       {
+          "week": 9,
+          "day": 3,
+          "duration": 33,
+          "units": [ "9","L","2","LG","9","L","2","LG","9","L","2","LG" ]
+       },
+       {
+          "week": 9,
+          "day": 5,
+          "duration": 33,
+          "units": [ "9","L","2","LG","9","L","2","LG","9","L","2","LG" ]
+       },
+       {
+          "week": 9,
+          "day": 6,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 9,
+          "day": 7,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 10,
+          "day": 1,
+          "duration": 24,
+          "units": [ "10","L","2","LG","10","L","2","LG" ]
+       },
+       {
+          "week": 10,
+          "day": 3,
+          "duration": 26,
+          "units": [ "11","L","2","LG","11","L","2","LG" ]
+       },
+       {
+          "week": 10,
+          "day": 5,
+          "duration": 28,
+          "units": [ "12","L","2","LG","12","L","2","LG" ]
+       },
+       {
+          "week": 10,
+          "day": 6,
+          "duration": 40,
+          "units": [ "40", "ZG" ]
+       },
+       {
+          "week": 10,
+          "day": 7,
+          "duration": 40,
+          "units": [ "40", "ZG" ]
+       },
+       {
+          "week": 11,
+          "day": 1,
+          "duration": 28,
+          "units": [ "12","L","2","LG","12","L","2","LG" ]
+       },
+       {
+          "week": 11,
+          "day": 3,
+          "duration": 32,
+          "units": [ "14","L","2","LG","14","L","2","LG" ]
+       },
+       {
+          "week": 11,
+          "day": 5,
+          "duration": 28,
+          "units": [ "12","L","2","LG","12","L","2","LG" ]
+       },
+       {
+          "week": 11,
+          "day": 6,
+          "duration": 40,
+          "units": [ "40", "ZG" ]
+       },
+       {
+          "week": 11,
+          "day": 7,
+          "duration": 40,
+          "units": [ "40", "ZG" ]
+       },
+       {
+          "week": 12,
+          "day": 1,
+          "duration": 34,
+          "units": [ "15","L","2","LG","15","L","2","LG" ]
+       },
+       {
+          "week": 12,
+          "day": 3,
+          "duration": 42,
+          "units": [ "15","L","2","LG","15","L","2","LG","15","L","2","LG" ]
+       },
+       {
+          "week": 12,
+          "day": 5,
+          "duration": 34,
+          "units": [ "15","L","2","LG","15","L","2","LG" ]
+       },
+       {
+          "week": 12,
+          "day": 6,
+          "duration": 25,
+          "units": [ "25", "ZG" ]
+       },
+       {
+          "week": 12,
+          "day": 7,
+          "duration": 25,
+          "units": [ "25", "ZG" ]
+       },
+       {
+          "week": 13,
+          "day": 1,
+          "duration": 34,
+          "units": [ "18","L","2","LG","12","L","2","LG" ]
+       },
+       {
+          "week": 13,
+          "day": 3,
+          "duration": 34,
+          "units": [ "18","L","2","LG","10","L","2","LG" ]
+       },
+       {
+          "week": 13,
+          "day": 5,
+          "duration": 36,
+          "units": [ "18","L","2","LG","14","L","2","LG" ]
+       },
+       {
+          "week": 13,
+          "day": 6,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 13,
+          "day": 7,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 14,
+          "day": 1,
+          "duration": 32,
+          "units": [ "6","L","2","LG","6","L","2","LG","6","L","2","LG","6","L","2","LG" ]
+       },
+       {
+          "week": 14,
+          "day": 3,
+          "duration": 30,
+          "units": [ "30", "ZG" ]
+       },
+       {
+          "week": 14,
+          "day": 6,
+          "duration": 30,
+          "units": [ "30", "L" ]
+       },
+       {
+          "week": 14,
+          "day": 7,
+          "duration": 30,
+          "units": [ "30", "L" ]
+       }
+    ]
+}

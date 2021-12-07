@@ -1,0 +1,20 @@
+[
+    {
+        "name": "bike",
+        "remarks": "bike_training_remarks",
+        "imageName": "biking",
+        "speed": 20.0
+    },
+    {
+        "name": "running",
+        "remarks": "running_remarks",
+        "imageName": "running",
+        "speed": 10.0
+    },
+    {
+        "name": "hiking",
+        "remarks": "hiking_remarks",
+        "imageName": "hiking",
+        "speed": 5.0
+    }
+]

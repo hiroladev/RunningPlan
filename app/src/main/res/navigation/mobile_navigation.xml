@@ -21,7 +21,7 @@
             android:id="@+id/navigation_running_plans"
             android:name="de.hirola.runningplan.ui.runningplans.RunningPlanListFragment"
             android:label="@string/title_runningplans"
-            tools:layout="@layout/fragment_running_plans"/>
+            tools:layout="@layout/activity_running_plan"/>
 
     <fragment
             android:id="@+id/navigation_settings"

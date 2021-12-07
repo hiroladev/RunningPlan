@@ -1,5 +1,8 @@
 package de.hirola.runningplan.ui.runningplans;
 
+import de.hirola.runningplan.R;
+
+import android.content.res.Configuration;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +23,14 @@ public class RunningPlanDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        // in landscape orientation is no activity required
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            finish();
+            return;
+        }
+        if (savedInstanceState == null) {
+            RunningPlanDetailsFragment detailsFragment = new RunningPlanDetailsFragment();
+            getSupportFragmentManager().beginTransaction().add(android.R.id.content, detailsFragment);
+        }
     }
 }

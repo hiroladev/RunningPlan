@@ -2,12 +2,13 @@ package de.hirola.runningplan;
 
 import android.content.ContentProvider;
 import android.os.Build;
-import de.hirola.sportslibrary.DataRepository;
 import de.hirola.sportslibrary.SportsLibrary;
 
 import android.app.Application;
+import de.hirola.sportslibrary.SportsLibraryApplication;
 import de.hirola.sportslibrary.SportsLibraryException;
-import de.hirola.sportslibrary.util.Logger;
+
+import java.io.InputStream;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -20,7 +21,7 @@ import de.hirola.sportslibrary.util.Logger;
  * @author Michael Schmidt (Hirola)
  * @since 1.1.1
  */
-public class RunningPlanApplication extends Application {
+public class RunningPlanApplication extends Application implements SportsLibraryApplication {
 
     private SportsLibrary sportsLibrary;
 
@@ -49,7 +50,7 @@ public class RunningPlanApplication extends Application {
         try {
             // initialize the SportsLibrary, e.g. local datastore and logging,
             // import the templates on first start
-            sportsLibrary = SportsLibrary.getInstance("RunningPlan");
+            sportsLibrary = SportsLibrary.getInstance(getPackageName(), this);
         } catch (SportsLibraryException exception) {
             throw new RuntimeException("An exception occurred while initialize the app: "
                     + exception);
@@ -64,5 +65,24 @@ public class RunningPlanApplication extends Application {
      */
     public SportsLibrary getSportsLibrary() {
         return sportsLibrary;
+    }
+
+    @Override
+    public InputStream getMovementTypeTemplates() {
+        return getResources().openRawResource(R.raw.movement_types);
+    }
+
+    @Override
+    public InputStream getTrainingTypeTemplates() {
+        return getResources().openRawResource(R.raw.training_types);
+    }
+
+    @Override
+    public InputStream[] getRunningPlanTemplates() {
+        InputStream[] inputStreams = new InputStream[3];
+        inputStreams[0] = getResources().openRawResource(R.raw.start);
+        inputStreams[1] = getResources().openRawResource(R.raw.start60);
+        inputStreams[2] = getResources().openRawResource(R.raw.start_test);
+        return inputStreams;
     }
 }
