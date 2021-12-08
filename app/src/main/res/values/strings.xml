@@ -23,6 +23,7 @@
     <string name="color">Farbe</string>
     <string name="pace">Geschwindigkeit (Pace)</string>
     <string name="startdate">Start-Datum</string>
+    <string name="select">Auswahl</string>
     <string name="state">Status</string>
     <string name="percent">Prozent</string>
     <string name="duration">Dauer</string>
@@ -49,6 +50,7 @@
     <string name="training_beginner">Starter</string>
     <string name="training_amateur">Hobby-Sportler</string>
     <string name="training_profi">Laufprofi</string>
+    <string name="training_units">Trainingsabschnitte</string>
 
     <!-- Movement Data -->
     <string name="movement_type_pause">Pause</string>
@@ -73,11 +75,14 @@
     </string>
 
     <!-- Running Plans -->
+    <string name="running_plan">Laufplan</string>
     <string name="runningplan_start_remarks">Eine Vorlage zum Einstieg in das Laufen. Mit freundlicher Unterstützung von
         https://lauftipps.ch. Ohne Haftung und Gewährleistung.
     </string>
     <string name="runningplan_start_60_remarks">Die 2.Stufe beim Einsteig in das Laufen. Mit freundlicher Unterstützung
         von https://lauftipps.ch. Ohne Haftung und Gewährleistung.
     </string>
+    <string name="no_remarks">Keine Anmerkungen vorhanden.</string>
     <string name="title_runningplan_details">Laufplan-Details</string>
+    <string name="select_training_date">Trainingstag wählen</string>
 </resources>

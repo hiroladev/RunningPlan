@@ -50,4 +50,5 @@
     <string name="name">Name</string>
     <string name="remarks">Remarks</string>
     <string name="title_runningplan_details">Running Plan Details</string>
+    <string name="no_remarks">No remarks available.</string>
 </resources>

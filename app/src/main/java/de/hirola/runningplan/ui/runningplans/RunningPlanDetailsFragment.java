@@ -16,7 +16,8 @@ import de.hirola.runningplan.model.RunningPlanViewModel;
  */
 public class RunningPlanDetailsFragment extends Fragment {
 
-    RunningPlanViewModel viewModel;
+    // app data
+    private RunningPlanViewModel viewModel;
 
     public RunningPlanDetailsFragment() {
         // Required empty public constructor

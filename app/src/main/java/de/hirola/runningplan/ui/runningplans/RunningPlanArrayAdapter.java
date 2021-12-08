@@ -1,6 +1,7 @@
 package de.hirola.runningplan.ui.runningplans;
 
 import de.hirola.runningplan.R;
+import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.model.RunningPlan;
 
 import android.content.res.Resources;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import de.hirola.sportslibrary.util.Logger;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -60,6 +62,24 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
         nameTextView.setText(runningPlan.getName());
         // Anmerkungen
         TextView remarksTextView = rowView.findViewById(R.id.runningplan_row_remarks_textview);
+        if (runningPlan.isTemplate()) {
+            // Text sollte in Ressourcen hinterlegt sein
+            try {
+                // load strings from res dynamically
+                String remarksResourceString = runningPlan.getRemarks();
+                if (remarksResourceString.length() > 0) {
+                    int remarksResourceStringId = getContext().getResources().getIdentifier(remarksResourceString,
+                            "string", getContext().getPackageName());
+                    String remarks = context.getString(remarksResourceStringId);
+                    remarksTextView.setText(remarks);
+                }
+            } catch (Resources.NotFoundException exception) {
+                remarksTextView.setText(R.string.no_remarks);
+                if (Global.DEBUG) {
+                    // TODO: Logging
+                }
+            }
+        }
         remarksTextView.setText(runningPlan.getRemarks());
         // Startdatum
         TextView startDateTextView = rowView.findViewById(R.id.runningplan_row_startdate_textview);
