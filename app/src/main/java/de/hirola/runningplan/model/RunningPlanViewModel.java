@@ -3,6 +3,7 @@ package de.hirola.runningplan.model;
 import de.hirola.sportslibrary.PersistentObject;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
+import de.hirola.sportslibrary.model.User;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
@@ -26,20 +27,29 @@ public class RunningPlanViewModel extends AndroidViewModel {
     private final RunningPlanRepository repository;
     // observe data changing in model to refresh the ui
     private final LiveData<List<RunningPlan>> runningPlans;
+    public LiveData<User> appUser;
 
     public RunningPlanViewModel(Application application) {
         super(application);
         // init the repository
         repository = new RunningPlanRepository(application);
         runningPlans = repository.getRunningPlans();
+        appUser = repository.getAppUser();
     }
 
     public LiveData<List<RunningPlan>> getRunningPlans() {
         return runningPlans;
     }
 
+    public LiveData<User> getAppUser() {
+        return appUser;
+    }
+
     public void add(PersistentObject persistentObject) throws SportsLibraryException {
         repository.add(persistentObject);
     }
 
+    public void update(PersistentObject persistentObject) throws SportsLibraryException {
+        repository.update(persistentObject);
+    }
 }

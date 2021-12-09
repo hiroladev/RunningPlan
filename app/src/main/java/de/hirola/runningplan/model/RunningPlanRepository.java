@@ -33,6 +33,7 @@ public class RunningPlanRepository {
     private final DataRepository dataRepository;
     // observe data changing in model to refresh the ui
     private final MutableLiveData<List<RunningPlan>> runningPlans;
+    private final MutableLiveData<User> appUser;
 
     public RunningPlanRepository(Application application) throws RuntimeException {
         // initialize attributes
@@ -44,11 +45,16 @@ public class RunningPlanRepository {
             runningPlans = new MutableLiveData<>();
             // noinspection unchecked
             runningPlans.setValue((List<RunningPlan>) persistentObjects);
+            appUser = new MutableLiveData<User>(sportsLibrary.getAppUser());
         } catch (SportsLibraryException exception) {
             // serious problems in data model
             throw new RuntimeException("Error occurred while searching for data: "
                     + exception);
         }
+    }
+
+    public LiveData<User> getAppUser() {
+        return appUser;
     }
 
     public LiveData<List<RunningPlan>> getRunningPlans() {
@@ -57,5 +63,9 @@ public class RunningPlanRepository {
 
     public void add(PersistentObject persistentObject) throws SportsLibraryException {
         dataRepository.add(persistentObject);
+    }
+
+    public void update(PersistentObject persistentObject) throws SportsLibraryException {
+        dataRepository.update(persistentObject);
     }
 }

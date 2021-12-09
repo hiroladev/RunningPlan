@@ -85,4 +85,5 @@
     <string name="no_remarks">Keine Anmerkungen vorhanden.</string>
     <string name="title_runningplan_details">Laufplan-Details</string>
     <string name="select_training_date">Trainingstag wählen</string>
+    <string name="all_runninplans_completed">Alle Laufpläne abgeschlossen.</string>
 </resources>
