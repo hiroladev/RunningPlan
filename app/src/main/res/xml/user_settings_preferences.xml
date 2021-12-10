@@ -12,8 +12,8 @@
         <ListPreference
                 app:key="user_gender"
                 app:title="@string/gender"
-                app:entries="@array/gender_entries"
-                app:entryValues="@array/gender_values"
+                app:entries="@array/color_entries"
+                app:entryValues="@array/color_values"
                 app:defaultValue="0"
                 app:useSimpleSummaryProvider="true"/>
 

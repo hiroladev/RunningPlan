@@ -16,8 +16,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import de.hirola.sportslibrary.model.RunningPlanEntry;
+import de.hirola.sportslibrary.model.RunningUnit;
 import de.hirola.sportslibrary.model.User;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -44,6 +46,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     //  aktuell aktive Trainingseinheit zum ausgewählten Trainingsplan
     //  z.B. Woche: 3, Tag: 1 (Montag), 7 min gesamt,  2 min Laufen, 3 min langsames Gehen, 2 min Laufen
     private RunningPlanEntry runningPlanEntry;
+    //  aktive Laufplan-Trainingseinheit
+    private RunningUnit runningUnit;
+
     private boolean didAllRunningPlanesCompleted;
     /*
     //  Benachrichtigungen
@@ -303,12 +308,26 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                     // Startdatum ist im Laufplan gesetzt
                     startDate = runningPlan.getStartDate();
                 } else {
+                    // Startdatum auf einen Montag setzen
                     startDate = LocalDate.now();
+                    DayOfWeek dayOfWeek = startDate.getDayOfWeek();
+                    if (dayOfWeek != DayOfWeek.MONDAY) {
+                        // ab Dienstag ist das Startdatum der nächste Montag
+                        long daysToAdd = 8 - dayOfWeek.getValue();
+                        startDate = startDate.plusDays(daysToAdd);
+                    }
                 }
-                // Woche festlegen
-                LocalDate trainingDate = startDate.plusWeeks(week - 1);
-                // Tag festlegen, Start-Tag ist immer Montag!
-                trainingDate = trainingDate.plusDays(day - 1);
+                List<RunningUnit> units = runningPlanEntry.getRunningUnits();
+                // TODO: Liste sortiert?
+                Optional<RunningUnit> unit = units
+                        .stream()
+                        .filter(runningUnit -> !runningUnit.isCompleted())
+                        .findFirst();
+                unit.ifPresent(value -> runningUnit = value);
+                // TODO: Spinner select
+                //  Dauer des gesamten Trainings anzeigen
+                showRunningPlanEntryInView();
+
             }
 
         }
@@ -316,25 +335,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
 
                     }
-
-                    //  aktive Trainingseinheit des Trainingsabschnittes setzen
-                    //  abgeschlossene Einheiten überspringen
-                    let units = self.runningPlanEntry!.runningUnits
-                    if let index = units.firstIndex(where: {$0.completed == false}) {
-
-                        //  Trainingsabschnitt als aktiv setzen
-                        self.runningUnit = units[index]
-
-                        //  in PickerView auswählen
-                        if index < self.trainingUnitsPickerView.numberOfRows(inComponent: 0) {
-
-                            self.trainingUnitsPickerView.selectRow(index, inComponent: 0, animated: false)
-
-                        }
-
-                        //  Dauer des gesamten Trainings anzeigen
-                        self.showRunningPlanEntryInView()
-    }
 
     private void showRunningPlanEntryInView() {
 

@@ -8,8 +8,8 @@
         <ListPreference
                 app:key="movement_type"
                 app:title="@string/title_movementtype"
-                app:entries="@array/movement_type_entries"
-                app:entryValues="@array/movement_type_values"
+                app:entries="@array/color_entries"
+                app:entryValues="@array/color_values"
                 app:defaultValue="P"
                 app:useSimpleSummaryProvider="true"/>
 
