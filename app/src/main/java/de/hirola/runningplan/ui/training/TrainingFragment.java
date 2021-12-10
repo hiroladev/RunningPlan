@@ -1,5 +1,7 @@
 package de.hirola.runningplan.ui.training;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.widget.*;
 import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.model.RunningPlanViewModel;
@@ -21,14 +23,15 @@ import de.hirola.sportslibrary.model.User;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.*;
 
 public class TrainingFragment extends Fragment implements AdapterView.OnItemSelectedListener {
-
+    // Spinner
+    Spinner trainingUnitsSpinner;
     // Button
+    Button selectTrainingDayButton;
     Button startButton;
     Button stopButton;
     Button pauseButton;
@@ -46,15 +49,44 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     //  aktuell aktive Trainingseinheit zum ausgewählten Trainingsplan
     //  z.B. Woche: 3, Tag: 1 (Montag), 7 min gesamt,  2 min Laufen, 3 min langsames Gehen, 2 min Laufen
     private RunningPlanEntry runningPlanEntry;
+    // training day
+    private LocalDate trainingDate;
     //  aktive Laufplan-Trainingseinheit
     private RunningUnit runningUnit;
+    //  Training wurde gestartet?
+    private boolean isTrainingRunning;
+    //  Training pausiert?
+    private boolean isTrainingPaused;
+    //  Trainingsdauer-Aufzeichnung gefunden?
+    private boolean didSavedDurationFound;
+    //  aktive Laufplan-Trainingseinheit
+    //  Fehler beim Speichern der abgeschlossenen Trainingseinheit
+    private boolean didCompleteUpdateError;
 
     private boolean didAllRunningPlanesCompleted;
-    /*
+    //  Trainingszeit
+    //  Timer-Objekt
+    // private var timer: Timer?
+    // Timer aktiv?
+    private boolean isTimerRunning;
+    //  Trainingszeit in Sekunden
+    private int secondsInActivity;
+    //  Pause-Zeit in Sekunden
+    private int secondsInPause;
+    //  Dateipfad für Zwischenspeichern der Trainingsdauer
+    /// private var durationSaveFilePath: URL?
+    //  Intervall zum Schreiben in Sekunden - 15?
+    private int saveInterval;
+    //  Zeit beim Starten des Trainings
+    private LocalDate runningStartDate;
+    //  Zeit beim Starten der Pause
+    private LocalDate activityStartPauseDate;
+    //  Pausen-Zeit berechnet?
+    private boolean didPausedSecondsCalculated;
     //  Benachrichtigungen
-    private let userNotificationCenter = UNUserNotificationCenter.current()
-
-    //  GPS
+    // private let userNotificationCenter = UNUserNotificationCenter.current()
+    private boolean useNotifications;
+    /*//  GPS
     //  Location-Manager
     private var locationManager: CLLocationManager = Global.locationManager
     //  aufgezeichnete Daten
@@ -66,40 +98,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     private var trackSaveFilePath: URL?
     //  Track-Aufzeichnung gefunden?
     private var didSavedTrackFound: Bool = false
-
-    //  Trainingszeit
-    //  Timer-Objekt
-    private var timer: Timer?
-    // Timer aktiv?
-    private var isTimerRunning: Bool = false
-    //  Trainingszeit in Sekunden
-    private var secondsInActivity: Int = 0
-    //  Pausezeit in Sekunden
-    private var secondsInPause: Int = 0
-    //  Dateipfad für Zwischenspeichern der Trainingsdauer
-    private var durationSaveFilePath: URL?
-    //  Intervall zum Schreiben in Sekunden
-    private var saveInterval: Int = 15
-    //  Zeit beim Starten des Trainings
-    private var runningStartDate: Date?
-    //  Zeit beim Starten der Pause
-    private var activityStartPauseDate: Date?
-    //  Pausen-Zeit berechnet?
-    private var didPausedSecondsCalulated: Bool = true
-
-    //  Training
-    //  Training wurde gestartet?
-    private var isTrainingRunning: Bool = false
-    //  Training pausiert?
-    private var isTrainingPaused: Bool = true
-    //  Trainingsdauer-Aufzeichnung gefunden?
-    private var didSavedDurationFound: Bool = false
-    //  aktive Laufplan-Trainingseinheit
-    private var runningUnit: RunningUnit?
-    //  Fehler beim Speichern der abgeschlossenen Trainingseinheit
-    private var didCompleteUpdateError: Bool = false
-     */
-
+      */
+    private boolean useLocationData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,6 +107,16 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // load running plans
         viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
         runningPlans = viewModel.getRunningPlans().getValue();
+        // initialize attributes
+        secondsInActivity = 0;
+        secondsInPause = 0;
+        // TODO: aus Global
+        saveInterval = 15;
+        isTimerRunning = false;
+        // determine if user (app) can use location data
+        setUseLocationData();
+        // determine if user (app) can use notifications
+        setUseNotifications();
         // set user activated running plan
         setActiveRunningPlan();
         // check if a training can continued
@@ -115,14 +125,16 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View trainingView = inflater.inflate(R.layout.fragment_training, container, false);
         super.onCreate(savedInstanceState);
+        View trainingView = inflater.inflate(R.layout.fragment_training, container, false);
+        // initialize the spinner
+        trainingUnitsSpinner = trainingView.findViewById(R.id.spinner);
         // Label für den Zugriff initialisieren
         runningPlanNameLabel = trainingView.findViewById(R.id.editTextRunningPlanNameLabel);
         trainingDateLabel = trainingView.findViewById(R.id.editTextTrainingDateLabel);
         trainingInfolabel = trainingView.findViewById(R.id.editTextTrainingInfoLabel);
         // Button listener
-        Button selectTrainingDayButton = trainingView.findViewById(R.id.buttonSelectTrainingDay);
+        selectTrainingDayButton = trainingView.findViewById(R.id.buttonSelectTrainingDay);
         selectTrainingDayButton.setOnClickListener(this::selectTrainingDayButtonClicked);
         startButton = trainingView.findViewById(R.id.imageButtonStart);
         startButton.setOnClickListener(this::startButtonClicked);
@@ -133,23 +145,18 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // Spinner listener
         Spinner spinner = trainingView.findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
-
         // Spinner Drop down elements
         List<String> runningPlanEntriesNames = new ArrayList<>();
         if (runningPlan != null) {
             List<RunningPlanEntry> entries = runningPlan.getEntries();
         }
-
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item, runningPlanEntriesNames);
-
         // Drop down layout style - list view with radio button
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
-
         // Inflate the layout for this fragment
         return trainingView;
     }
@@ -206,35 +213,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
-
-
-    /*
-    for entry in result {
-
-            let runningPlan = entry as! RunningPlan
-
-            //  abgeschlossene Laufpläne ausblenden
-            if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.hideCompletedRunningPlanes) {
-
-                if !runningPlan.completed {
-
-                    self.runningPlanes.append(runningPlan)
-
-                }
-
-            } else {
-
-                self.runningPlanes.append(runningPlan)
-
-            }
-
-        }
-
-        //  Array nach Reihenfolge der Laufpläne sortieren
-        self.runningPlanes.sort(by: { $0.orderNumber < $1.orderNumber })
-
-     */
 
     private void setActiveRunningPlan() {
         //  einen Laufplan vorauswählen und alle entsprechenden Daten darstellen
@@ -300,23 +278,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                     .findFirst();
             entry.ifPresent(planEntry -> runningPlanEntry = planEntry);
             if (runningPlanEntry != null) {
-                // Trainingstag setzen und anzeigen
-                int day = runningPlanEntry.getDay();
-                int week = runningPlanEntry.getWeek();
-                LocalDate startDate;
-                if (runningPlan != null) {
-                    // Startdatum ist im Laufplan gesetzt
-                    startDate = runningPlan.getStartDate();
-                } else {
-                    // Startdatum auf einen Montag setzen
-                    startDate = LocalDate.now();
-                    DayOfWeek dayOfWeek = startDate.getDayOfWeek();
-                    if (dayOfWeek != DayOfWeek.MONDAY) {
-                        // ab Dienstag ist das Startdatum der nächste Montag
-                        long daysToAdd = 8 - dayOfWeek.getValue();
-                        startDate = startDate.plusDays(daysToAdd);
-                    }
-                }
+                // show the training day
+                showTrainingDate();
                 List<RunningUnit> units = runningPlanEntry.getRunningUnits();
                 // TODO: Liste sortiert?
                 Optional<RunningUnit> unit = units
@@ -327,279 +290,148 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 // TODO: Spinner select
                 //  Dauer des gesamten Trainings anzeigen
                 showRunningPlanEntryInView();
-
             }
-
         }
+    }
 
-
-
-                    }
-
+    // shows the duration of the running plan entry
     private void showRunningPlanEntryInView() {
-
-        if self.runningPlanEntry != nil {
-
-            //  Gesamtdauer darstellen
-            var durationString = NSLocalizedString("Gesamtdauer des Trainings ", comment: "Gesamtdauer des Trainings ")
-            let duration = self.runningPlanEntry!.duration
+        if (runningPlanEntry != null) {
+            String durationString = getString(R.string.total_time)+ " ";
+            int duration = runningPlanEntry.duration();
             // Stunden oder Minuten?
             //  Gesamtdauer des Trainings (gespeichert in min)
-            if duration < 60 {
-
-                durationString.append(String(duration))
-                durationString.append(" min")
-
+            if (duration < 60) {
+                durationString+= String.valueOf(duration);
+                durationString+= " min";
             } else {
-
                 //  in h und min umrechnen
-                let hours = (duration * 60) / 3600
-                let minutes = (duration / 60) % 60
-                durationString.append(String(hours))
-                durationString.append(" h und ")
-                durationString.append(String(minutes))
-                durationString.append(" min")
-
+                int hours = (duration * 60) / 3600;
+                int minutes = (duration / 60) % 60;
+                durationString+= String.valueOf(hours);
+                durationString+= " h : ";
+                durationString+= String.valueOf(minutes);
+                durationString+= " min";
+                trainingInfolabel.setText(durationString);
             }
-            self.trainingDurationLabel.text = durationString
-
         }
-
     }
 
-    private String dayAsStringForRow(_ row: Int) {
-
-        let startDate = self.runningPlan!.startDate!
-                let calendar = Calendar(identifier: .gregorian)
-
-        //  Tag ist Start-Tag + Zeile
-        var dateInterval = DateComponents()
-        dateInterval.day = row
-
-        if let day = calendar.date(byAdding: dateInterval, to: startDate) {
-
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd.MM.yyyy"
-
-            //  Wochentag-Name
-            //  Tag ermitteln für Text aus Global-Array
-            var dayOfWeek = (row + 1) % 7
-            if dayOfWeek == 0 {
-
-                //  Sonntag
-                dayOfWeek = 7
-            }
-            var labelString: String = Global.daysOfWeeks[dayOfWeek]
-
-            labelString.append(", ")
-            //  Datum
-            labelString.append(dateFormatter.string(from: day))
-
-            return labelString
-
-        }
-
-        return String(row + 1)
-
-    }
-
-    private void locationSettings() {
-
-        //  GPS-Einstellungen setzen
-        if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useGPS) {
-
-            //  MapKit-Ereignisse der Karte selbst verarbeiten
-            self.locationManager.delegate = self
-
-            if CLLocationManager.locationServicesEnabled() {
-
-                //  aktuellen Standort anfordern
-                self.locationManager.requestLocation()
-
-            } else {
-
-                locationManager.requestWhenInUseAuthorization()
-
-            }
-
-        } else {
-
-            //  GPS-Einstellungen "löschen"
-            self.locationManager.delegate = nil
-            self.locationManager.stopMonitoringSignificantLocationChanges()
-
-        }
-
-    }
-
-    //  Prüfung der Koordinaten
-    private boolean coordinateValid(_ coordinate: CLLocationCoordinate2D) {
-
-        let latitude = coordinate.latitude
-        let longitude = coordinate.longitude
-
-        if latitude >= Global.ValidLocationValues.latitudeMinValue && latitude <= Global.ValidLocationValues.latitudeMaxValue &&
-                longitude >= Global.ValidLocationValues.longitudeMinValue && longitude <= Global.ValidLocationValues.longitudeMaxValue {
-
-            return true
-
-        }
-
-        return false
+    // shows the selected training day with name of weekday
+    private void showTrainingDate() {
+        int day = runningPlanEntry.getDay();
+        int week = runningPlanEntry.getWeek();
+        // start date is a monday
+        trainingDate = runningPlan.getStartDate();
+        // add day and week
+        trainingDate.plusDays(day - 1);
+        trainingDate.plusWeeks(week - 1);
+        DayOfWeek dayOfWeek = trainingDate.getDayOfWeek();
+        String trainingDateString = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault());
+        trainingDateString+= " (";
+        trainingDateString+= trainingDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        trainingDateString+= ")";
+        trainingDateLabel.setText(trainingDateString);
     }
 
     //
-    //  TRAINING
+    // training methods
     //
-    //  Training aufzeichnen
+    // start recording training
     private void startRecordingTraining() {
-
-        if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useGPS) {
-
-            if !self.isTrainingRunning {
-
-                //  Aufzeichung und Montoring des Trainings neu starten
+        if (useLocationData) {
+            if (!isTrainingRunning) {
+                //  Aufzeichnung und Monitoring des Trainings neu starten
                 //  Reset des (vorherigen) Tracks
-                self.trackLocations.removeAll()
-
+                // self.trackLocations.removeAll()
             }
-
             //  Ereignisverarbeitung (Delegate) starten, wenn neuer Standort verfügbar
-            self.locationManager.startUpdatingLocation()
-            self.locationManager.startMonitoringSignificantLocationChanges()
-
+            // self.locationManager.startUpdatingLocation()
+            //self.locationManager.startMonitoringSignificantLocationChanges()
         }
-
     }
 
-    //  Training aufzeichnen stoppen
+    // stop recording training
     private void stopRecordingTraining() {
-
-        if Global.AppSettings.useGPS && self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useGPS) {
-
-            //  GPS-Aufzeichnung anhalten
-            self.locationManager.stopUpdatingLocation()
-            self.locationManager.stopMonitoringSignificantLocationChanges()
-
-            //  Pause-Zeit "merken"
-            self.activityStartPauseDate = self.trackLocations.last?.timestamp ?? Date()
-            self.didPausedSecondsCalulated = false
-
+        if (useLocationData) {
+            // GPS-Aufzeichnung anhalten
+            // self.locationManager.stopUpdatingLocation()
+            // self.locationManager.stopMonitoringSignificantLocationChanges()
+            // Pause-Zeit "merken"
+            // self.activityStartPauseDate = self.trackLocations.last?.timestamp ?? Date()
+            // self.didPausedSecondsCalulated = false
         }
-
     }
 
-    //  Start des Trainings
+    // start the training
     private void startTraining() {
-
-        //  PickerView-Element dürfen nicht mehr bedient werden können
-        self.trainingDayPickerView.isUserInteractionEnabled = false
-        self.trainingUnitsPickerView.isUserInteractionEnabled = false
-
-        if self.isTrainingRunning {
-
+        //  set spinner and training date button disabled
+        trainingUnitsSpinner.setEnabled(false);
+        selectTrainingDayButton.setEnabled(false);
+        if (isTrainingRunning) {
             //  Aufzeichnung (wieder) starten
-            self.startRecordingTraining()
-            self.runningInfoLabel.text = NSLocalizedString("Training wird fortgesetzt", comment: "Fortsetzung des Trainings, Aufzeichnen von Daten.")
-
+            startRecordingTraining();
+            // set an info text
+            trainingInfolabel.setText(R.string.continue_training);
         } else {
-
-            //  Aufzeichung und Montoring des Trainings starten
-            self.startRecordingTraining()
-            self.isTrainingRunning = true
-            self.runningInfoLabel.text = NSLocalizedString("Start des Trainings", comment: "Start des Trainings, Aufzeichnen von Daten.")
-
+            //  Aufzeichnung und Monitoring des Trainings starten
+            startRecordingTraining();
+            isTrainingRunning = true;
+            // show info
+            trainingInfolabel.setText(R.string.start_training);
         }
-
         //  Status-Bild anzeigen
-        if let trainingStatusImage = UIImage(named: "trainingactive30x30") {
-
-            //  Bild für den Status des Laufplanes
-            self.completedEntryImageView.image = trainingStatusImage
-
-        }
-
+        // TODO: Status-Bild trainingactive30x30
     }
 
     //  Trainingspause
     private void pauseTraining() {
-
-        //  GPS-Aufzeichnung stoppen
-        self.stopRecordingTraining()
-
-        //  Laufinfos aktualisieren
-        self.runningInfoLabel.text = NSLocalizedString("Trainingspause", comment: "Trainingspause")
-
-        //  Status-Bild anzeigen
-        if let trainingStatusImage = UIImage(named: "trainingpaused30x30") {
-
-            //  Bild für den Status des Laufplanes
-            self.completedEntryImageView.image = trainingStatusImage
-
-        }
-
+        // GPS-Aufzeichnung stoppen
+        stopRecordingTraining();
+        // show info
+        trainingInfolabel.setText(R.string.pause_training);
+        // Status-Bild anzeigen
+        // TODO: Status-Bild trainingpaused30x30
     }
 
     //  Trainingsabbruch
     private void cancelTraining() {
-
-        //  Timer resetten
-        self.resetTimer()
-
-        //  Aufzeichnung GPS stoppen
-        self.stopRecordingTraining()
-
+        // show info
+        trainingInfolabel.setText(R.string.cancel_training);
+        // Timer resetten
+        resetTimer();
+        // Aufzeichnung GPS stoppen
+        stopRecordingTraining();
         //  evtl. aufgezeichnete Daten löschen
-        self.trackLocations.removeAll()
-
+        //trackLocations.removeAll();
         //  Sicherungen löschen
-        self.removeSavedTraining()
-
+        removeSavedTraining();
         //  Flag setzen
-        self.isTrainingRunning = false
-
-        //  Info-Label wieder auf "normale" Farben setzen
-        self.setInfoLabelDefaultColors()
-
-        //  PickerView-Elemente können wieder bedient werden
-        self.trainingDayPickerView.isUserInteractionEnabled = true
-        self.trainingUnitsPickerView.isUserInteractionEnabled = true
-
-        self.runningInfoLabel.text = NSLocalizedString("Abbruch des Trainings", comment: "Abbruch des Trainings, kein Speichern von Daten.")
-
-        //  Status-Informationen
-        self.runningInfoLabel.text = NSLocalizedString("Training ist in Planung.", comment: "Training ist in Planung.")
-
-        //  Status-Bild anzeigen
-        if let trainingStatusImage = UIImage(named: "trainingplanned30x30") {
-
-            //  Bild für den Status des Laufplanes
-            self.completedEntryImageView.image = trainingStatusImage
-
-        }
-
+        isTrainingRunning = false;
+        // Info-Label wieder auf "normale" Farben setzen
+        // TODO: Farben
+        // enable spinner and training date button
+        trainingUnitsSpinner.setEnabled(true);
+        selectTrainingDayButton.setEnabled(true);
+        // show info
+        trainingInfolabel.setText(R.string.pause_training);
+        // Status-Bild anzeigen
+        // TODO: Status-Bild trainingplanned30x30
     }
 
     //  Location-Daten aus Cache einlesen und
     //  Aufzeichnung fortsetzen
     private void continueTraining() {
-
         //  Datei wieder einlesen
-        if self.didSavedTrackFound {
-
+        /*if (didSavedTrackFound) {
             do {
-
                 let data = try Data(contentsOf: self.trackSaveFilePath!)
                 if let savedLocations = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? [CLLocation] {
-
                     //  Track wiederherstellen
                     self.trackLocations.removeAll()
                     self.trackLocations.append(contentsOf: savedLocations)
-
                 }
-
             } catch (let error){
-
                 //  Training muss mit neuem Track fortgesetzt werden
                 //  Hinweis an Nutzer
                 let alert = UIAlertController(title: AppMessages.readFromFileError,
@@ -608,39 +440,26 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
-
                     //  zentrales Logging
                     if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useRemoteLogging) || Global.AppSettings.debug {
-
                     var errorMessage = LogEntry.debugInformations
                     errorMessage.append(" - ")
                     errorMessage.append(error.localizedDescription)
                     self.app.appLogger.error(errorMessage)
-
                 }
-
             }
-
         }
-
         if self.didSavedDurationFound {
-
             //  Zeit einlesen und setzen
             //  Datei wieder einlesen
             if self.durationSaveFilePath != nil {
-
                 do {
-
                     let data = try Data(contentsOf: self.durationSaveFilePath!)
                     if let duration = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? Int {
-
                         //  Zeit vor Abbruch dazu rechnen
                         self.secondsInActivity += duration
-
                     }
-
                 } catch (let error){
-
                     //  Datei kann nicht eingelesen werden, Zeit beginnt bei 0
                     //  Hinweis an Nutzer
                     let alert = UIAlertController(title: AppMessages.readFromFileError,
@@ -649,249 +468,144 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                     preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                         self.present(alert, animated: true, completion: nil)
-
                         //  zentrales Logging
                         if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useRemoteLogging) || Global.AppSettings.debug {
-
                         var errorMessage = LogEntry.debugInformations
                         errorMessage.append(" - ")
                         errorMessage.append(error.localizedDescription)
                         self.app.appLogger.error(errorMessage)
-
                     }
-
                 }
-
             }
-
         }
-
-        //  Training als aktiv markieren
-        self.isTrainingRunning = true
-
-        //  Timer starten / fortsetzen
-        self.startTimer()
-
-        //  Training starten / fortsetzen
-        self.startTraining()
+        */
+        // Training als aktiv markieren
+        isTrainingRunning = true;
+        // Timer starten / fortsetzen
+        startTimer();
+        // Training starten / fortsetzen
+        startTraining();
     }
 
     //  Training "überwachen"
     private void monitoringTraining() {
-
-        //  Status-Information
-        self.runningInfoLabel.text = NSLocalizedString("Training läuft.", comment: "Training läuft.")
-
-        //  Status-Bild anzeigen
-        if let trainingStatusImage = UIImage(named: "trainingactive30x30") {
-
-            //  Bild für den Status des Laufplanes
-            self.completedEntryImageView.image = trainingStatusImage
-
-        }
-
-        //  Monitoring der Trainingszeit
-        //  TODO: Was ist bei GPS-Timer?
-        //  Dauer einer Einheit beträgt mindestens 1 min
-        if self.secondsInActivity >= 60 {
-
-            let duration = self.runningUnit!.duration
-            let minutes = round(Double(self.secondsInActivity / 60))
-            if Int(minutes) >= duration {
-
-                //  Trainingseinheit wurde abgeschlossen
-                //  Benachrichtigung an Nutzer
-                if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useNotification) {
-
-                    self.sendUserNotification(cause: 0)
-
-                }
-
-                if self.runningPlanEntry != nil {
-
-                    //  Status abgeschlossen für Abschnitt speichern
-                    if self.runningUnit != nil {
-
-                        do {
-
-                            try self.app.datastore.update(onObject: self.runningUnit, {
-
-                                    self.runningUnit!.completed = true
-
-                            })
-
-                        } catch (let error) {
-
-                            //  zentrales Logging
-                            if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useRemoteLogging) || Global.AppSettings.debug {
-
-                                var errorMessage = LogEntry.debugInformations
-                                errorMessage.append(" - ")
-                                errorMessage.append(error.localizedDescription)
-                                self.app.appLogger.error(errorMessage)
-
-                            }
-
-                            //  Fehler "merken"
-                            self.didCompleteUpdateError = true
-
-                        }
+        if (runningPlanEntry != null && runningUnit != null) {
+            // show info
+            trainingInfolabel.setText(R.string.training_is_running);
+            // Status-Bild anzeigen
+            // TODO: Status-Bild trainingactive30x30
+            // Monitoring der Trainingszeit
+            // TODO: Was ist bei GPS-Timer?
+            // Dauer einer Einheit beträgt mindestens 1 min
+            if (secondsInActivity >= 60) {
+                int duration = runningUnit.getDuration();
+                // TODO: Sekunden immer int?
+                int minutes = secondsInActivity / 60;
+                if (minutes >= duration) {
+                    //  Trainingseinheit wurde abgeschlossen
+                    //  TODO: Benachrichtigung an Nutzer
+                    if (useNotifications) {
 
                     }
-
-                    //  weitere Einheiten des Trainingsabschnittes verfügbar?
-                    //  welche Trainingseinheit wurde vom Nutzer ausgewählt?
-                    let trainingUnitIndex = self.trainingUnitsPickerView.selectedRow(inComponent: 0) + 1
-
-                    if trainingUnitIndex < self.runningPlanEntry?.runningUnits.count ?? 0 {
-
-                        //  nächsten Trainingsabschnitt setzen
-                        self.runningUnit = self.runningPlanEntry!.runningUnits[trainingUnitIndex]
-
-                        if trainingUnitIndex < self.trainingUnitsPickerView.numberOfRows(inComponent: 0) {
-
-                            //  nächsten Trainingsabschnitt in PickerView auswählen
-                            self.trainingUnitsPickerView.selectRow(trainingUnitIndex, inComponent: 0, animated: true)
-
+                    //  Status abgeschlossen für Abschnitt speichern
+                    try {
+                        runningUnit.setCompleted(true);
+                        viewModel.update(runningUnit);
+                    } catch (SportsLibraryException exception) {
+                        // error occurred
+                        didCompleteUpdateError = true;
+                        // TOD: Logging / Info
+                        if (Global.DEBUG) {
+                            exception.printStackTrace();
                         }
-
-                        //  Timer reseten
-                        self.resetTimer()
-
+                    }
+                    // weitere Einheiten des Trainingsabschnittes verfügbar?
+                    // welche Trainingseinheit wurde vom Nutzer ausgewählt?
+                    //  nächsten Trainingsabschnitt setzen
+                    //  nächsten Trainingsabschnitt in spinner auswählen
+                    // TODO: next unit
+                    if (false) {
+                        resetTimer();
                         //  Training geht weiter ...
                         //  Hinweis an Nutzer - Vibration / Ton?
-                        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-
-                        //  Info-Label aktualisieren
-                        self.runningInfoLabel.text = NSLocalizedString("Neue Laufeinheit beginnt.", comment: "Neue Laufeinheit beginnt.")
-
-                        //  Timer (wieder) starten
-                        self.startTimer()
-
+                        //    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+                        // show info
+                        trainingInfolabel.setText(R.string.new_training_unit_starts);
+                        // Timer (wieder) starten
+                        startTimer();
                     } else {
-
                         //  alle Einheiten des Abschnittes (Tages) abgeschlossen
                         //  Benachrichtigung an Nutzer
                         //  Vibration
-                        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+                        // AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
                         //  Hinweise
-                        if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useNotification) {
-
-                            self.sendUserNotification(cause: 1)
-
-                        }
-
-                        //  Info-Label aktualisieren
-                        self.runningInfoLabel.text = NSLocalizedString("Training beendet.", comment: "Training beendet.")
-
-                        //  Training abgeschlossen
-                        self.completeTraining()
-
+                        // self.sendUserNotification(cause:1)
+                        // Training abgeschlossen
+                        completeTraining();
                     }
-
                 }
-
             }
-
         }
-
     }
 
     //  Training wurde abgeschlossen
     private void completeTraining() {
-
-        //  Timer stoppen
-        self.stopTimer()
-
+        // Timer stoppen
+        stopTimer();
+        // TODO:
         //  Info-Label wieder auf "normale" Farben setzen
-        self.setInfoLabelDefaultColors()
-
+        // setInfoLabelDefaultColors();
         //  Training wurde endgültig gestoppt (abgeschlossen)
-        self.isTrainingRunning = false
-
+        isTrainingRunning = false;
         //  gespeicherte Trainingsdaten löschen
-        self.removeSavedTraining()
-
-        //  Infos ausgeben
-        var labelString = NSLocalizedString("Training abgeschlossen.", comment: "Training abgeschlossen.")
-
-        //  Status-Bild anzeigen
-        if let trainingStatusImage = UIImage(named: "trainingcompleted30x30") {
-
-            //  Bild für den Status des Laufplanes
-            self.completedEntryImageView.image = trainingStatusImage
-
-        }
-
-        //  nur wenn GPS-Nutzung von Nutzer gewünscht wird
-        if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useGPS) {
-
-            //  Aufzeichnung stoppen
-            self.stopRecordingTraining()
-
+        removeSavedTraining();
+        //  show info
+        trainingInfolabel.setText(R.string.training_completed);
+        // TODO: Status image trainingcompleted30x30
+        if (useLocationData) {
+            // Aufzeichnung stoppen
+            stopRecordingTraining();
             //  Trainingsdaten anzeigen
-            labelString.append("\n")
-            labelString.append(NSLocalizedString("Länge: ", comment: "Länge: "))
-
+            String trainingTrackInfoString = "\n";
+            trainingTrackInfoString+= R.string.distance;
+            trainingTrackInfoString+= ": ";
             //  Länge der Strecke in m
-            var distance = self.trackLocations.totalDistance
-
-            if distance < 999.99 {
-
+            double distance = 100.00; //self.trackLocations.totalDistance
+            if (distance < 999.99) {
                 //  Angabe in m
-                labelString.append(String(format: "%.2f", distance))
-                labelString.append(" m")
-                labelString.append("\n")
-
+                trainingTrackInfoString+= distance;
+                trainingTrackInfoString+= " m";
             } else {
-
                 //  Angabe in km
-                distance = distance / 1000
-                labelString.append(String(format: "%.2f", distance))
-                labelString.append(" km")
-                labelString.append("\n")
-
+                distance = distance / 1000;
+                // TODO: Formatierung Komma
+                trainingTrackInfoString+= distance;
+                trainingTrackInfoString+= " km, ";
             }
-
             //  Geschwindigkeit in m/s
-            var averageSpeed = self.trackLocations.averageSpeed
+            double averageSpeed = 3.0; //self.trackLocations.averageSpeed
             //  Geschwindigkeit in km/h
-            averageSpeed = averageSpeed * 3.6
-            labelString.append(NSLocalizedString("Geschw.: ", comment: "durchschnittliche Geschwindigkeit: "))
-            labelString.append(String(format: "%.2f", averageSpeed))
-            labelString.append(" km/h")
-
-            self.runningInfoLabel.text = labelString
-
+            averageSpeed = averageSpeed * 3.6;
+            trainingTrackInfoString+= R.string.speed;
+            // TODO: Formatierung Komma
+            trainingTrackInfoString+= averageSpeed;
+            trainingTrackInfoString+= " km/h";
+            trainingInfolabel.setText(trainingTrackInfoString);
         }
 
         //  Speichern der Trainingsdaten
-        //  ohne GPS, dann ohne Track / Route, aber mit Dauer
-        //  wenn vom Nutzer gewünscht
-        if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.saveTrainings) {
-
+        //  ohne GPS, dann ohne Track / Route, aber mit Dauer, wenn vom Nutzer gewünscht
+        // user setting in one shared preference file
+        boolean saveTrainings = false;
+        SharedPreferences userSettings = Objects.requireNonNull(getContext())
+                .getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        if (userSettings != null) {
+            saveTrainings = userSettings.getBoolean(Global.PreferencesKeys.saveTrainings, false);
+        }
+        if (saveTrainings) {
             //  Nutzer fragen, ob gespeichert werden soll
-            let alert = UIAlertController(title: NSLocalizedString("Soll das Training gespeichert werden?",
-                    comment: "Soll das Training gespeichert werden?"),
-            message: "",
-                    preferredStyle: .alert)
-
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Ja", comment: "Ja"),
-            style: .default,
-                handler: { (action: UIAlertAction!) in
-
-                    //  sofort speichern
-                    self.saveTraining()
-                    return
-                }))
-                //  ansonsten nicht
-                alert.addAction(UIAlertAction(title: NSLocalizedString("Nein", comment: "Nein"),
-                style: .cancel,
-                        handler: { (action: UIAlertAction!) in
-                return
-            }))
-            self.present(alert, animated: true, completion: nil)
-
+            // TODO: Alert-Dialog
+            saveTraining();
         }
 
         //  PickerView-Elemente können wieder bedient werden
@@ -1652,6 +1366,30 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     }
 
+    // initialize attributes
+    private void setAttributeValues() {
+        secondsInActivity = 0;
+        secondsInPause = 0;
+        // TODO: aus Global
+        saveInterval = 15;
+        isTimerRunning = false;
+        isTrainingPaused = true;
+        isTrainingRunning = false;
+    }
+
+    // determine if the app can use location data
+    // TODO: Location
+    private void setUseLocationData() {
+        //SharedPreferences sharedPref = getContext().getSharedPreferences(
+        //        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        useLocationData = false;
+    }
+
+    // determine if the app can use notifications
+    // TODO: Notifications
+    private void setUseNotifications() {
+        useNotifications = false;
+    }
     /*
 
         //  Inhalt

@@ -1,6 +1,7 @@
 <resources>
     <!-- App Data -->
     <string name="app_name">Laufplan</string>
+    <string name="preference_file_key" translatable="false">de.hirola.runningplan.PREFERENCE_FILE_KEY</string>
 
     <!-- Titles -->
     <!-- Navigation -->
@@ -29,8 +30,22 @@
     <string name="duration">Dauer</string>
     <string name="completed">abgeschlossen</string>
 
+    <!-- Location data -->
+    <string name="distance">Strecke</string>
+    <string name="speed">Geschw.</string>
+
     <!-- Actions -->
     <string name="add">Hinzufügen</string>
+
+    <!-- Infos -->
+    <string name="start_training">Start des Trainings</string>
+    <string name="pause_training">Trainingspause</string>
+    <string name="continue_training">Training wird fortgesetzt</string>
+    <string name="cancel_training">Abbruch des Trainings</string>
+    <string name="training_is_planned">Training ist in Planung</string>
+    <string name="training_is_running">Training läuft</string>
+    <string name="new_training_unit_starts">Neue Laufeinheit beginnt</string>
+    <string name="training_completed">Training abgeschlossen</string>
 
     <!-- User Data -->
     <string name="email_address">E-Mail-Adresse</string>
@@ -86,4 +101,5 @@
     <string name="title_runningplan_details">Laufplan-Details</string>
     <string name="select_training_date">Trainingstag wählen</string>
     <string name="all_runninplans_completed">Alle Laufpläne abgeschlossen.</string>
+    <string name="total_time">Gesamtdauer:</string>
 </resources>
