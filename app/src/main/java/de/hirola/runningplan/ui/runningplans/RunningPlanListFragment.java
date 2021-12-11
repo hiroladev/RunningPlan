@@ -16,6 +16,7 @@ import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.model.RunningPlan;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -46,7 +47,7 @@ public class RunningPlanListFragment extends ListFragment {
             listAdapter.submitList(runningPlans);
         });
         // determine the mode
-        View detailsFragment = getActivity().findViewById(R.id.fragmentContainerViewRunningPlanDetails);
+        View detailsFragment = requireActivity().findViewById(R.id.fragmentContainerViewRunningPlanDetails);
         if (detailsFragment != null && detailsFragment.getVisibility() == View.VISIBLE) {
             tabletMode = true;
             // select the first element in view to showing details

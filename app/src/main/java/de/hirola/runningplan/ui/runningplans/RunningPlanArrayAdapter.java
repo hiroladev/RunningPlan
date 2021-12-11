@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import de.hirola.sportslibrary.util.Logger;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -104,7 +103,6 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
         percentCompletedTextView.setText(percentCompleted);
         return rowView;
     }
-
 
     public void submitList(List<RunningPlan> runningPlans) {
         // update the data
