@@ -4,106 +4,123 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.info.InfoFragment">
+        android:layout_height="match_parent">
 
     <EditText
             android:id="@+id/editTextRunningPlanNameLabel"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:inputType="none"
-            android:hint="@string/running_plan"
             android:text="@string/running_plan"
+            android:importantForAutofill="no"
+            android:labelFor="@id/editTextRunningPlanName"
             android:ems="10"
+            android:clickable="false"
+            android:focusable="false"
+            android:minHeight="48dp"
             android:textAlignment="center"
-            android:autofillHints="" android:minHeight="48dp"
+            android:textStyle="bold"
+            android:textSize="20sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="10dp"/>
     <EditText
-            android:id="@+id/editTextTrainingDaySelectLabel"
-            android:layout_width="324dp"
-            android:layout_height="48dp"
-            android:inputType="none"
-            android:hint="@string/select_training_date"
-            android:text="@string/select_training_date"
-            android:ems="10"
-            android:textAlignment="center"
-            android:autofillHints=""
-            app:layout_constraintStart_toStartOf="@+id/spinnerTrainingDay" android:layout_marginTop="15dp"
-            app:layout_constraintTop_toBottomOf="@+id/editText_RunningPlanName"/>
-    <EditText
-            android:id="@+id/editTextTrainingUnitsSelectLabel"
+            android:id="@+id/editTextRunningPlanName"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:inputType="none"
-            android:hint="@string/training_units"
-            android:text="@string/training_units"
-            android:ems="10"
-            android:textAlignment="center"
-            android:autofillHints=""
-            app:layout_constraintEnd_toEndOf="@+id/spinnerTrainingDay"
-            android:layout_marginTop="15dp" app:layout_constraintTop_toBottomOf="@+id/spinnerTrainingDay"/>
-    <EditText
-            android:id="@+id/editText_RunningPlanName"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:inputType="none"
-            android:hint="@string/running_plan_name"
             android:text="@string/running_plan_name"
+            android:importantForAutofill="no"
+            android:labelFor="@id/editTextRunningPlanName"
             android:ems="10"
-            android:textAlignment="center" android:textStyle="bold"
-            android:autofillHints="" tools:layout_editor_absoluteY="92dp"
-            app:layout_constraintStart_toStartOf="@+id/editTextTrainingDaySelectLabel"
-            app:layout_constraintEnd_toEndOf="@+id/editTextTrainingDaySelectLabel"
-            app:layout_constraintTop_toBottomOf="@+id/editTextRunningPlanNameLabel" android:layout_marginTop="15dp"/>
+            android:focusable="false"
+            android:minHeight="48dp"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="34sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextRunningPlanNameLabel"
+            android:layout_marginTop="15dp" android:clickable="false"/>
+    <EditText
+            android:id="@+id/editTextTrainingDaySelectLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:text="@string/select_training_date"
+            android:importantForAutofill="no"
+            android:labelFor="@id/editTextRunningPlanNameLabel"
+            android:ems="10"
+            android:clickable="false"
+            android:focusable="false"
+            android:minHeight="48dp"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/editTextRunningPlanName"/>
     <Spinner
             android:id="@+id/spinnerTrainingDay"
-            android:layout_width="150dp"
-            android:layout_height="48dp"
-            android:inputType="none"
-            android:hint="@string/running_unit"
-            android:text="@string/running_unit"
-            android:ems="10"
-            app:layout_constraintStart_toStartOf="@+id/editTextTrainingUnitsSelectLabel"
-            app:layout_constraintEnd_toEndOf="@+id/editTextTrainingUnitsSelectLabel" android:layout_marginTop="15dp"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTrainingDaySelectLabel"/>
-
-    <TextView
-            android:id="@+id/editTextRunningUnitLabel"
-            android:layout_width="300dp"
-            android:layout_height="48dp"
-            android:prompt="@style/TextAppearance.AppCompat.Title"
-            android:spinnerMode="dropdown"
-            app:layout_constraintStart_toStartOf="@+id/editTextTrainingUnitInfoLabel"
-            app:layout_constraintEnd_toEndOf="@+id/editTextTrainingUnitInfoLabel" android:layout_marginTop="15dp"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTrainingUnitsSelectLabel"/>
+            android:contentDescription="@string/training_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/editTextTrainingDaySelectLabel"
+            android:minHeight="48dp"/>
     <EditText
             android:id="@+id/editTextTrainingUnitInfoLabel"
-            android:layout_width="210dp"
-            android:layout_height="48dp"
-            android:inputType="none"
-            android:hint="@string/duration"
-            android:text="@string/duration"
-            android:ems="10"
-            android:textSize="16sp"
-            android:autofillHints=""
-            app:layout_constraintStart_toStartOf="@+id/editTextTrainingInfoLabel" android:layout_marginTop="15dp"
-            app:layout_constraintTop_toBottomOf="@+id/editTextRunningUnitLabel"/>
-    <EditText
-            android:id="@+id/editTextTrainingInfoLabel"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:inputType="none"
-            android:hint="@string/training_infos"
-            android:text="@string/training_infos"
+            android:text="@string/running_unit"
+            android:labelFor="@id/editTextTrainingUnitInfos"
             android:ems="10"
             android:textAlignment="center"
-            android:autofillHints=""
-            app:layout_constraintStart_toStartOf="@+id/chronometer"
-            app:layout_constraintEnd_toEndOf="@+id/chronometer"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTrainingUnitInfoLabel" android:layout_marginTop="15dp"/>
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:clickable="false"
+            android:focusable="false"
+            android:minHeight="48dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerTrainingDay"/>
+    <EditText
+            android:id="@+id/editTextTrainingUnitInfos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:text="@string/running_unit_infos"
+            android:labelFor="@id/editTextTrainingUnitInfos"
+            android:ems="10"
+            android:clickable="false"
+            android:focusable="false"
+            android:minHeight="48dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextTrainingUnitInfoLabel"
+            android:layout_marginTop="15dp"/>
+
+    <EditText
+            android:id="@+id/editTextTrainingInfos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:labelFor="@id/editTextTrainingInfos"
+            android:gravity="start|top"
+            android:ems="10"
+            android:clickable="false"
+            android:focusable="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextTrainingUnitInfos"
+            android:layout_marginTop="15dp" android:height="60dp"/>
+
     <Chronometer
             android:id="@+id/chronometer"
             android:layout_width="wrap_content"
@@ -113,9 +130,11 @@
             tools:text="00:00:00"
             android:textAlignment="center"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/imageButtonPause"
-            app:layout_constraintEnd_toEndOf="@+id/imageButtonStop" android:layout_marginTop="15dp"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTrainingInfoLabel"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/editTextTrainingInfos"
+            android:textSize="24sp"/>
+
     <ImageButton
             android:id="@+id/imageButtonPause"
             android:src="@drawable/pausebutton_gray"
@@ -124,7 +143,7 @@
             android:scaleType="fitCenter"
             android:contentDescription="@string/pause"
             app:layout_constraintTop_toTopOf="@+id/imageButtonStart"
-            app:layout_constraintEnd_toStartOf="@+id/imageButtonStart" android:layout_marginEnd="40dp"/>
+            app:layout_constraintStart_toEndOf="@+id/imageButtonStart" android:layout_marginStart="60dp"/>
     <ImageButton
             android:id="@+id/imageButtonStart"
             android:src="@drawable/playbutton_gray"
@@ -132,10 +151,8 @@
             android:layout_height="60dp"
             android:scaleType="fitCenter"
             android:contentDescription="@string/start"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintHorizontal_bias="0.501"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="80dp"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498" android:layout_marginTop="15dp"
             app:layout_constraintTop_toBottomOf="@+id/chronometer"/>
     <ImageButton
             android:id="@+id/imageButtonStop"
@@ -145,5 +162,6 @@
             android:scaleType="fitCenter"
             android:contentDescription="@string/stop"
             app:layout_constraintTop_toTopOf="@+id/imageButtonStart"
-            app:layout_constraintStart_toEndOf="@+id/imageButtonStart" android:layout_marginStart="40dp"/>
+            app:layout_constraintEnd_toStartOf="@+id/imageButtonStart" android:layout_marginEnd="60dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

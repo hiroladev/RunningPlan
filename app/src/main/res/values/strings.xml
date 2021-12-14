@@ -111,4 +111,5 @@
     <string name="total_time">Gesamtdauer</string>
     <string name="running_plan_entry">Laufplan-Einheit</string>
     <string name="running_unit">Laufabschnitt</string>
+    <string name="running_unit_infos">Infos zum Laufabschnitt</string>
 </resources>

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.widget.*;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.Global;
@@ -24,7 +25,6 @@ import de.hirola.sportslibrary.model.RunningUnit;
 import de.hirola.sportslibrary.model.User;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -35,9 +35,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     Spinner trainingDaysSpinner;
     ArrayAdapter<String> trainingDaysSpinnerArrayAdapter;
     // Button
-    Button startButton;
-    Button stopButton;
-    Button pauseButton;
+    AppCompatImageButton startButton;
+    AppCompatImageButton stopButton;
+    AppCompatImageButton pauseButton;
     // Label
     TextView runningPlanNameLabel;
     TextView trainingUnitLabel;
@@ -49,6 +49,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     // the actual running plan, selected by the user
     // if no running plan selected, the plan with the lowest order number will be selected
     private RunningPlan runningPlan;
+    // alle Laufpläne abgeschlossen?
+    private boolean allRunningPlansCompleted;
     //  aktuell aktive Trainingseinheit zum ausgewählten Trainingsplan
     //  z.B. Woche: 3, Tag: 1 (Montag), 7 min gesamt,  2 min Laufen, 3 min langsames Gehen, 2 min Laufen
     private RunningPlanEntry runningPlanEntry;
@@ -165,6 +167,11 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         if (wasTimerRunning) {
             isTimerRunning = true;
         }
+        // evtl.wurde ein neuer Laufplan ausgewählt
+        setActiveRunningPlan();
+        // UI aktualisieren
+        showRunningPlanInView();
+        showRunningPlanEntryInView();
         // TODO: iOS-Migration
         // App wechselt vom Hintergrund zurück, Timer lief nicht im Hintergrund,
         // Differenz der gesicherten Zeit mit aktueller Zeit zu den aktuellen Sekunden dazurechnen
@@ -299,14 +306,82 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         * */
         // a running plan entry was selected
         // set the selected entry
-        runningPlanEntry = (RunningPlanEntry) parent.getSelectedItem();
+        //runningPlanEntry = (RunningPlanEntry) parent.getSelectedItem();
         // reload the ui elements
-        showRunningPlanEntryInView();
+        //showRunningPlanEntryInView();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    // set the active running plan for the view
+    private void setActiveRunningPlan() {
+        //  einen Laufplan vorauswählen und alle entsprechenden Daten darstellen
+        boolean userHasRunningPlan = false;
+        if (!runningPlans.isEmpty()) {
+            User appUser = viewModel.getAppUser().getValue();
+            if (appUser != null) {
+                RunningPlan runningPlan = appUser.getActiveRunningPlan();
+                if (runningPlan != null) {
+                    int index = runningPlans.indexOf(runningPlan);
+                    if (index > -1) {
+                        this.runningPlan = runningPlans.get(index);
+                    }
+                    userHasRunningPlan = true;
+                }
+            }
+            // es konnte kein Plan ermittelt werden
+            if (this.runningPlan == null) {
+                Optional<RunningPlan>  runningPlan = runningPlans
+                        .stream()
+                        .filter(r -> !r.completed())
+                        .min(Comparator.comparing(RunningPlan::getOrderNumber));
+                // den (nicht abgeschlossenen) Plan mit der niedrigsten Nummer zuordnen
+                runningPlan.ifPresent(plan -> this.runningPlan = plan);
+            }
+            // evtl. wurden alle Laufpläne durchgeführt
+            if (this.runningPlan == null) {
+                // alle Laufpläne wurde abgeschlossen
+                if (runningPlans.stream().allMatch(RunningPlan::completed)) {
+                    allRunningPlansCompleted = true;
+                } else {
+                    allRunningPlansCompleted = false;
+                }
+                // erster Laufplan wird zugewiesen
+                runningPlan = runningPlans.get(0);
+            }
+            // Zuordnung des aktuellen Laufplans beim Nutzer speichern,
+            // wenn noch nicht zugeordnet
+            if (appUser != null && !userHasRunningPlan) {
+                appUser.setActiveRunningPlan(runningPlan);
+                try {
+                    viewModel.update(appUser);
+                } catch (SportsLibraryException exception) {
+                    if (Global.DEBUG) {
+                        // TODO: Logging
+                        exception.printStackTrace();
+                    }
+                }
+            }
+            List<RunningPlanEntry> entries = runningPlan.getEntries();
+            // set the next uncompleted training day
+            Optional<RunningPlanEntry> entry = entries
+                    .stream()
+                    .filter(r -> !r.completed())
+                    .findFirst();
+            entry.ifPresent(planEntry -> runningPlanEntry = planEntry);
+            if (runningPlanEntry != null) {
+                List<RunningUnit> units = runningPlanEntry.getRunningUnits();
+                // TODO: Liste sortiert?
+                Optional<RunningUnit> unit = units
+                        .stream()
+                        .filter(runningUnit -> !runningUnit.isCompleted())
+                        .findFirst();
+                unit.ifPresent(value -> runningUnit = value);
+            }
+        }
     }
 
     private void setViewElements(@NotNull View trainingView) {
@@ -324,9 +399,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // attaching data adapter to spinner with empty list
         trainingDaysSpinner.setAdapter(trainingDaysSpinnerArrayAdapter);
         // Label für den Zugriff initialisieren
-        runningPlanNameLabel = trainingView.findViewById(R.id.editTextRunningPlanNameLabel);
-        trainingUnitLabel = trainingView.findViewById(R.id.editTextRunningUnitLabel);
-        trainingInfolabel = trainingView.findViewById(R.id.editTextTrainingInfoLabel);
+        runningPlanNameLabel = trainingView.findViewById(R.id.editTextRunningPlanName);
+        trainingUnitLabel = trainingView.findViewById(R.id.editTextTrainingUnitInfoLabel);
+        trainingInfolabel = trainingView.findViewById(R.id.editTextTrainingInfos);
         // Button listener
         startButton = trainingView.findViewById(R.id.imageButtonStart);
         startButton.setOnClickListener(this::startButtonClicked);
@@ -334,99 +409,41 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         stopButton.setOnClickListener(this::stopButtonClicked);
         pauseButton = trainingView.findViewById(R.id.imageButtonPause);
         pauseButton.setOnClickListener(this::pauseButtonClicked);
+        showRunningPlanInView();
+        showRunningPlanEntryInView();
     }
 
-    private void setActiveRunningPlan() {
-        //  einen Laufplan vorauswählen und alle entsprechenden Daten darstellen
-        if (!runningPlans.isEmpty()) {
-            User appUser = viewModel.getAppUser().getValue();
-            if (appUser != null) {
-                RunningPlan runningPlan = appUser.getActiveRunningPlan();
-                if (runningPlan != null) {
-                    int index = runningPlans.indexOf(runningPlan);
-                    if (index > -1) {
-                        this.runningPlan = runningPlans.get(index);
-                    }
-                }
-            }
-            // es konnte kein Plan ermittelt werden
-            if (this.runningPlan == null) {
-                Optional<RunningPlan>  runningPlan = runningPlans
-                        .stream()
-                        .filter(r -> !r.completed())
-                        .min(Comparator.comparing(RunningPlan::getOrderNumber));
-                // den (nicht abgeschlossenen) Plan mit der niedrigsten Nummer zuordnen
-                runningPlan.ifPresent(plan -> this.runningPlan = plan);
-            }
-            // evtl. wurden alle Laufpläne durchgeführt
-            if (this.runningPlan == null) {
-                // alle Laufpläne wurde abgeschlossen
-                if (runningPlans.stream().allMatch(RunningPlan::completed)) {
-                    // Hinweis an Nutzer
-                    trainingInfolabel.setText(R.string.all_runninplans_completed);
-                    // TODO: Bilder
-                    /*
-                    /  Status-Bild anzeigen
-                    if let trainingStatusImage = UIImage(named: "trainingcompleted30x30") {
-                    //  Bild für den Status des Laufplanes
-                    self.completedEntryImageView.image = trainingStatusImage
-                     */
-                }
-                // erster Laufplan wird zugewiesen
-                runningPlan = runningPlans.get(0);
-                // TODO: Images anpassen, s.o.
-            }
-            // Zuordnung des aktuellen Laufplans beim Nutzer speichern
-            if (appUser != null) {
-                appUser.setActiveRunningPlan(runningPlan);
-                try {
-                    viewModel.update(appUser);
-                } catch (SportsLibraryException exception) {
-                    if (Global.DEBUG) {
-                        // TODO: Logging
-                        exception.printStackTrace();
-                    }
-                }
-            }
-            // Name des Laufplans anzeigen (aktualisieren)
-            runningPlanNameLabel.setText(runningPlan.getName());
+    private void showRunningPlanInView() {
+        // show the name aof active running plan in view
+        runningPlanNameLabel.setText(runningPlan.getName());
+        // show the training days (running plan entries) of running plan in spinner
+        // add data to spinner
+        // addAll(java.lang.Object[]), insert, remove, clear, sort(java.util.Comparator))
+        // automatically call notifyDataSetChanged.
+        trainingDaysSpinnerArrayAdapter.clear();
+        trainingDaysSpinnerArrayAdapter.addAll(getTrainingDaysAsStrings());
+        if (allRunningPlansCompleted) {
+            // TODO: Alle Laufpläne abgeschlossen: UI anpassen
             //  aktive Trainingseinheit (Tag) setzen
             //  erste offene Einheit aus Liste wählen
-            List<RunningPlanEntry> entries = runningPlan.getEntries();
-            // TODO: sind die Abschnitte in der richtigen Reihenfolge?
-            // add data to spinner
-            // addAll(java.lang.Object[]), insert, remove, clear, sort(java.util.Comparator))
-            // automatically call notifyDataSetChanged.
-            // training days
-            trainingDaysSpinnerArrayAdapter.clear();
-            trainingDaysSpinnerArrayAdapter.addAll(getTrainingDaysAsStrings());
-            // set the first training day if not completed
-            Optional<RunningPlanEntry> entry = entries
-                    .stream()
-                    .filter(RunningPlanEntry::completed)
-                    .findFirst();
-            entry.ifPresent(planEntry -> runningPlanEntry = planEntry);
-            if (runningPlanEntry != null) {
-                // select the training date in spinner
-                int index = runningPlans.indexOf(runningPlanEntry);
-                if (index > -1) {
-                    trainingDaysSpinner.setSelection(index);
-                }
-                List<RunningUnit> units = runningPlanEntry.getRunningUnits();
-                // TODO: Liste sortiert?
-                Optional<RunningUnit> unit = units
-                        .stream()
-                        .filter(runningUnit -> !runningUnit.isCompleted())
-                        .findFirst();
-                unit.ifPresent(value -> runningUnit = value);
-                // TODO: aktuelle Trainingseinheit anzeigen
-                if (runningUnit != null) {
-                    trainingUnitLabel.setText("");
-                }
-                // Dauer des gesamten Trainings anzeigen
-                showRunningPlanEntryInView();
+            // Hinweis an Nutzer
+            trainingInfolabel.setText(R.string.all_runninplans_completed);
+        } else {
+            // select the training date in spinner
+            int index = runningPlan.getEntries().indexOf(runningPlanEntry);
+            if (index > -1) {
+                trainingDaysSpinner.setSelection(index);
             }
         }
+        // TODO: Bilder
+        /*
+        /  Status-Bild anzeigen
+        if let trainingStatusImage = UIImage(named: "trainingcompleted30x30") {
+        //  Bild für den Status des Laufplanes
+        self.completedEntryImageView.image = trainingStatusImage
+         */
+        // Dauer des gesamten Trainings anzeigen
+        showRunningPlanEntryInView();
     }
 
     // shows the duration of the running plan entry
@@ -448,6 +465,10 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 durationString+= String.valueOf(minutes);
                 durationString+= " min";
                 trainingInfolabel.setText(durationString);
+            }
+            // TODO: aktuelle Trainingseinheit anzeigen
+            if (runningUnit != null) {
+                trainingUnitLabel.setText("");
             }
         }
     }
@@ -1009,6 +1030,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     }
 
     // list of training days from selected running plan as string
+    @NotNull
     private List<String> getTrainingDaysAsStrings() {
         List<String> trainingDaysStringList = new ArrayList<>();
         if (runningPlan != null && runningPlanEntry != null) {
@@ -1029,8 +1051,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                         .getDisplayName(TextStyle.FULL, Locale.getDefault());
                 trainingDateAsString+= " (";
                 trainingDateAsString+= trainingDate
-                        .format(DateTimeFormatter.ISO_LOCAL_DATE)
-                        .toString();
+                        .format(DateTimeFormatter.ofPattern("dd.MM.YYYY"));
                 trainingDateAsString+= ")";
                 trainingDaysStringList.add(trainingDateAsString);
             }

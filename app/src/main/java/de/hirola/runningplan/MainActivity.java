@@ -1,5 +1,6 @@
 package de.hirola.runningplan;
 
+import de.hirola.runningplan.databinding.ActivityMainBinding;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 
 import android.os.Bundle;
@@ -14,11 +15,16 @@ import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ActivityMainBinding binding;
+    // holds the data (model) for the app
     private RunningPlanViewModel runningPlanViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // initialize the view model
         runningPlanViewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
@@ -32,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
     public String getStringTest() {
