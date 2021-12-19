@@ -2,6 +2,7 @@ package de.hirola.runningplan.ui.training;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.widget.*;
@@ -10,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
-import de.hirola.sportslibrary.model.RunningPlan;
+import de.hirola.sportslibrary.model.*;
 
 import de.hirola.runningplan.R;
 
@@ -20,9 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import de.hirola.sportslibrary.model.RunningPlanEntry;
-import de.hirola.sportslibrary.model.RunningUnit;
-import de.hirola.sportslibrary.model.User;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -34,13 +32,14 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     // Spinner
     Spinner trainingDaysSpinner;
     ArrayAdapter<String> trainingDaysSpinnerArrayAdapter;
+    Spinner trainingUnitsSpinner;
+    ArrayAdapter<String>  trainingUnitsSpinnerArrayAdapter;
     // Button
     AppCompatImageButton startButton;
     AppCompatImageButton stopButton;
     AppCompatImageButton pauseButton;
     // Label
     TextView runningPlanNameLabel;
-    TextView trainingUnitLabel;
     TextView trainingInfolabel;
     // app data
     private RunningPlanViewModel viewModel;
@@ -210,7 +209,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         if (parent.getId() == R.id.spinnerTrainingDay) {
             // user select another training day (running plan entry)
         } else {
-
+            // user select another training unit
         }
         /*// neuer Tag - neuer Trainingsplan-Abschnitt
         // im DatePicker sollten nur Trainingstage verfügbar sein
@@ -398,9 +397,18 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 new ArrayList<>());
         // attaching data adapter to spinner with empty list
         trainingDaysSpinner.setAdapter(trainingDaysSpinnerArrayAdapter);
+        // initialize the training units spinner
+        trainingUnitsSpinner = trainingView.findViewById(R.id.spinnerTrainingUnit);
+        trainingUnitsSpinner.setOnItemSelectedListener(this);
+        // creating adapter for spinner with empty list
+        trainingUnitsSpinnerArrayAdapter = new ArrayAdapter<String>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                new ArrayList<>());
+        // attaching data adapter to spinner with empty list
+        trainingUnitsSpinner.setAdapter(trainingUnitsSpinnerArrayAdapter);
         // Label für den Zugriff initialisieren
         runningPlanNameLabel = trainingView.findViewById(R.id.editTextRunningPlanName);
-        trainingUnitLabel = trainingView.findViewById(R.id.editTextTrainingUnitInfoLabel);
         trainingInfolabel = trainingView.findViewById(R.id.editTextTrainingInfos);
         // Button listener
         startButton = trainingView.findViewById(R.id.imageButtonStart);
@@ -449,8 +457,15 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     // shows the duration of the running plan entry
     private void showRunningPlanEntryInView() {
         if (runningPlanEntry != null) {
+            // show the training units of the current running plan entry in spinner
+            // add data to spinner
+            // addAll(java.lang.Object[]), insert, remove, clear, sort(java.util.Comparator))
+            // automatically call notifyDataSetChanged.
+            trainingUnitsSpinnerArrayAdapter.clear();
+            trainingUnitsSpinnerArrayAdapter.addAll(getTrainingUnitsAsStrings());
+            // show the complete training time
             String durationString = getString(R.string.total_time)+ " ";
-            int duration = runningPlanEntry.duration();
+            int duration = runningPlanEntry.getDuration();
             // Stunden oder Minuten?
             //  Gesamtdauer des Trainings (gespeichert in min)
             if (duration < 60) {
@@ -464,12 +479,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 durationString+= " h : ";
                 durationString+= String.valueOf(minutes);
                 durationString+= " min";
-                trainingInfolabel.setText(durationString);
             }
-            // TODO: aktuelle Trainingseinheit anzeigen
-            if (runningUnit != null) {
-                trainingUnitLabel.setText("");
-            }
+            trainingInfolabel.setText(durationString);
         }
     }
 
@@ -505,6 +516,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     // start the training
     private void startTraining() {
         trainingDaysSpinner.setEnabled(false);
+        trainingUnitsSpinner.setEnabled(false);
         startButton.setEnabled(false);
         if (isTrainingRunning) {
             //  Aufzeichnung (wieder) starten
@@ -552,6 +564,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // TODO: Farben
         // enable spinner and training date button
         trainingDaysSpinner.setEnabled(true);
+        trainingUnitsSpinner.setEnabled(true);
         startButton.setEnabled(true);
         pauseButton.setEnabled(false);
         stopButton.setEnabled(false);
@@ -749,6 +762,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         }
         //  Elemente können wieder bedient werden
         trainingDaysSpinner.setEnabled(true);
+        trainingUnitsSpinner.setEnabled(true);
         startButton.setEnabled(true);
         pauseButton.setEnabled(false);
         stopButton.setEnabled(false);
@@ -1057,6 +1071,49 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             }
         }
         return trainingDaysStringList;
+    }
+
+    // list of training unit from selected running plan entry as string
+    @NotNull
+    private List<String> getTrainingUnitsAsStrings() {
+        List<String> trainingUnitsStringList = new ArrayList<>();
+        if (runningPlanEntry != null) {
+            for (RunningUnit runningUnit : runningPlanEntry.getRunningUnits()) {
+                // TODO: format spinner
+                String trainingUnitsSpinnerElementString = "";
+                MovementType movementType = runningUnit.getMovementType();
+                if (movementType != null) {
+                    // the type of movement
+                    try {
+                        // load strings from res dynamically
+                        String movementKeyString = movementType.getStringForKey();
+                        if (movementKeyString.length() > 0) {
+                            int remarksResourceStringId = requireContext()
+                                    .getResources()
+                                    .getIdentifier(movementKeyString, "string", requireContext().getPackageName());
+                            trainingUnitsSpinnerElementString = getString(remarksResourceStringId);
+                        } else {
+                            trainingUnitsSpinnerElementString += R.string.movement_type_not_found;
+                        }
+                    } catch (Resources.NotFoundException exception) {
+                        trainingUnitsSpinnerElementString += R.string.movement_type_not_found;
+                        if (Global.DEBUG) {
+                            // TODO: Logging
+                        }
+                    }
+                    // running unit duration
+                    trainingUnitsSpinnerElementString += " (";
+                    trainingUnitsSpinnerElementString += String.valueOf(runningUnit.getDuration());
+                    trainingUnitsSpinnerElementString += " min)";
+
+                } else {
+                    trainingUnitsSpinnerElementString += R.string.movement_type_not_found;
+                }
+                // add the string value for the movement type to the list
+                trainingUnitsStringList.add(trainingUnitsSpinnerElementString);
+            }
+        }
+        return trainingUnitsStringList;
     }
 
     // determine if the app can use location data

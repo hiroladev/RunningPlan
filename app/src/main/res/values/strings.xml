@@ -74,6 +74,7 @@
     <string name="training_infos">Training-Infos</string>
 
     <!-- Movement Data -->
+    <string name="movement_type_not_found">Unbekannt</string>
     <string name="movement_type_pause">Pause</string>
     <string name="movement_type_slowing_going">Langsames Gehen</string>
     <string name="movement_type_speedy_going">Zügiges Gehen</string>
