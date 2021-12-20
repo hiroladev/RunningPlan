@@ -1,0 +1,74 @@
+<PreferenceScreen
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+            app:title="@string/title_user_settings">
+
+        <EditTextPreference
+                app:key="user_email_address"
+                app:title="@string/email_address"
+                app:useSimpleSummaryProvider="true"/>
+
+        <ListPreference
+                app:key="user_gender"
+                app:title="@string/gender"
+                app:useSimpleSummaryProvider="true"/>
+
+        <EditTextPreference
+                app:key="user_birthday"
+                app:title="@string/birthday"
+                app:useSimpleSummaryProvider="true"/>
+
+        <EditTextPreference
+                app:key="user_max_pulse"
+                app:title="@string/max_pulse"
+                app:summary="@string/pulse_summary"
+                app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            app:title="@string/title_training_settings">
+
+        <SwitchPreferenceCompat
+                app:key="save_trainings"
+                app:title="@string/save_trainings"
+                app:summaryOn="@string/todo_data_summary_on"
+                app:summaryOff="@string/todo_data_summary_off"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            app:title="@string/title_location">
+
+        <SwitchPreferenceCompat
+                app:key="location_data"
+                app:title="@string/use_location_data"/>
+
+        <SwitchPreferenceCompat
+                app:key="fine_location_data"
+                app:title="@string/use_fine_location_data"
+                app:summaryOn="@string/fine_location_data_summary_on"
+                app:summaryOff="@string/fine_location_data_summary_off"
+                app:dependency="location_data"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            app:title="@string/other_settings">
+
+        <SwitchPreferenceCompat
+                app:key="use_notifications"
+                app:title="@string/notifications"
+                app:summaryOn="@string/todo_data_summary_on"
+                app:summaryOff="@string/todo_data_summary_off" />
+
+        <SwitchPreferenceCompat
+                app:key="use_sync"
+                app:title="@string/use_sync"
+                app:summaryOn="@string/todo_data_summary_on"
+                app:summaryOff="@string/todo_data_summary_off"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,37 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/mobile_navigation"
             app:startDestination="@+id/navigation_start">
 
     <fragment
             android:id="@+id/navigation_start"
             android:name="de.hirola.runningplan.ui.start.StartFragment"
-            android:label="@string/title_start"
-            tools:layout="@layout/fragment_start"/>
+            android:label="@string/title_start"/>
 
     <fragment
             android:id="@+id/navigation_training"
             android:name="de.hirola.runningplan.ui.training.TrainingFragment"
-            android:label="@string/title_training"
-            tools:layout="@layout/fragment_training"/>
+            android:label="@string/title_training"/>
 
     <fragment
             android:id="@+id/navigation_running_plans"
             android:name="de.hirola.runningplan.ui.runningplans.RunningPlanListFragment"
-            android:label="@string/title_runningplans"
-            tools:layout="@layout/activity_running_plan"/>
+            android:label="@string/title_runningplans"/>
 
     <fragment
             android:id="@+id/navigation_settings"
-            android:name="de.hirola.runningplan.ui.settings.UserSettingsFragment"
-            android:label="@string/title_settings"
-            tools:layout="@layout/fragment_settings"/>
+            android:name="de.hirola.runningplan.ui.settings.SettingsFragment"
+            android:label="@string/title_settings"/>
 
     <fragment
             android:id="@+id/navigation_info"
             android:name="de.hirola.runningplan.ui.info.InfoFragment"
-            android:label="@string/title_info"
-            tools:layout="@layout/fragment_info"/>
+            android:label="@string/title_info"/>
 </navigation>

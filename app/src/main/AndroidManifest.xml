@@ -21,14 +21,6 @@
                 android:theme="@style/Theme.RunningPlan.NoActionBar">
         </activity>
         <activity
-                android:name=".ui.settings.UserSettingsActivity"
-                android:label="@string/title_usersettings">
-        </activity>
-        <activity
-                android:name=".ui.settings.OtherSettingsActivity"
-                android:label="@string/title_othersettings">
-        </activity>
-        <activity
                 android:name=".MainActivity"
                 android:label="@string/app_name">
             <intent-filter>

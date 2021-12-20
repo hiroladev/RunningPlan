@@ -13,7 +13,8 @@
 
     <!-- Dialoge -->
     <string name="title_user">Nutzer</string>
-    <string name="title_usersettings">Einstellungen Nutzer</string>
+    <string name="title_user_settings">Nutzer</string>
+    <string name="title_training_settings">Trainingsdaten</string>
     <string name="title_othersettings">Sonstige Einstellungen</string>
     <string name="title_location">Standort</string>
     <string name="title_movementtype">Bewegungsart</string>
@@ -29,7 +30,7 @@
     <string name="percent">Prozent</string>
     <string name="duration">Dauer</string>
     <string name="completed">abgeschlossen</string>
-    <string name="null_timer">00:00:00</string>
+    <string name="null_timer" translatable="false">00:00:00</string>
 
     <!-- Location data -->
     <string name="distance">Strecke</string>
@@ -59,7 +60,7 @@
     <string name="gender_male">männlich</string>
     <string name="gender_female">weiblich</string>
     <string name="birthday">Geburtstag</string>
-    <string name="max_pulse">maximale Herzfrequenz</string>
+    <string name="max_pulse">Maximale Herzfrequenz</string>
     <string name="pulse_summary">Der Maximal-Puls wird nach der Formel 220 (Männer) bzw. 226 (Frauen) - Alter
         berechnet.
     </string>
@@ -113,4 +114,13 @@
     <string name="running_plan_entry">Laufplan-Einheit</string>
     <string name="running_unit">Laufabschnitt</string>
     <string name="running_unit_infos">Infos zum Laufabschnitt</string>
+
+    <!-- Preferences -->
+    <string name="other_settings">Weitere Einstellungen</string>
+    <string name="save_trainings">Trainings speichern</string>
+    <string name="use_sync">Daten synchronisieren</string>
+    <string name="notifications">Benachrichtigungen</string>
+    <string name="todo_data_summary_on">Summary when on</string>
+    <string name="todo_data_summary_off">Summary when off</string>
+
 </resources>
