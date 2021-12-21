@@ -14,7 +14,7 @@
                 app:title="@string/gender"
                 app:useSimpleSummaryProvider="true"/>
 
-        <EditTextPreference
+        <ListPreference
                 app:key="user_birthday"
                 app:title="@string/birthday"
                 app:useSimpleSummaryProvider="true"/>

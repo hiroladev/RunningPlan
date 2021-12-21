@@ -116,6 +116,7 @@
     <string name="running_unit_infos">Infos zum Laufabschnitt</string>
 
     <!-- Preferences -->
+    <string name="preference_not_found">Unbekannte Einstellung</string>
     <string name="other_settings">Weitere Einstellungen</string>
     <string name="save_trainings">Trainings speichern</string>
     <string name="use_sync">Daten synchronisieren</string>
