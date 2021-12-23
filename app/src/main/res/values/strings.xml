@@ -1,7 +1,7 @@
 <resources>
     <!-- App Data -->
     <string name="app_name">Laufplan</string>
-    <string name="preference_file_key" translatable="false">de.hirola.runningplan.PREFERENCE_FILE_KEY</string>
+    <string name="preference_file" translatable="false">de.hirola.runningplan_preferences</string>
 
     <!-- Titles -->
     <!-- Navigation -->
@@ -119,9 +119,10 @@
     <string name="preference_not_found">Unbekannte Einstellung</string>
     <string name="other_settings">Weitere Einstellungen</string>
     <string name="save_trainings">Trainings speichern</string>
+    <string name="user_training_level">Trainingslevel</string>
     <string name="use_sync">Daten synchronisieren</string>
     <string name="notifications">Benachrichtigungen</string>
-    <string name="todo_data_summary_on">Summary when on</string>
-    <string name="todo_data_summary_off">Summary when off</string>
+    <string name="todo_data_summary_on" translatable="false">Summary when on</string>
+    <string name="todo_data_summary_off" translatable="false">Summary when off</string>
 
 </resources>

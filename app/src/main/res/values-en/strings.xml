@@ -78,4 +78,10 @@
     <string name="running_unit">Running unit</string>
     <string name="running_unit_infos">Running unit infos</string>
     <string name="title_training_settings">Training data</string>
+    <string name="preference_not_found">Prefence not found</string>
+    <string name="other_settings">Other settings</string>
+    <string name="save_trainings">Save trainings</string>
+    <string name="user_training_level">Training level</string>
+    <string name="use_sync">Sync data</string>
+    <string name="notifications">Notifications</string>
 </resources>

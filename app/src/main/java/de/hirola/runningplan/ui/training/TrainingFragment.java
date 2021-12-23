@@ -751,7 +751,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // user setting in one shared preference file
         boolean saveTrainings = false;
         SharedPreferences userSettings = requireContext()
-                .getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                .getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE);
         if (userSettings != null) {
             saveTrainings = userSettings.getBoolean(Global.PreferencesKeys.saveTrainings, false);
         }

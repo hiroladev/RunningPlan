@@ -1,5 +1,6 @@
 package de.hirola.runningplan.model;
 
+import androidx.annotation.NonNull;
 import de.hirola.sportslibrary.PersistentObject;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
@@ -41,7 +42,7 @@ public class RunningPlanViewModel extends AndroidViewModel {
         return runningPlans;
     }
 
-    public LiveData<User> getAppUser() {
+    public @NonNull LiveData<User> getAppUser() {
         return appUser;
     }
 

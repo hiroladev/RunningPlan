@@ -15,6 +15,11 @@
                 app:useSimpleSummaryProvider="true"/>
 
         <ListPreference
+                app:key="user_training_level"
+                app:title="@string/user_training_level"
+                app:useSimpleSummaryProvider="true"/>
+
+        <ListPreference
                 app:key="user_birthday"
                 app:title="@string/birthday"
                 app:useSimpleSummaryProvider="true"/>
@@ -42,15 +47,14 @@
             app:title="@string/title_location">
 
         <SwitchPreferenceCompat
-                app:key="location_data"
+                app:key="use_location_data"
                 app:title="@string/use_location_data"/>
 
         <SwitchPreferenceCompat
-                app:key="fine_location_data"
+                app:key="use_fine_location_data"
                 app:title="@string/use_fine_location_data"
                 app:summaryOn="@string/fine_location_data_summary_on"
-                app:summaryOff="@string/fine_location_data_summary_off"
-                app:dependency="location_data"/>
+                app:summaryOff="@string/fine_location_data_summary_off"/>
 
     </PreferenceCategory>
 

@@ -7,7 +7,6 @@ import de.hirola.sportslibrary.PersistentObject;
 import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.*;
-import de.hirola.sportslibrary.util.Logger;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
