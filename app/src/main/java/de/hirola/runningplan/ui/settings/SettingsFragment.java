@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.*;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.model.RunningPlanRepository;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
@@ -15,6 +14,7 @@ import de.hirola.sportslibrary.model.User;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -89,13 +89,19 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
             }
             // max pulse
             if (key.equalsIgnoreCase(Global.PreferencesKeys.userMaxPulse)) {
+                // TODO: check for int value, Hinweis an Nutzer
                 String maxPulse = (String) newValue;
-                // validate the given value
+                try {
+                    Integer.parseInt(maxPulse);
+                } catch (NumberFormatException exception) {
+                    if (Global.DEBUG) {
+                        exception.printStackTrace();
+                    }
+                    return false;
+                }
                 editor.putString(key, maxPulse);
-
-
+                appUser.setMaxPulse(Integer.parseInt(maxPulse));
             }
-            // TODO: calculate from date
         }
         // list preferences
         if (preference instanceof ListPreference) {
@@ -111,6 +117,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
                 // gender
                 if (key.equalsIgnoreCase(Global.PreferencesKeys.userGender)) {
                     editor.putString(key, value);
+                    // try to calculate the max pulse
+                    calculateMaxPulse();
                     try {
                         appUser.setGender(Integer.parseInt(value));
                     } catch (NumberFormatException exception) {
@@ -140,6 +148,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
                 if (key.equalsIgnoreCase(Global.PreferencesKeys.userBirthday)) {
                     // build a birthday from selected year
                     editor.putString(key, value);
+                    // try to calculate the max pulse
+                    calculateMaxPulse();
                     try {
                         int year = Integer.parseInt(value);
                         if (year == 0) {
@@ -323,51 +333,48 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         return list;
     }
 
-    private int calculateMaxPulse(int yearOfBirth) {
-        // TODO: Berechnung max. Puls
-        // kann aktuell nur für Männer oder Frauen berechnet werden
-        /*let gender = self.genderPickerView.selectedRow(inComponent: 0)
+    private void calculateMaxPulse() {
+        // Maximalpuls bei Männern = 223 – 0,9 x Lebensalter
+        // Maximalpuls bei Frauen = 226 – Lebensalter
+        int maxPulse = 0;
+        int gender = appUser.getGender();
+        // we need the age to calculate
+        LocalDate birthday = appUser.getBirthday();
+        Period periodBetween = Period.between(birthday, LocalDate.now());
+        int age = Math.abs(periodBetween.getYears());
 
-        //  Alter mindestens 18
-        let calendar = Calendar.current
-        var components = calendar.dateComponents([.year], from: Date())
-        let actualYear = (components.year ?? Global.actualYear)
-        let row = self.birthdayPickerView.selectedRow(inComponent: 0)
-        let yearOfBirth = actualYear - row
-        let birthay = "11.07." + String(yearOfBirth)
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d.M.yyyy"
-        let birthday = dateFormatter.date(from: birthay)
-        components = calendar.dateComponents([.year], from: birthday ?? Date(), to: Date())
-
-        if gender < 2 || components.year ?? 17 < 18 {
-
-            //  Hinweis an Nutzer
-            let alert = UIAlertController(title: NSLocalizedString("Keine Berechnung möglich", comment: "Keine Berechnung möglich"),
-            message: NSLocalizedString("Kann nur für Männer oder Frauen ab 18 Jahren berechnet werden.",
-                    comment: "Formel zur Berechnug des max. Puls funktioniert nur für Männer und Frauen."),
-            preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-                return
-
+        if (gender < 2 || gender > 3 || age < 18) {
+            return;
         }
-        //  max. Puls = 220 (Männer) bzw. 226 (Frauen) - Alter
-        let maxPulse: Int = (Global.valuesForCalculateMaxPulse[gender] ?? 18) - components.year!
-        if maxPulse == 0 {
-
-            //  ... da ist was schief gegangen
-            //  Hinweis an Nutzer
-            let alert = UIAlertController(title: NSLocalizedString("Formel zur Berechnug enthielt Fehler",
-                    comment: "Formel zur Berechnug enthielt Fehler."),
-            message: "",
-                    preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-
+        if (Global.Defaults.valuesForCalculateMaxPulse.containsKey(gender)) {
+            maxPulse = Global.Defaults.valuesForCalculateMaxPulse.get(gender);
+            if (gender == 2) {
+                // male
+                maxPulse = maxPulse - (int) (0.9 * age);
+            } else {
+                // female
+                maxPulse = maxPulse - age;
+            }
         }
-        self.maxPulseTextField.text = String(maxPulse)
-        */
-        return 100;
+        try {
+            // save the data
+            appUser.setMaxPulse(maxPulse);
+            viewModel.update(appUser);
+        } catch (SportsLibraryException exception) {
+            // TODO: Hinweis an Nutzer
+            if (Global.DEBUG) {
+                exception.printStackTrace();
+            }
+            return;
+        }
+        // save to preferences
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Global.PreferencesKeys.userMaxPulse, String.valueOf(maxPulse));
+        editor.apply();
+        // reload the preference in ui
+        Preference preference = findPreference(Global.PreferencesKeys.userMaxPulse);
+        if (preference instanceof EditTextPreference) {
+            ((EditTextPreference) preference).setText(String.valueOf(maxPulse));
+        }
     }
 }
