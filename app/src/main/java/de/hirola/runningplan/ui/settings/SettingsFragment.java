@@ -161,7 +161,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
                         // preference can not set
                         // TODO: Hinweis an Nutzer?
                         if (Global.DEBUG) {
-                            exception.printStackTrace();
+                            System.out.println(exception.getMessage());
                         }
                         return false;
                     }
