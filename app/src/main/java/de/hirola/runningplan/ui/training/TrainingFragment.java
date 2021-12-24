@@ -29,18 +29,20 @@ import java.time.format.TextStyle;
 import java.util.*;
 
 public class TrainingFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+    // Preferences
+    private SharedPreferences sharedPreferences;
     // Spinner
-    Spinner trainingDaysSpinner;
-    ArrayAdapter<String> trainingDaysSpinnerArrayAdapter;
+    private Spinner trainingDaysSpinner;
+    private ArrayAdapter<String> trainingDaysSpinnerArrayAdapter;
     Spinner trainingUnitsSpinner;
-    ArrayAdapter<String>  trainingUnitsSpinnerArrayAdapter;
-    // Button
-    AppCompatImageButton startButton;
-    AppCompatImageButton stopButton;
-    AppCompatImageButton pauseButton;
+    private ArrayAdapter<String>  trainingUnitsSpinnerArrayAdapter;
+    // Timer button
+    private AppCompatImageButton startButton;
+    private AppCompatImageButton stopButton;
+    private AppCompatImageButton pauseButton;
     // Label
-    TextView runningPlanNameLabel;
-    TextView trainingInfolabel;
+    private TextView runningPlanNameLabel;
+    private TextView trainingInfolabel;
     // app data
     private RunningPlanViewModel viewModel;
     // training data
@@ -119,6 +121,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             // default: false
             isTimerRunning = savedInstanceState.getBoolean("isTimerRunning");
         }
+        sharedPreferences = requireContext().getSharedPreferences(
+                getString(R.string.preference_file), Context.MODE_PRIVATE);
         // load running plans
         viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
         runningPlans = viewModel.getRunningPlans().getValue();
@@ -391,7 +395,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         trainingDaysSpinner = trainingView.findViewById(R.id.spinnerTrainingDay);
         trainingDaysSpinner.setOnItemSelectedListener(this);
         // creating adapter for spinner with empty list
-        trainingDaysSpinnerArrayAdapter = new ArrayAdapter<String>(
+        trainingDaysSpinnerArrayAdapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_spinner_item,
                 new ArrayList<>());
@@ -401,7 +405,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         trainingUnitsSpinner = trainingView.findViewById(R.id.spinnerTrainingUnit);
         trainingUnitsSpinner.setOnItemSelectedListener(this);
         // creating adapter for spinner with empty list
-        trainingUnitsSpinnerArrayAdapter = new ArrayAdapter<String>(
+        trainingUnitsSpinnerArrayAdapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_spinner_item,
                 new ArrayList<>());
@@ -749,14 +753,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         //  Speichern der Trainingsdaten
         //  ohne GPS, dann ohne Track / Route, aber mit Dauer, wenn vom Nutzer gewünscht
         // user setting in one shared preference file
-        boolean saveTrainings = false;
-        SharedPreferences userSettings = requireContext()
-                .getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE);
-        if (userSettings != null) {
-            saveTrainings = userSettings.getBoolean(Global.PreferencesKeys.saveTrainings, false);
-        }
+        boolean saveTrainings = sharedPreferences.getBoolean(Global.PreferencesKeys.saveTrainings, false);
         if (saveTrainings) {
-            //  Nutzer fragen, ob gespeichert werden soll
+            // Nutzer fragen, ob gespeichert werden soll
             // TODO: Alert-Dialog
             saveTraining();
         }
@@ -1065,7 +1064,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                         .getDisplayName(TextStyle.FULL, Locale.getDefault());
                 trainingDateAsString+= " (";
                 trainingDateAsString+= trainingDate
-                        .format(DateTimeFormatter.ofPattern("dd.MM.YYYY"));
+                        .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
                 trainingDateAsString+= ")";
                 trainingDaysStringList.add(trainingDateAsString);
             }
@@ -1129,145 +1128,4 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     private void setUseNotifications() {
         useNotifications = false;
     }
-    /*
-
-        //  Inhalt
-        func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-
-        let pickerLabel = UILabel()
-        pickerLabel.textAlignment = .center
-
-        //  Standardfarben
-        pickerLabel.backgroundColor = Global.AppAppearance.iOSDefaultBackgroundColor
-        pickerLabel.textColor = Global.AppAppearance.iOSDefaultTintColor
-
-        //  Font
-        pickerLabel.font = UIFont.systemFont(ofSize: 22.0, weight: UIFont.Weight.heavy)
-
-        switch pickerView {
-
-        case self.trainingDayPickerView:
-
-        //  max Anzahl an Tagen
-        //  TODO: tatsächlichen Tag (Datum) anzeigen
-        //  TODO: um 90 Grad verdrehen, andere View?
-        //  pickerLabel.transform = CGAffineTransform(rotationAngle: 90 * (.pi / 180 ))
-
-        //  wenn ein Statrdatum gesetzt ist, dann den tatsächlichen Tag anzeigen ...
-        if self.runningPlan!.startDate != nil {
-
-        pickerLabel.text = self.dayAsStringForRow(row)
-
-        } else {
-
-        //  ansonsten nur Tag des Trainings als Zahl anzeigen
-        pickerLabel.text = String(row + 1)
-
-        }
-        return pickerLabel
-
-        case self.trainingUnitsPickerView:
-
-        //  Trainingsabschnitte des jeweiligen Tages
-        if self.runningPlanEntry != nil {
-
-        let units = self.runningPlanEntry?.runningUnits
-        if row < units?.count ?? 0 {
-
-        //  Abschnitt darstellen
-        let unit = units?[row]
-        var labelString = ""
-
-        let duration = unit?.duration ?? 0
-        if duration < 60 {
-
-        labelString = String(duration) + " min"
-
-        } else {
-
-        //  in h und min umrechnen
-        let hours = (duration * 60) / 3600
-        let minutes = (duration / 60) % 60
-        labelString = String(hours) + " h und " + String(minutes) + " min"
-
-        }
-
-        labelString = labelString + " " + (unit?.movementType?.stringForKey ?? "")
-        pickerLabel.text = labelString
-
-        //  Abschnitt abgeschlossen?
-        if unit?.completed ?? false {
-
-        //  Status-Informationen
-        self.runningInfoLabel.text = NSLocalizedString("Training wurde abgeschlossen.", comment: "Training wurde abgeschlossen.")
-
-        //  Status-Bild anzeigen
-        if let trainingStatusImage = UIImage(named: "trainingcompleted30x30") {
-
-        //  Bild für den Status des Laufplanes
-        self.completedEntryImageView.image = trainingStatusImage
-
-        }
-
-        } else {
-
-        //  Status-Informationen
-        self.runningInfoLabel.text = NSLocalizedString("Training ist in Planung.", comment: "Training ist in Planung.")
-
-        //  Status-Bild anzeigen
-        if let trainingStatusImage = UIImage(named: "trainingplanned30x30") {
-
-        //  Bild für den Status des Laufplanes
-        self.completedEntryImageView.image = trainingStatusImage
-
-        }
-
-        }
-
-        }
-
-        }
-
-        //  Trainingspause am gewählten Tag
-        if self.runningUnit == nil {
-
-        pickerLabel.text = ""
-
-        //  Status-Informationen
-        self.runningInfoLabel.text = NSLocalizedString("Kein Training an diesem Tag.", comment: "Kein Training an diesem Tag.")
-
-        //  Status-Bild anzeigen
-        if let trainingStatusImage = UIImage(named: "trainingpaused30x30") {
-
-        //  Bild für den Status des Laufplanes
-        self.completedEntryImageView.image = trainingStatusImage
-
-        }
-
-        }
-
-        return pickerLabel
-
-default:
-
-        return pickerLabel
-
-        }
-
-        }
-
-        //  Nutzer hat Eintrag in Auswahlbox gewählt
-        func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-
-        switch pickerView {
-
-        //  Trainingstag geändert
-        case self.trainingDayPickerView:
-
-        self.pickerViewTrainingDayRowSelected(row)
-
-        case self.trainingUnitsPickerView:
-
-        self.pickerViewRunningUnitRowSelected(row)
-*/
 }

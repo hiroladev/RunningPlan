@@ -42,10 +42,8 @@ public class RunningPlanListFragment extends ListFragment {
         // visualize th list of running plans
         RunningPlanArrayAdapter listAdapter = new RunningPlanArrayAdapter(getContext(),runningPlans);
         // refresh the ui when the observed data changes
-        viewModel.getRunningPlans().observe(this, runningPlans -> {
-            // Update the cached copy of the words in the adapter.
-            listAdapter.submitList(runningPlans);
-        });
+        // Update the cached copy of the words in the adapter.
+        viewModel.getRunningPlans().observe(this, listAdapter::submitList);
         // determine the mode
         View detailsFragment = requireActivity().findViewById(R.id.fragmentContainerViewRunningPlanDetails);
         if (detailsFragment != null && detailsFragment.getVisibility() == View.VISIBLE) {

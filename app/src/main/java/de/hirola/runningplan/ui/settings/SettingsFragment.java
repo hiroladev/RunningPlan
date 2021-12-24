@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.InputType;
+import android.widget.EditText;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.*;
 import de.hirola.runningplan.R;
@@ -19,7 +22,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
-public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
+public class SettingsFragment extends PreferenceFragmentCompat
+        implements Preference.OnPreferenceChangeListener, EditTextPreference.OnBindEditTextListener {
 
     private RunningPlanViewModel viewModel;
     private User appUser;
@@ -37,7 +41,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         sharedPreferences = requireContext()
                 .getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE);
         // get all preferences from screen
-        ArrayList<Preference> preferenceList = getPreferenceList(getPreferenceScreen(), new ArrayList<Preference>());
+        ArrayList<Preference> preferenceList = getPreferenceList(getPreferenceScreen(), new ArrayList<>());
         // set saved values in ui
         setPreferenceValues(preferenceList);
     }
@@ -89,7 +93,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
             }
             // max pulse
             if (key.equalsIgnoreCase(Global.PreferencesKeys.userMaxPulse)) {
-                // TODO: check for int value, Hinweis an Nutzer
                 String maxPulse = (String) newValue;
                 try {
                     Integer.parseInt(maxPulse);
@@ -181,6 +184,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         // save the shared preferences
         editor.apply();
         return true;
+    }
+
+    @Override
+    public void onBindEditText(@NonNull @NotNull EditText editText) {
+        // only numbers in some preferences
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
     }
 
     private void setPreferenceValues(@NotNull ArrayList<Preference> preferenceList) {
@@ -300,6 +309,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
                         // preference ui key == shared preference key
                         ((EditTextPreference) preference)
                                 .setText(sharedPreferences.getString(preference.getKey(), ""));
+                        // in some preferences only numbers allowed
+                        if (preference.getKey().equalsIgnoreCase(Global.PreferencesKeys.userMaxPulse)) {
+                            ((EditTextPreference) preference).setOnBindEditTextListener(this);
+                        }
                     } catch (ClassCastException exception) {
                         ((EditTextPreference) preference).setText("");
                         if (Global.DEBUG) {
