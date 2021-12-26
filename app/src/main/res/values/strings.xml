@@ -31,6 +31,7 @@
     <string name="duration">Dauer</string>
     <string name="completed">abgeschlossen</string>
     <string name="null_timer" translatable="false">00:00:00</string>
+    <string name="duration_null_hours_minutes" translatable="false">00h:00min</string>
 
     <!-- Location data -->
     <string name="distance">Strecke</string>
@@ -105,6 +106,8 @@
     </string>
     <string name="runningplan_start_60_remarks">Die 2. Stufe beim Einsteig in das Laufen. Mit freundlicher Unterstützung
         von https://lauftipps.ch. Ohne Haftung und Gewährleistung.
+    </string>
+    <string name="runningplan_start_test_remarks">Eine Vorlage zum Testen der App.
     </string>
     <string name="no_remarks">Keine Anmerkungen vorhanden.</string>
     <string name="title_runningplan_details">Laufplan-Details</string>

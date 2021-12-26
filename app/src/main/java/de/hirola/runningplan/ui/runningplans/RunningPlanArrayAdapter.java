@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import de.hirola.sportslibrary.model.RunningPlanEntry;
+import de.hirola.sportslibrary.model.RunningUnit;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -78,8 +80,10 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
                     // TODO: Logging
                 }
             }
+        } else {
+            // user's running plans
+            remarksTextView.setText(runningPlan.getRemarks());
         }
-        remarksTextView.setText(runningPlan.getRemarks());
         // Startdatum
         TextView startDateTextView = rowView.findViewById(R.id.runningplan_row_startdate_textview);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -93,14 +97,24 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
             //  in h und min umrechnen
             int hours = duration / 60;
             int minutes = duration % 60;
-            durationTextView.setText(String.format(Locale.GERMANY,"%d:%d",hours, minutes));
+            String durationString;
+            if (hours > 0) {
+                durationString = hours
+                        + " h "
+                        + minutes
+                        + " min";
+            } else {
+                durationString = hours
+                        + minutes
+                        + " min";
+            }
+            durationTextView.setText(durationString);
         } else {
-            durationTextView.setText("00h:00min");
+            durationTextView.setText(R.string.duration_null_hours_minutes);
         }
         // Laufplan abgeschlossen in Prozent
-        String percentCompleted = String.valueOf(runningPlan.percentCompleted()).concat(" %");
         TextView percentCompletedTextView = rowView.findViewById(R.id.runningplan_row_percentcompleted_textview);
-        percentCompletedTextView.setText(percentCompleted);
+        percentCompletedTextView.setText(String.valueOf(runningPlan.percentCompleted()));
         return rowView;
     }
 
