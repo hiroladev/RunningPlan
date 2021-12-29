@@ -19,6 +19,18 @@
     <string name="title_location">Standort</string>
     <string name="title_movementtype">Bewegungsart</string>
 
+    <!-- Alerts -->
+    <string name="ok" translatable="false">OK</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="question">Frage</string>
+    <string name="hint">Hinweis</string>
+    <string name="preferences_not_set">Die Einstellungen konnten nicht gespeichert werden.</string>
+    <string name="save_data_error">Die Daten konnten nicht gespeichert werden.</string>
+    <string name="name_must_be_not_null">Der Name darf nicht leer sein.</string>
+    <string name="remove_active_runningplan">Soll mit diesem Laufplan wirklich nicht mehr trainiert werden?</string>
+
     <!-- Common -->
     <string name="name">Name</string>
     <string name="remarks">Anmerkungen</string>
@@ -42,6 +54,7 @@
     <string name="start">Start</string>
     <string name="pause">Pause</string>
     <string name="stop">Stopp</string>
+    <string name="save">Speichern</string>
 
     <!-- Infos -->
     <string name="start_training">Start des Trainings</string>
@@ -52,6 +65,9 @@
     <string name="training_is_running">Training läuft</string>
     <string name="new_training_unit_starts">Neue Laufeinheit beginnt</string>
     <string name="training_completed">Training abgeschlossen</string>
+
+    <!-- Tooltips -->
+    <string name="template_must_be_changed">Vorlagen dürfen nicht verändert werden</string>
 
     <!-- User Data -->
     <string name="email_address">E-Mail-Adresse</string>
@@ -117,6 +133,9 @@
     <string name="running_plan_entry">Laufplan-Einheit</string>
     <string name="running_unit">Laufabschnitt</string>
     <string name="running_unit_infos">Infos zum Laufabschnitt</string>
+    <string name="show_training_details">Trainingdetails anzeigen …</string>
+    <string name="select_as_active_runningplan">Als aktiven Plan auswählen</string>
+    <string name="select_week_of_start">Startwoche festlegen</string>
 
     <!-- Preferences -->
     <string name="preference_not_found">Unbekannte Einstellung</string>
@@ -124,6 +143,7 @@
     <string name="save_trainings">Trainings speichern</string>
     <string name="user_training_level">Trainingslevel</string>
     <string name="use_sync">Daten synchronisieren</string>
+    <string name="hide_templates">Vorlagen ausblenden</string>
     <string name="notifications">Benachrichtigungen</string>
     <string name="todo_data_summary_on" translatable="false">Summary when on</string>
     <string name="todo_data_summary_off" translatable="false">Summary when off</string>

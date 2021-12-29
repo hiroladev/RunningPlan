@@ -84,4 +84,20 @@
     <string name="user_training_level">Training level</string>
     <string name="use_sync">Sync data</string>
     <string name="notifications">Notifications</string>
+    <string name="runningplan_start_test_remarks">A Template for testing the app.</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="no">No</string>
+    <string name="preferences_not_set">The preferences could not saved.</string>
+    <string name="save_data_error">The data could not saved.</string>
+    <string name="hide_templates">Hide templates</string>
+    <string name="show_training_details">Show training details ...</string>
+    <string name="select_as_active_runningplan">Set as active plan</string>
+    <string name="select_week_of_start">Set week of start</string>
+    <string name="save">Save</string>
+    <string name="template_must_be_changed">Templates must be changed</string>
+    <string name="question">Question</string>
+    <string name="hint">Hint</string>
+    <string name="remove_active_runningplan">Shouldn\'t this running plan really be used any more?</string>
+    <string name="name_must_be_not_null">The name must be not null.</string>
 </resources>

@@ -16,7 +16,6 @@ import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.model.RunningPlan;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -30,8 +29,8 @@ import java.util.Objects;
  */
 public class RunningPlanListFragment extends ListFragment {
 
-    private List<RunningPlan> runningPlans; // list of all running plans
-    private boolean tabletMode; // list and details fragments in on view
+    // list of all running plans
+    private List<RunningPlan> runningPlans;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,17 +43,6 @@ public class RunningPlanListFragment extends ListFragment {
         // refresh the ui when the observed data changes
         // Update the cached copy of the words in the adapter.
         viewModel.getRunningPlans().observe(this, listAdapter::submitList);
-        // determine the mode
-        View detailsFragment = requireActivity().findViewById(R.id.fragmentContainerViewRunningPlanDetails);
-        if (detailsFragment != null && detailsFragment.getVisibility() == View.VISIBLE) {
-            tabletMode = true;
-            // select the first element in view to showing details
-            if (runningPlans.size() > 0) {
-                showDetailsForRunningPlanAtIndex(0);
-            }
-        } else {
-            tabletMode = false;
-        }
         setListAdapter(listAdapter);
     }
 
@@ -62,7 +50,7 @@ public class RunningPlanListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_running_plans, container, false);
+        return inflater.inflate(R.layout.fragment_running_plan_list, container, false);
     }
 
     /**
@@ -82,27 +70,13 @@ public class RunningPlanListFragment extends ListFragment {
     }
 
     private void showDetailsForRunningPlanAtIndex(int index) {
-        if(tabletMode){
-            // the RunningPlanActivity has two fragments
-            // select the element at index in view to showing details
-            getListView().setItemChecked(index, true);
-            // get a reference from RunningPlanDetailsFragment
-            RunningPlanDetailsFragment detailsFragment =
-                    (RunningPlanDetailsFragment) getParentFragmentManager().findFragmentById(R.id.fragmentContainerViewRunningPlanDetails);
-            if (detailsFragment == null) {
-                // no details fragment still present
-                // create new details fragment
-                detailsFragment = new RunningPlanDetailsFragment();
-                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragmentContainerViewRunningPlanDetails,detailsFragment);
-                // make a transition
-                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                fragmentTransaction.commit();
-            }
-        } else {
+        if (runningPlans.size() > index) {
+            RunningPlan runningPlan = runningPlans.get(index);
             // starts the RunningPlanDetailsActivity
             Intent intent = new Intent();
             intent.setClass(getActivity(), RunningPlanDetailsActivity.class);
+            // put the uuid for the selected running plan to the details activity
+            intent.putExtra("uuid", runningPlan.getUUID());
             startActivity(intent);
         }
     }

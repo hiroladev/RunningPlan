@@ -19,8 +19,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import de.hirola.sportslibrary.ui.ModalOptionDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -31,6 +31,8 @@ import java.util.*;
 public class TrainingFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     // Preferences
     private SharedPreferences sharedPreferences;
+    // alerts dialog
+    private ModalOptionDialog alertDialog;
     // Spinner
     private Spinner trainingDaysSpinner;
     private ArrayAdapter<String> trainingDaysSpinnerArrayAdapter;
@@ -121,6 +123,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             // default: false
             isTimerRunning = savedInstanceState.getBoolean("isTimerRunning");
         }
+        alertDialog = ModalOptionDialog.getInstance(requireContext());
         sharedPreferences = requireContext().getSharedPreferences(
                 getString(R.string.preference_file), Context.MODE_PRIVATE);
         // load running plans
@@ -138,7 +141,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         checkForSavedTraining();
     }
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
+    public View onCreateView(@NotNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View trainingView = inflater.inflate(R.layout.fragment_training, container, false);
@@ -212,106 +215,26 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (parent.getId() == R.id.spinnerTrainingDay) {
             // user select another training day (running plan entry)
+            // change the selected item in training unit spinner
+            if (runningPlan != null) {
+                List<RunningPlanEntry> runningPlanEntries = runningPlan.getEntries();
+                if (runningPlanEntries.size() > position) {
+                    // set the active running plan entry
+                    runningPlanEntry = runningPlanEntries.get(position);
+                    // update the running units list and the info label
+                    showRunningPlanEntryInView();
+                }
+            }
         } else {
             // user select another training unit
-        }
-        /*// neuer Tag - neuer Trainingsplan-Abschnitt
-        // im DatePicker sollten nur Trainingstage verfügbar sein
-        // über spinner...
-        // aus DatePicker das ausgewählte Datum ermitteln
-        //  Tag ermitteln
-        var day = (row + 1) % 7
-        if day == 0 {
-
-            //  Sonntag
-            day = 7
-        }
-
-        //  Woche ermitteln
-        //  Formel ((week - 1) * 7) + day umstellen
-        let week =  ((row + 1 - day) / 7) + 1
-
-        //  zu gewählter Woche und Tag den Trainingsabschnittes ermitteln und speichern
-        if self.runningPlan != nil {
-
-            var didUnitFound: Bool = false
-            let entries = runningPlan!.entries
-            for entry in entries {
-
-                if entry.week == week && entry.day == day {
-
-                    //  Trainingsabschnitt speichern
-                    self.runningPlanEntry = entry
-
-                    //  erste Trainingseinheit des Trainingsabschnitts speichern
-                    if self.runningPlanEntry?.runningUnits.count ?? 0 > 0 {
-
-                        self.runningUnit = self.runningPlanEntry!.runningUnits.first
-
-                    }
-
-                    //  Darstellung des Trainingsabschnittes in der View
-                    self.showRunningPlanEntryInView()
-
-                    //  PickerView kann wieder bedient werden
-                    self.trainingUnitsPickerView.isUserInteractionEnabled = true
-
-                    //  Flag setzen
-                    didUnitFound = true
-                    break
-
+            if (runningPlanEntry != null) {
+                List<RunningUnit> runningUnits = runningPlanEntry.getRunningUnits();
+                if (runningUnits.size() > position) {
+                    // set the selected running unit
+                    runningUnit = runningUnits.get(position);
                 }
-
             }
-
-            //  evtl. eine Tag mit Trainingspause
-            if !didUnitFound {
-
-                //  kein aktiver Abschnitt (Pause)
-                self.runningUnit = nil
-
-                //  PickerView sperren
-                self.trainingUnitsPickerView.isUserInteractionEnabled = false
-
-                //  Anzeige der Trainingszeit löschen
-                self.trainingDurationLabel.text = ""
-
-                //  Status-Informationen
-                self.runningInfoLabel.text = NSLocalizedString("Kein Training an diesem Tag.", comment: "Kein Training an diesem Tag.")
-
-                //  Status-Bild anzeigen
-                if let trainingStatusImage = UIImage(named: "trainingpaused30x30") {
-
-                    //  Bild für den Status des Laufplanes
-                    self.completedEntryImageView.image = trainingStatusImage
-
-                }
-
-            } else {
-
-                //  Status-Informationen
-                self.runningInfoLabel.text = NSLocalizedString("Training ist in Planung.", comment: "Training ist in Planung.")
-
-                //  Status-Bild anzeigen
-                if let trainingStatusImage = UIImage(named: "trainingplanned30x30") {
-
-                    //  Bild für den Status des Laufplanes
-                    self.completedEntryImageView.image = trainingStatusImage
-
-                }
-
-            }
-
         }
-
-        //  "abhängige" PickerView der Laufeineiten aktualisieren
-        self.trainingUnitsPickerView.reloadComponent(0)
-        * */
-        // a running plan entry was selected
-        // set the selected entry
-        //runningPlanEntry = (RunningPlanEntry) parent.getSelectedItem();
-        // reload the ui elements
-        //showRunningPlanEntryInView();
     }
 
     @Override
@@ -521,18 +444,31 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     private void startTraining() {
         trainingDaysSpinner.setEnabled(false);
         trainingUnitsSpinner.setEnabled(false);
-        startButton.setEnabled(false);
         if (isTrainingRunning) {
             //  Aufzeichnung (wieder) starten
             startRecordingTraining();
             // set an info text
             trainingInfolabel.setText(R.string.continue_training);
         } else {
-            //  Aufzeichnung und Monitoring des Trainings starten
-            startRecordingTraining();
-            isTrainingRunning = true;
-            // show info
-            trainingInfolabel.setText(R.string.start_training);
+            // prüfen, ob aktueller Tag ein Trainingstag ist und / oder
+            // noch Einheiten offen sind
+            if (isValidTraining()) {
+                // aktuellen Trainingstag in Spinner auswählen
+                // erste Trainingseinheit auswählen
+                //  Aufzeichnung und Monitoring des Trainings starten
+                startRecordingTraining();
+                isTrainingRunning = true;
+                // show info
+                trainingInfolabel.setText(R.string.start_training);
+            } else {
+                //TODO: Hinweis an Nutzer
+                // data could not saved
+                // alert dialog to user
+                alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
+                        "",
+                        getString(R.string.save_data_error),
+                        getString(R.string.ok));
+            }
         }
         //  Status-Bild anzeigen
         // TODO: Status-Bild trainingactive30x30
@@ -540,8 +476,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     //  Trainingspause
     private void pauseTraining() {
-        // enable the start button
-        startButton.setEnabled(true);
         // GPS-Aufzeichnung stoppen
         stopRecordingTraining();
         // show info
@@ -569,9 +503,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // enable spinner and training date button
         trainingDaysSpinner.setEnabled(true);
         trainingUnitsSpinner.setEnabled(true);
-        startButton.setEnabled(true);
-        pauseButton.setEnabled(false);
-        stopButton.setEnabled(false);
         // Status-Bild anzeigen
         // TODO: Status-Bild trainingplanned30x30
     }
@@ -950,6 +881,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     //
     // timer
     // start or restart the timer
+    // enable and disable the timer buttons
     private void startTimer() {
         // set the attribute values
         isTimerRunning = true;
@@ -999,6 +931,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         isTimerRunning = false;
         secondsInActivity = 0;
         secondsWhenStopped = 0;
+        startButton.setEnabled(true);
+        pauseButton.setEnabled(false);
+        stopButton.setEnabled(false);
         // runningStartDate = nil
         // activityStartPauseDate = nil
         // didPausedSecondsCalulated = true
@@ -1058,7 +993,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 int day = entry.getDay();
                 int week = entry.getWeek();
                 LocalDate trainingDate = startDate.plusDays(day - 1);
-                trainingDate = startDate.plusWeeks(week - 1);
+                trainingDate = trainingDate.plusWeeks(week - 1);
                 String trainingDateAsString = trainingDate
                         .getDayOfWeek()
                         .getDisplayName(TextStyle.FULL, Locale.getDefault());
@@ -1113,6 +1048,18 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             }
         }
         return trainingUnitsStringList;
+    }
+
+    // check if valid running plan and training day
+    private boolean isValidTraining() {
+        // is running plan completed?
+        if (runningPlan != null) {
+            if (runningPlan.completed()) {
+                //TODO: Frage an Nutzer
+                //Plan neu starten?
+            }
+        }
+        return true;
     }
 
     // determine if the app can use location data

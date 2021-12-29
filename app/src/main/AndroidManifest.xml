@@ -11,11 +11,6 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.RunningPlan">
         <activity
-                android:name=".ui.runningplans.RunningPlanActivity"
-                android:label="@string/title_runningplan_details"
-                android:theme="@style/Theme.RunningPlan.NoActionBar">
-        </activity>
-        <activity
                 android:name=".ui.runningplans.RunningPlanDetailsActivity"
                 android:label="@string/title_runningplan_details"
                 android:theme="@style/Theme.RunningPlan.NoActionBar">

@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.EditText;
-import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.*;
 import de.hirola.runningplan.R;
@@ -14,6 +13,7 @@ import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.User;
+import de.hirola.sportslibrary.ui.ModalOptionDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -28,6 +28,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private RunningPlanViewModel viewModel;
     private User appUser;
     private SharedPreferences sharedPreferences;
+    private ModalOptionDialog alertDialog;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -37,6 +38,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
         viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
         // load the app user
         appUser = viewModel.getAppUser().getValue();
+        // initialize the alert dialog
+        alertDialog = ModalOptionDialog.getInstance(requireContext());
         // load the preferences
         sharedPreferences = requireContext()
                 .getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE);
@@ -126,7 +129,11 @@ public class SettingsFragment extends PreferenceFragmentCompat
                         appUser.setGender(Integer.parseInt(value));
                     } catch (NumberFormatException exception) {
                         // preference can not set
-                        // TODO: Hinweis an Nutzer?
+                        // alert dialog to user
+                        alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                                "",
+                                getString(R.string.preferences_not_set),
+                                getString(R.string.ok));
                         if (Global.DEBUG) {
                             exception.printStackTrace();
                         }
@@ -140,7 +147,11 @@ public class SettingsFragment extends PreferenceFragmentCompat
                         appUser.setTrainingLevel(Integer.parseInt(value));
                     } catch (NumberFormatException exception) {
                         // preference can not set
-                        // TODO: Hinweis an Nutzer?
+                        // alert dialog to user
+                        alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                                "",
+                                getString(R.string.preferences_not_set),
+                                getString(R.string.ok));
                         if (Global.DEBUG) {
                             exception.printStackTrace();
                         }
@@ -162,7 +173,11 @@ public class SettingsFragment extends PreferenceFragmentCompat
                         appUser.setBirthday(birthday);
                     } catch (NumberFormatException exception) {
                         // preference can not set
-                        // TODO: Hinweis an Nutzer?
+                        // alert dialog to user
+                        alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                                "",
+                                getString(R.string.preferences_not_set),
+                                getString(R.string.ok));
                         if (Global.DEBUG) {
                             System.out.println(exception.getMessage());
                         }
@@ -175,7 +190,12 @@ public class SettingsFragment extends PreferenceFragmentCompat
             // save the data
             viewModel.update(appUser);
         } catch (SportsLibraryException exception) {
-            // TODO: Hinweis an Nutzer
+            // data could not saved
+            // alert dialog to user
+            alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
+                    "",
+                    getString(R.string.save_data_error),
+                    getString(R.string.ok));
             if (Global.DEBUG) {
                 exception.printStackTrace();
             }
@@ -187,7 +207,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void onBindEditText(@NonNull @NotNull EditText editText) {
+    public void onBindEditText(@NotNull EditText editText) {
         // only numbers in some preferences
         editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
     }
@@ -374,7 +394,12 @@ public class SettingsFragment extends PreferenceFragmentCompat
             appUser.setMaxPulse(maxPulse);
             viewModel.update(appUser);
         } catch (SportsLibraryException exception) {
-            // TODO: Hinweis an Nutzer
+            // data could not saved
+            // alert dialog to user
+            alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
+                    "",
+                    getString(R.string.save_data_error),
+                    getString(R.string.ok));
             if (Global.DEBUG) {
                 exception.printStackTrace();
             }

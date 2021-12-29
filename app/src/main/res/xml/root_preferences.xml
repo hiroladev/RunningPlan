@@ -62,6 +62,12 @@
             app:title="@string/other_settings">
 
         <SwitchPreferenceCompat
+                app:key="hide_templates"
+                app:title="@string/hide_templates"
+                app:summaryOn="@string/todo_data_summary_on"
+                app:summaryOff="@string/todo_data_summary_off" />
+
+        <SwitchPreferenceCompat
                 app:key="use_notifications"
                 app:title="@string/notifications"
                 app:summaryOn="@string/todo_data_summary_on"

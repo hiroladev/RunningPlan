@@ -38,7 +38,7 @@ public class RunningPlanViewModel extends AndroidViewModel {
         appUser = repository.getAppUser();
     }
 
-    public LiveData<List<RunningPlan>> getRunningPlans() {
+    public @NonNull LiveData<List<RunningPlan>> getRunningPlans() {
         return runningPlans;
     }
 
