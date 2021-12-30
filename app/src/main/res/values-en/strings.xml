@@ -100,4 +100,6 @@
     <string name="hint">Hint</string>
     <string name="remove_active_runningplan">Shouldn\'t this running plan really be used any more?</string>
     <string name="name_must_be_not_null">The name must be not null.</string>
+    <string name="error">Error</string>
+    <string name="warning">Warning</string>
 </resources>

@@ -31,8 +31,6 @@ import java.util.*;
 public class TrainingFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     // Preferences
     private SharedPreferences sharedPreferences;
-    // alerts dialog
-    private ModalOptionDialog alertDialog;
     // Spinner
     private Spinner trainingDaysSpinner;
     private ArrayAdapter<String> trainingDaysSpinnerArrayAdapter;
@@ -123,12 +121,11 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             // default: false
             isTimerRunning = savedInstanceState.getBoolean("isTimerRunning");
         }
-        alertDialog = ModalOptionDialog.getInstance(requireContext());
         sharedPreferences = requireContext().getSharedPreferences(
                 getString(R.string.preference_file), Context.MODE_PRIVATE);
         // load running plans
         viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
-        runningPlans = viewModel.getRunningPlans().getValue();
+        runningPlans = viewModel.getRunningPlans();
         // initialize attributes
         initializeAttributes();
         // determine if user (app) can use location data
@@ -247,7 +244,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         //  einen Laufplan vorauswählen und alle entsprechenden Daten darstellen
         boolean userHasRunningPlan = false;
         if (!runningPlans.isEmpty()) {
-            User appUser = viewModel.getAppUser().getValue();
+            User appUser = viewModel.getAppUser();
             if (appUser != null) {
                 RunningPlan runningPlan = appUser.getActiveRunningPlan();
                 if (runningPlan != null) {
@@ -464,8 +461,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 //TODO: Hinweis an Nutzer
                 // data could not saved
                 // alert dialog to user
-                alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
-                        "",
+                ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
+                        getContext(),
+                        getString(R.string.error),
                         getString(R.string.save_data_error),
                         getString(R.string.ok));
             }

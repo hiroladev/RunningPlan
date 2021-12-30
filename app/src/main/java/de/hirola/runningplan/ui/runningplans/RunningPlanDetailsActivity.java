@@ -2,7 +2,6 @@ package de.hirola.runningplan.ui.runningplans;
 
 import android.content.res.Resources;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -15,15 +14,20 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.Global;
+import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.model.User;
 import de.hirola.sportslibrary.ui.ModalOptionDialog;
 import de.hirola.sportslibrary.ui.ModalOptionDialogListener;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -44,28 +48,25 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
     private User appUser;
     private RunningPlan runningPlan;
     private boolean isUsersRunningPlan;
-    private ModalOptionDialog alertDialog;
     private TextView runningPlanNameTextView;
     private TextView runningPlanRemarksTextView;
     private Button showTrainingDetailsButton;
     private Button saveRunningPlanButton;
     private SwitchCompat activeRunningPlanSwitch;
     private Spinner startWeekSpinner;
-    private ArrayAdapter<String> startWeekSpinnerArrayAdapter;
+    private StartDateArrayAdapter startWeekSpinnerArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // initialize the alert dialog
-        alertDialog = ModalOptionDialog.getInstance(this);
         // app data
         viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
-        appUser = viewModel.getAppUser().getValue();
+        appUser = viewModel.getAppUser();
         // get the running plan
         String runningPlanUUID = getIntent().getStringExtra("uuid");
         if (runningPlanUUID != null) {
             // set the selected running plan for details
-            List<RunningPlan> runningPlans = viewModel.getRunningPlans().getValue();
+            List<RunningPlan> runningPlans = viewModel.getRunningPlans();
             if (runningPlans != null) {
                 for (RunningPlan plan : runningPlans) {
                     if (plan.getUUID().equalsIgnoreCase(runningPlanUUID)) {
@@ -78,11 +79,7 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
         if (appUser != null) {
             RunningPlan activeRunningPlan = appUser.getActiveRunningPlan();
             if (activeRunningPlan != null) {
-                if (activeRunningPlan.getUUID().equalsIgnoreCase(runningPlan.getUUID())) {
-                    isUsersRunningPlan = true;
-                } else {
-                    isUsersRunningPlan = false;
-                }
+                isUsersRunningPlan = activeRunningPlan.getUUID().equalsIgnoreCase(runningPlan.getUUID());
             }
         }
         // initialize the ui
@@ -102,7 +99,8 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
                     String runningPlanName = runningPlanNameTextView.getText().toString();
                     String runningPlanRemarks = runningPlanRemarksTextView.getText().toString();
                     if (runningPlanName.length() == 0) {
-                        alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                        ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                                this,
                                 getString(R.string.hint), getString(R.string.name_must_be_not_null),
                                 getString(R.string.ok));
                         return;
@@ -110,10 +108,18 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
                     runningPlan.setName(runningPlanName);
                     runningPlan.setRemarks(runningPlanRemarks);
                 }
+                // start date of running plan
+                LocalDate startDate = (LocalDate) startWeekSpinner.getSelectedItem();
+                if (startDate != null) {
+                    runningPlan.setStartDate(startDate);
+                }
+
                 // active running plan
                 if (isUsersRunningPlan && !activeRunningPlanSwitch.isChecked()) {
                     // user would not like the running plan as active
-                    alertDialog.showOptionDialog(getString(R.string.question), getString(R.string.remove_active_runningplan),
+                    ModalOptionDialog.showOptionDialog(
+                            this,
+                            getString(R.string.question), getString(R.string.remove_active_runningplan),
                             getString(R.string.ok), getString(R.string.cancel),
                             new ModalOptionDialogListener() {
                         @Override
@@ -127,6 +133,21 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
                         }
                     });
                 }
+                // save the user and the running plan
+                try {
+                    viewModel.update(appUser);
+                    viewModel.update(runningPlan);
+                } catch (SportsLibraryException e) {
+                    ModalOptionDialog.showMessageDialog(
+                            ModalOptionDialog.DialogStyle.CRITICAL,
+                            this,
+                            getString(R.string.error), getString(R.string.save_data_error),
+                            getString(R.string.ok));
+                    if (Global.DEBUG) {
+                        // TODO: logging
+                    }
+                }
+
             }
         }
     }
@@ -145,10 +166,10 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
         // initialize the spinner
         startWeekSpinner = findViewById(R.id.activity_running_plan_details_spinner_start_week);
         // creating adapter for spinner with an empty list
-        startWeekSpinnerArrayAdapter = new ArrayAdapter<>(
-                getBaseContext(),
+        startWeekSpinnerArrayAdapter = new StartDateArrayAdapter(
+                this,
                 android.R.layout.simple_spinner_item,
-                new ArrayList<>());
+                new ArrayList<LocalDate>());
         // attaching data adapter to spinner with empty list
         startWeekSpinner.setAdapter(startWeekSpinnerArrayAdapter);
     }
@@ -191,12 +212,17 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
             // if plan not active then creating a list of possible start weeks
             if (!runningPlan.isActive()) {
                 startWeekSpinnerArrayAdapter.clear();
-                startWeekSpinnerArrayAdapter.addAll(getStartDays());
+                startWeekSpinnerArrayAdapter.addAll(getStartDates());
+                // select the start date
+                int position = startWeekSpinnerArrayAdapter.getPosition(runningPlan.getStartDate());
+                if (position > -1) {
+                    startWeekSpinner.setSelection(position);
+                }
             } else {
                 // add the week of start date to the spinner and disabled the spinner
                 // TODO: format the week
                 startWeekSpinnerArrayAdapter.clear();
-                startWeekSpinnerArrayAdapter.add(runningPlan.getStartDate().toString());
+                startWeekSpinnerArrayAdapter.add(runningPlan.getStartDate());
                 startWeekSpinner.setEnabled(false);
             }
         }
@@ -204,34 +230,37 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
 
     // list of training days from selected running plan as string
     @NotNull
-    private List<String> getStartDays() {
-        List<String> trainingStartDaysStringList = new ArrayList<>();
+    private List<LocalDate> getStartDates() {
+        List<LocalDate> startDates = new ArrayList<>();
         if (runningPlan != null ) {
-            // the first possible training start
-            LocalDate startDate = runningPlan.getStartDate();
-            String trainingDateAsString = startDate
-                    .getDayOfWeek()
-                    .getDisplayName(TextStyle.FULL, Locale.getDefault());
-            trainingDateAsString+= " (";
-            trainingDateAsString+= startDate
-                    .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-            trainingDateAsString+= ")";
-            trainingStartDaysStringList.add(trainingDateAsString);
-            // add more possible start days to the list
-            int loop = 0;
-            while (loop < Global.Defaults.numberOfSelectableTrainingStartWeeks) {
-                loop++;
-                LocalDate trainingDate = startDate.plusWeeks(loop);
-                trainingDateAsString = trainingDate
-                        .getDayOfWeek()
-                        .getDisplayName(TextStyle.FULL, Locale.getDefault());
-                trainingDateAsString+= " (";
-                trainingDateAsString+= trainingDate
-                        .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-                trainingDateAsString+= ")";
-                trainingStartDaysStringList.add(trainingDateAsString);
+            if (!runningPlan.isActive()) {
+                LocalDate startDate = runningPlan.getStartDate();
+                LocalDate today = LocalDate.now();
+                LocalDate maxForwardTrainingStartDate = today
+                        .plusWeeks(Global.Defaults.numberOfSelectableTrainingStartWeeks);
+                Period period = Period.between(today, startDate);
+                int weeks = period.getDays() / 7;
+                if (startDate.isAfter(maxForwardTrainingStartDate) ||
+                        weeks < Global.Defaults.numberOfSelectableTrainingStartWeeks) {
+                    // reset the first start day of running plan
+                    // set the correct monday
+                    DayOfWeek dayOfWeek = today.getDayOfWeek();
+                    if (dayOfWeek != DayOfWeek.MONDAY) {
+                        // ab Dienstag ist das Startdatum der nächste Montag
+                        long daysToAdd = 8 - dayOfWeek.getValue();
+                        startDate = today.plusDays(daysToAdd);
+                    }
+                }
+                startDates.add(startDate);
+                // add more possible start days to the list
+                int loop = 0;
+                while (loop < Global.Defaults.numberOfSelectableTrainingStartWeeks) {
+                    loop++;
+                    LocalDate trainingDate = startDate.plusWeeks(loop);
+                    startDates.add(trainingDate);
+                }
             }
         }
-        return trainingStartDaysStringList;
+        return startDates;
     }
 }

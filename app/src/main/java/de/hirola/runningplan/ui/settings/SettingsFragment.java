@@ -28,7 +28,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private RunningPlanViewModel viewModel;
     private User appUser;
     private SharedPreferences sharedPreferences;
-    private ModalOptionDialog alertDialog;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -37,9 +36,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         // get the view model for data handling
         viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
         // load the app user
-        appUser = viewModel.getAppUser().getValue();
-        // initialize the alert dialog
-        alertDialog = ModalOptionDialog.getInstance(requireContext());
+        appUser = viewModel.getAppUser();
         // load the preferences
         sharedPreferences = requireContext()
                 .getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE);
@@ -130,7 +127,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     } catch (NumberFormatException exception) {
                         // preference can not set
                         // alert dialog to user
-                        alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                        ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                                requireContext(),
                                 "",
                                 getString(R.string.preferences_not_set),
                                 getString(R.string.ok));
@@ -148,8 +146,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     } catch (NumberFormatException exception) {
                         // preference can not set
                         // alert dialog to user
-                        alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
-                                "",
+                        ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                                requireContext(),
+                                getString(R.string.warning),
                                 getString(R.string.preferences_not_set),
                                 getString(R.string.ok));
                         if (Global.DEBUG) {
@@ -174,8 +173,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     } catch (NumberFormatException exception) {
                         // preference can not set
                         // alert dialog to user
-                        alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
-                                "",
+                        ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                                requireContext(),
+                                getString(R.string.warning),
                                 getString(R.string.preferences_not_set),
                                 getString(R.string.ok));
                         if (Global.DEBUG) {
@@ -192,8 +192,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
         } catch (SportsLibraryException exception) {
             // data could not saved
             // alert dialog to user
-            alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
-                    "",
+            ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
+                    requireContext(),
+                    getString(R.string.error),
                     getString(R.string.save_data_error),
                     getString(R.string.ok));
             if (Global.DEBUG) {
@@ -396,8 +397,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
         } catch (SportsLibraryException exception) {
             // data could not saved
             // alert dialog to user
-            alertDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
-                    "",
+            ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
+                    requireContext(),
+                    getString(R.string.error),
                     getString(R.string.save_data_error),
                     getString(R.string.ok));
             if (Global.DEBUG) {

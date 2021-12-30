@@ -1,5 +1,6 @@
 package de.hirola.runningplan.ui.runningplans;
 
+import android.annotation.SuppressLint;
 import de.hirola.runningplan.R;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.model.RunningPlan;
@@ -12,12 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import de.hirola.sportslibrary.model.RunningPlanEntry;
-import de.hirola.sportslibrary.model.RunningUnit;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -39,11 +37,12 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
         this.runningPlans = runningPlans;
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.runningplan_row, parent, false);
+        @SuppressLint("ViewHolder") View rowView = inflater.inflate(R.layout.runningplan_row, parent, false);
         // Laufplan darstellen
         RunningPlan runningPlan = runningPlans.get(position);
         // Name und Status (mittels Bild darstellen)

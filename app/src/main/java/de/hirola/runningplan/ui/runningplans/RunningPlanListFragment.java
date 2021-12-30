@@ -1,9 +1,14 @@
 package de.hirola.runningplan.ui.runningplans;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.widget.ListView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.R;
 
@@ -29,21 +34,34 @@ import java.util.List;
  */
 public class RunningPlanListFragment extends ListFragment {
 
+    private ActivityResultLauncher<Intent> activityResultLauncher;
     // list of all running plans
     private List<RunningPlan> runningPlans;
+    private RunningPlanArrayAdapter listAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // load the running plans
         RunningPlanViewModel viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
-        runningPlans = (viewModel.getRunningPlans()).getValue();
+        runningPlans = viewModel.getRunningPlans();
         // visualize th list of running plans
-        RunningPlanArrayAdapter listAdapter = new RunningPlanArrayAdapter(getContext(),runningPlans);
-        // refresh the ui when the observed data changes
-        // Update the cached copy of the words in the adapter.
-        viewModel.getRunningPlans().observe(this, listAdapter::submitList);
+        listAdapter = new RunningPlanArrayAdapter(requireContext(),runningPlans);
         setListAdapter(listAdapter);
+
+        // handle the return from details activity
+        activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        // reload a fresh list of running plans
+                        runningPlans = viewModel.getRunningPlans();
+                        // update the list ui
+                        listAdapter.submitList(runningPlans);
+                    }
+                });
+
     }
 
     @Override
@@ -53,17 +71,6 @@ public class RunningPlanListFragment extends ListFragment {
         return inflater.inflate(R.layout.fragment_running_plan_list, container, false);
     }
 
-    /**
-     * This method will be called when an item in the list is selected.
-     * Subclasses should override. Subclasses can call
-     * getListView().getItemAtPosition(position) if they need to access the
-     * data associated with the selected item.
-     *
-     * @param l        The ListView where the click happened
-     * @param v        The view that was clicked within the ListView
-     * @param position The position of the view in the list
-     * @param id       The row id of the item that was clicked
-     */
     @Override
     public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
         showDetailsForRunningPlanAtIndex(position);
@@ -72,12 +79,11 @@ public class RunningPlanListFragment extends ListFragment {
     private void showDetailsForRunningPlanAtIndex(int index) {
         if (runningPlans.size() > index) {
             RunningPlan runningPlan = runningPlans.get(index);
-            // starts the RunningPlanDetailsActivity
-            Intent intent = new Intent();
-            intent.setClass(getActivity(), RunningPlanDetailsActivity.class);
+            Intent intent = new Intent(requireContext(), RunningPlanDetailsActivity.class);
             // put the uuid for the selected running plan to the details activity
             intent.putExtra("uuid", runningPlan.getUUID());
-            startActivity(intent);
+            // starts the RunningPlanDetailsActivity
+            activityResultLauncher.launch(intent);
         }
     }
 }

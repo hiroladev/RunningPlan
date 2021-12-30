@@ -1,6 +1,7 @@
 package de.hirola.runningplan.model;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import de.hirola.sportslibrary.PersistentObject;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
@@ -10,7 +11,9 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -26,28 +29,25 @@ public class RunningPlanViewModel extends AndroidViewModel {
 
     // the repository for the app data
     private final RunningPlanRepository repository;
-    // observe data changing in model to refresh the ui
-    private final LiveData<List<RunningPlan>> runningPlans;
-    public LiveData<User> appUser;
 
     public RunningPlanViewModel(Application application) {
         super(application);
         // init the repository
         repository = new RunningPlanRepository(application);
-        runningPlans = repository.getRunningPlans();
-        appUser = repository.getAppUser();
     }
 
-    public @NonNull LiveData<List<RunningPlan>> getRunningPlans() {
-        return runningPlans;
+    public User getAppUser() {
+        return repository.getAppUser();
     }
 
-    public @NonNull LiveData<User> getAppUser() {
-        return appUser;
+    public List<RunningPlan> getRunningPlans() {
+        return repository.getRunningPlans();
     }
 
     public void add(PersistentObject persistentObject) throws SportsLibraryException {
+        // add object to datastore
         repository.add(persistentObject);
+
     }
 
     public void update(PersistentObject persistentObject) throws SportsLibraryException {
