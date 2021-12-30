@@ -12,25 +12,20 @@ import de.hirola.runningplan.R;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.model.User;
 import de.hirola.sportslibrary.ui.ModalOptionDialog;
-import de.hirola.sportslibrary.ui.ModalOptionDialogListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -62,11 +57,13 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
         // app data
         viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
         appUser = viewModel.getAppUser();
-        // get the running plan
+        // training data
+        // live data
+        MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
+        List<RunningPlan> runningPlans = mutableRunningPlans.getValue();
         String runningPlanUUID = getIntent().getStringExtra("uuid");
         if (runningPlanUUID != null) {
             // set the selected running plan for details
-            List<RunningPlan> runningPlans = viewModel.getRunningPlans();
             if (runningPlans != null) {
                 for (RunningPlan plan : runningPlans) {
                     if (plan.getUUID().equalsIgnoreCase(runningPlanUUID)) {
@@ -121,17 +118,16 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
                             this,
                             getString(R.string.question), getString(R.string.remove_active_runningplan),
                             getString(R.string.ok), getString(R.string.cancel),
-                            new ModalOptionDialogListener() {
-                        @Override
-                        public void onButtonClicked(int button) {
-                            if (button == ModalOptionDialog.Button.OK) {
-                                // set the active running plan to null
-                                appUser.setActiveRunningPlan(null);
-                            } else {
-                                activeRunningPlanSwitch.setChecked(true);
-                            }
-                        }
-                    });
+                            button -> {
+                                if (button == ModalOptionDialog.Button.OK) {
+                                    // set the active running plan to null
+                                    appUser.setActiveRunningPlan(null);
+                                } else {
+                                    activeRunningPlanSwitch.setChecked(true);
+                                }
+                            });
+                } else {
+                    appUser.setActiveRunningPlan(runningPlan);
                 }
                 // save the user and the running plan
                 try {
@@ -169,7 +165,7 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
         startWeekSpinnerArrayAdapter = new StartDateArrayAdapter(
                 this,
                 android.R.layout.simple_spinner_item,
-                new ArrayList<LocalDate>());
+                new ArrayList<>());
         // attaching data adapter to spinner with empty list
         startWeekSpinner.setAdapter(startWeekSpinnerArrayAdapter);
     }

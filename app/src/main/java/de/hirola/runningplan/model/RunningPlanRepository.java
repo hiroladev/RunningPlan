@@ -1,7 +1,5 @@
 package de.hirola.runningplan.model;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import de.hirola.runningplan.RunningPlanApplication;
 
 import de.hirola.sportslibrary.DataRepository;

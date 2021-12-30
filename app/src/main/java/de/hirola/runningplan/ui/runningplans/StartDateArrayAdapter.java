@@ -7,7 +7,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import de.hirola.sportslibrary.model.RunningPlan;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;

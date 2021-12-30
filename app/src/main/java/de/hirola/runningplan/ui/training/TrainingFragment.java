@@ -8,6 +8,7 @@ import android.os.SystemClock;
 import android.widget.*;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.lifecycle.ViewModelProvider;
+import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
@@ -45,7 +46,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     private TextView trainingInfolabel;
     // app data
     private RunningPlanViewModel viewModel;
-    // training data
+    // cached list of running plans
     private List<RunningPlan> runningPlans;
     // the actual running plan, selected by the user
     // if no running plan selected, the plan with the lowest order number will be selected
@@ -125,7 +126,11 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 getString(R.string.preference_file), Context.MODE_PRIVATE);
         // load running plans
         viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
-        runningPlans = viewModel.getRunningPlans();
+        // training data
+        // live data
+        MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
+        mutableRunningPlans.observe(this, this::onListChanged);
+        runningPlans = mutableRunningPlans.getValue();
         // initialize attributes
         initializeAttributes();
         // determine if user (app) can use location data
@@ -1046,6 +1051,11 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             }
         }
         return trainingUnitsStringList;
+    }
+
+    // refresh the cached list of running plans
+    private void onListChanged(List<RunningPlan> changedList) {
+        runningPlans = changedList;
     }
 
     // check if valid running plan and training day

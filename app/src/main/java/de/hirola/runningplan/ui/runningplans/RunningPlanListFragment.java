@@ -1,14 +1,10 @@
 package de.hirola.runningplan.ui.runningplans;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.widget.ListView;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.R;
 
@@ -17,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.ListFragment;
+import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.model.RunningPlan;
 
@@ -35,7 +32,8 @@ import java.util.List;
 public class RunningPlanListFragment extends ListFragment {
 
     private ActivityResultLauncher<Intent> activityResultLauncher;
-    // list of all running plans
+    private RunningPlanViewModel viewModel;
+    // cached list of running plans
     private List<RunningPlan> runningPlans;
     private RunningPlanArrayAdapter listAdapter;
 
@@ -43,8 +41,9 @@ public class RunningPlanListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // load the running plans
-        RunningPlanViewModel viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
-        runningPlans = viewModel.getRunningPlans();
+        viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
+        MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
+        runningPlans = mutableRunningPlans.getValue();
         // visualize th list of running plans
         listAdapter = new RunningPlanArrayAdapter(requireContext(),runningPlans);
         setListAdapter(listAdapter);
@@ -52,14 +51,11 @@ public class RunningPlanListFragment extends ListFragment {
         // handle the return from details activity
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        // reload a fresh list of running plans
-                        runningPlans = viewModel.getRunningPlans();
-                        // update the list ui
-                        listAdapter.submitList(runningPlans);
-                    }
+                result -> {
+                    // update the cached list of running plans
+                    runningPlans = viewModel.getRunningPlanes();
+                    // update the list ui
+                    listAdapter.submitList(runningPlans);
                 });
 
     }
@@ -85,5 +81,10 @@ public class RunningPlanListFragment extends ListFragment {
             // starts the RunningPlanDetailsActivity
             activityResultLauncher.launch(intent);
         }
+    }
+
+    // refresh the cached list of running plans
+    private void onListChanged(List<RunningPlan> changedList) {
+        runningPlans = changedList;
     }
 }
