@@ -14,9 +14,9 @@
             android:name="de.hirola.runningplan.ui.training.TrainingFragment"
             android:label="@string/title_training"/>
 
-    <fragment
+    <activity
             android:id="@+id/navigation_running_plans"
-            android:name="de.hirola.runningplan.ui.runningplans.RunningPlanListFragment"
+            android:name="de.hirola.runningplan.ui.runningplans.RunningPlanActivity"
             android:label="@string/title_runningplans"/>
 
     <fragment

@@ -5,6 +5,8 @@ import android.widget.ListView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.R;
 
@@ -16,6 +18,7 @@ import androidx.fragment.app.ListFragment;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.model.RunningPlan;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -32,6 +35,11 @@ import java.util.List;
 public class RunningPlanListFragment extends ListFragment {
 
     private ActivityResultLauncher<Intent> activityResultLauncher;
+    // use in "tablet mode"
+    private boolean isInTabletMode;
+    // last selected running plan (list index)
+    private int lastSelectedIndex;
+    // data
     private RunningPlanViewModel viewModel;
     // cached list of running plans
     private List<RunningPlan> runningPlans;
@@ -40,24 +48,18 @@ public class RunningPlanListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // get the last selected list index (running plan)
+        if (savedInstanceState != null) {
+            lastSelectedIndex = savedInstanceState.getInt("lastSelectedIndex");
+        }
         // load the running plans
-        viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
         MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
+        mutableRunningPlans.observe(requireActivity(), this::onListChanged);
         runningPlans = mutableRunningPlans.getValue();
         // visualize th list of running plans
         listAdapter = new RunningPlanArrayAdapter(requireContext(),runningPlans);
         setListAdapter(listAdapter);
-
-        // handle the return from details activity
-        activityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    // update the cached list of running plans
-                    runningPlans = viewModel.getRunningPlanes();
-                    // update the list ui
-                    listAdapter.submitList(runningPlans);
-                });
-
     }
 
     @Override
@@ -68,18 +70,36 @@ public class RunningPlanListFragment extends ListFragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // save the selected running plan (list index)
+        outState.putInt("lastSelectedIndex", lastSelectedIndex);
+    }
+
+    @Override
     public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
         showDetailsForRunningPlanAtIndex(position);
     }
 
     private void showDetailsForRunningPlanAtIndex(int index) {
         if (runningPlans.size() > index) {
+            lastSelectedIndex = index;
             RunningPlan runningPlan = runningPlans.get(index);
-            Intent intent = new Intent(requireContext(), RunningPlanDetailsActivity.class);
-            // put the uuid for the selected running plan to the details activity
-            intent.putExtra("uuid", runningPlan.getUUID());
-            // starts the RunningPlanDetailsActivity
-            activityResultLauncher.launch(intent);
+            String uuid = runningPlan.getUUID();
+            RunningPlanDetailsFragment detailsFragment = null;
+            Fragment fragment = getChildFragmentManager().findFragmentById(android.R.id.content);
+            if (fragment instanceof RunningPlanDetailsFragment) {
+                detailsFragment = (RunningPlanDetailsFragment) fragment;
+            }
+            if (detailsFragment == null || detailsFragment.getUUID().equalsIgnoreCase(uuid)) {
+                // create a new fragment
+                detailsFragment = RunningPlanDetailsFragment.newInstance(uuid);
+            }
+            // starts the RunningPlanDetailsFragment
+            FragmentTransaction ft = requireActivity().getSupportFragmentManager().beginTransaction();
+            ft.replace(android.R.id.content, detailsFragment);
+            ft.addToBackStack(null);
+            ft.commit();
         }
     }
 

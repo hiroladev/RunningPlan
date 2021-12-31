@@ -125,7 +125,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         sharedPreferences = requireContext().getSharedPreferences(
                 getString(R.string.preference_file), Context.MODE_PRIVATE);
         // load running plans
-        viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
         // training data
         // live data
         MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();

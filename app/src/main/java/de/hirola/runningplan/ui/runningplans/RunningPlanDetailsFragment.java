@@ -1,17 +1,18 @@
 package de.hirola.runningplan.ui.runningplans;
 
 import android.content.res.Resources;
-import android.view.View;
+import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.TooltipCompat;
+import androidx.fragment.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.R;
-
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.Global;
@@ -27,20 +28,11 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Copyright 2021 by Michael Schmidt, Hirola Consulting
- * This software us licensed under the AGPL-3.0 or later.
- *
- * UI für die detaillierte Darstellung eines Laufplanes
- *
- *
- * @author Michael Schmidt (Hirola)
- * @since 1.1.1
- */
-public class RunningPlanDetailsActivity extends AppCompatActivity implements View.OnClickListener {
+public class RunningPlanDetailsFragment extends Fragment implements View.OnClickListener {
 
     private RunningPlanViewModel viewModel;
     private User appUser;
+    private String runningPlanUUID;
     private RunningPlan runningPlan;
     private boolean isUsersRunningPlan;
     private TextView runningPlanNameTextView;
@@ -51,17 +43,34 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
     private Spinner startWeekSpinner;
     private StartDateArrayAdapter startWeekSpinnerArrayAdapter;
 
+    // needed to instantiate fragment
+    public RunningPlanDetailsFragment() {
+        // Required empty public constructor
+    }
+
+    public static RunningPlanDetailsFragment newInstance(String uuid) {
+        RunningPlanDetailsFragment fragment = new RunningPlanDetailsFragment();
+        Bundle args = new Bundle();
+        args.putString("uuid", uuid);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // get the argument - the uuid for the selected running plan
+        if (getArguments() != null) {
+            runningPlanUUID = getArguments().getString("uuid");
+        } else {
+            runningPlanUUID = "";
+        }
         // app data
-        viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
         appUser = viewModel.getAppUser();
-        // training data
-        // live data
         MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
         List<RunningPlan> runningPlans = mutableRunningPlans.getValue();
-        String runningPlanUUID = getIntent().getStringExtra("uuid");
+
         if (runningPlanUUID != null) {
             // set the selected running plan for details
             if (runningPlans != null) {
@@ -73,17 +82,24 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
             }
         }
         // active running plan?
-        if (appUser != null) {
+        if (appUser != null && runningPlan != null) {
             RunningPlan activeRunningPlan = appUser.getActiveRunningPlan();
             if (activeRunningPlan != null) {
                 isUsersRunningPlan = activeRunningPlan.getUUID().equalsIgnoreCase(runningPlan.getUUID());
             }
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_running_plan_details, container, false);
         // initialize the ui
-        setContentView(R.layout.activity_running_plan_details);
-        setViewElements();
+        setViewElements(view);
         // show the running plan values in view
         showRunningPlanInView();
+        return view;
     }
 
     @Override
@@ -97,7 +113,7 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
                     String runningPlanRemarks = runningPlanRemarksTextView.getText().toString();
                     if (runningPlanName.length() == 0) {
                         ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
-                                this,
+                                requireContext(),
                                 getString(R.string.hint), getString(R.string.name_must_be_not_null),
                                 getString(R.string.ok));
                         return;
@@ -115,7 +131,7 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
                 if (isUsersRunningPlan && !activeRunningPlanSwitch.isChecked()) {
                     // user would not like the running plan as active
                     ModalOptionDialog.showOptionDialog(
-                            this,
+                            requireContext(),
                             getString(R.string.question), getString(R.string.remove_active_runningplan),
                             getString(R.string.ok), getString(R.string.cancel),
                             button -> {
@@ -136,7 +152,7 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
                 } catch (SportsLibraryException e) {
                     ModalOptionDialog.showMessageDialog(
                             ModalOptionDialog.DialogStyle.CRITICAL,
-                            this,
+                            requireContext(),
                             getString(R.string.error), getString(R.string.save_data_error),
                             getString(R.string.ok));
                     if (Global.DEBUG) {
@@ -148,22 +164,26 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
         }
     }
 
-    private void setViewElements() {
+    public String getUUID() {
+        return runningPlanUUID;
+    }
+
+    private void setViewElements(View view) {
         // initialize the text views
-        runningPlanNameTextView = findViewById(R.id.activity_running_plan_details_edit_runningplan_name);
-        runningPlanRemarksTextView = findViewById(R.id.activity_running_plan_details_edit_runningplan_remarks);
+        runningPlanNameTextView = view.findViewById(R.id.activity_running_plan_details_edit_runningplan_name);
+        runningPlanRemarksTextView = view.findViewById(R.id.activity_running_plan_details_edit_runningplan_remarks);
         // initialize the button
-        showTrainingDetailsButton = findViewById(R.id.activity_runningplan_details_button_training_details);
+        showTrainingDetailsButton = view.findViewById(R.id.activity_runningplan_details_button_training_details);
         showTrainingDetailsButton.setOnClickListener(this);
-        saveRunningPlanButton = findViewById(R.id.activity_running_plan_details_button_save);
+        saveRunningPlanButton = view.findViewById(R.id.activity_running_plan_details_button_save);
         saveRunningPlanButton.setOnClickListener(this);
         // initialize the switch
-        activeRunningPlanSwitch = findViewById(R.id.activity_running_plan_details_switch_active_runningplan);
+        activeRunningPlanSwitch = view.findViewById(R.id.activity_running_plan_details_switch_active_runningplan);
         // initialize the spinner
-        startWeekSpinner = findViewById(R.id.activity_running_plan_details_spinner_start_week);
+        startWeekSpinner = view.findViewById(R.id.activity_running_plan_details_spinner_start_week);
         // creating adapter for spinner with an empty list
         startWeekSpinnerArrayAdapter = new StartDateArrayAdapter(
-                this,
+                requireContext(),
                 android.R.layout.simple_spinner_item,
                 new ArrayList<>());
         // attaching data adapter to spinner with empty list
@@ -182,7 +202,7 @@ public class RunningPlanDetailsActivity extends AppCompatActivity implements Vie
                     String remarksResourceString = runningPlan.getRemarks();
                     if (remarksResourceString.length() > 0) {
                         int remarksResourceStringId = getResources().getIdentifier(remarksResourceString,
-                                "string", getPackageName());
+                                "string", requireActivity().getPackageName());
                         String remarks = getString(remarksResourceStringId);
                         runningPlanRemarksTextView.setText(remarks);
                     }

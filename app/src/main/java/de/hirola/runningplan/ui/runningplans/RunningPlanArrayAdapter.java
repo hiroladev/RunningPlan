@@ -1,6 +1,5 @@
 package de.hirola.runningplan.ui.runningplans;
 
-import android.annotation.SuppressLint;
 import de.hirola.runningplan.R;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.model.RunningPlan;
@@ -37,12 +36,11 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
         this.runningPlans = runningPlans;
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        @SuppressLint("ViewHolder") View rowView = inflater.inflate(R.layout.runningplan_row, parent, false);
+        View rowView = inflater.inflate(R.layout.runningplan_row, parent, false);
         // Laufplan darstellen
         RunningPlan runningPlan = runningPlans.get(position);
         // Name und Status (mittels Bild darstellen)
@@ -120,6 +118,7 @@ public class RunningPlanArrayAdapter extends ArrayAdapter<RunningPlan> {
     public void submitList(List<RunningPlan> runningPlans) {
         // update the data
         this.runningPlans = runningPlans;
+        System.out.println("---------------------List updated----------------------------");
         // refresh the view
         notifyDataSetChanged();
     }
