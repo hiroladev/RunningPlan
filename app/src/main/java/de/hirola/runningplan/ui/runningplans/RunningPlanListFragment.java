@@ -87,9 +87,12 @@ public class RunningPlanListFragment extends ListFragment {
             RunningPlan runningPlan = runningPlans.get(index);
             String uuid = runningPlan.getUUID();
             RunningPlanDetailsFragment detailsFragment = null;
-            Fragment fragment = getChildFragmentManager().findFragmentById(android.R.id.content);
-            if (fragment instanceof RunningPlanDetailsFragment) {
-                detailsFragment = (RunningPlanDetailsFragment) fragment;
+            List<Fragment> fragments = requireActivity().getSupportFragmentManager().getFragments();
+            for (Fragment fragment : fragments) {
+                if (fragment instanceof RunningPlanDetailsFragment) {
+                    detailsFragment = (RunningPlanDetailsFragment) fragment;
+                    break;
+                }
             }
             if (detailsFragment == null || detailsFragment.getUUID().equalsIgnoreCase(uuid)) {
                 // create a new fragment
