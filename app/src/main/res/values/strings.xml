@@ -149,5 +149,7 @@
     <string name="notifications">Benachrichtigungen</string>
     <string name="todo_data_summary_on" translatable="false">Summary when on</string>
     <string name="todo_data_summary_off" translatable="false">Summary when off</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

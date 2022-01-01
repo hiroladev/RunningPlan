@@ -4,7 +4,6 @@ import de.hirola.runningplan.databinding.ActivityMainBinding;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 
 import android.os.Bundle;
-import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -25,9 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        // initialize the view model
-        runningPlanViewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each

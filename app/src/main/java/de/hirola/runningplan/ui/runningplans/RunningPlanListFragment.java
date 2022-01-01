@@ -1,13 +1,12 @@
 package de.hirola.runningplan.ui.runningplans;
 
-import android.content.Intent;
+import android.widget.Button;
 import android.widget.ListView;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import de.hirola.runningplan.R;
 
 import android.os.Bundle;
@@ -34,16 +33,10 @@ import java.util.List;
  */
 public class RunningPlanListFragment extends ListFragment {
 
-    private ActivityResultLauncher<Intent> activityResultLauncher;
-    // use in "tablet mode"
-    private boolean isInTabletMode;
     // last selected running plan (list index)
     private int lastSelectedIndex;
-    // data
-    private RunningPlanViewModel viewModel;
     // cached list of running plans
     private List<RunningPlan> runningPlans;
-    private RunningPlanArrayAdapter listAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,12 +46,13 @@ public class RunningPlanListFragment extends ListFragment {
             lastSelectedIndex = savedInstanceState.getInt("lastSelectedIndex");
         }
         // load the running plans
-        viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
+        // data
+        RunningPlanViewModel viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
         MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
         mutableRunningPlans.observe(requireActivity(), this::onListChanged);
         runningPlans = mutableRunningPlans.getValue();
         // visualize th list of running plans
-        listAdapter = new RunningPlanArrayAdapter(requireContext(),runningPlans);
+        RunningPlanArrayAdapter listAdapter = new RunningPlanArrayAdapter(requireContext(), runningPlans);
         setListAdapter(listAdapter);
     }
 
@@ -66,7 +60,28 @@ public class RunningPlanListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_running_plan_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_running_plan_list, container, false);
+        FloatingActionButton addRunningPlanButton = view.findViewById(R.id.button_add_runningplan);
+        addRunningPlanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddRunningPlanFragment addRunningPlanFragment = null;
+                List<Fragment> fragments = getParentFragmentManager().getFragments();
+                for (Fragment fragment : fragments) {
+                    if (fragment instanceof AddRunningPlanFragment) {
+                        addRunningPlanFragment = (AddRunningPlanFragment) fragment;
+                        break;
+                    }
+                }
+                if (addRunningPlanFragment == null) {
+                    // create a new fragment
+                    addRunningPlanFragment = new AddRunningPlanFragment();
+                }
+                // starts the RunningPlanAddFragment
+                showFragment(addRunningPlanFragment);
+            }
+        });
+        return view;
     }
 
     @Override
@@ -87,7 +102,7 @@ public class RunningPlanListFragment extends ListFragment {
             RunningPlan runningPlan = runningPlans.get(index);
             String uuid = runningPlan.getUUID();
             RunningPlanDetailsFragment detailsFragment = null;
-            List<Fragment> fragments = requireActivity().getSupportFragmentManager().getFragments();
+            List<Fragment> fragments = getParentFragmentManager().getFragments();
             for (Fragment fragment : fragments) {
                 if (fragment instanceof RunningPlanDetailsFragment) {
                     detailsFragment = (RunningPlanDetailsFragment) fragment;
@@ -99,11 +114,18 @@ public class RunningPlanListFragment extends ListFragment {
                 detailsFragment = RunningPlanDetailsFragment.newInstance(uuid);
             }
             // starts the RunningPlanDetailsFragment
-            FragmentTransaction ft = requireActivity().getSupportFragmentManager().beginTransaction();
-            ft.replace(android.R.id.content, detailsFragment);
-            ft.addToBackStack(null);
-            ft.commit();
+            showFragment(detailsFragment);
         }
+    }
+
+    private void showFragment(Fragment fragment) {
+        // hides the RunningPlanListFragment
+        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+        fragmentTransaction.hide(this);
+        // starts the RunningPlanDetailsFragment
+        fragmentTransaction.replace(R.id.fragment_running_plan_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     // refresh the cached list of running plans
