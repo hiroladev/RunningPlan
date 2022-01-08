@@ -170,17 +170,17 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
 
     private void setViewElements(View view) {
         // initialize the text views
-        runningPlanNameTextView = view.findViewById(R.id.activity_running_plan_details_edit_runningplan_name);
-        runningPlanRemarksTextView = view.findViewById(R.id.activity_running_plan_details_edit_runningplan_remarks);
+        runningPlanNameTextView = view.findViewById(R.id.edittext_running_plan_name_fragment_running_plan_details);
+        runningPlanRemarksTextView = view.findViewById(R.id.edittext_running_plan_remarks_fragment_running_plan_details);
         // initialize the button
-        showTrainingDetailsButton = view.findViewById(R.id.activity_runningplan_details_button_training_details);
+        showTrainingDetailsButton = view.findViewById(R.id.button_training_details_fragment_running_plan_details);
         showTrainingDetailsButton.setOnClickListener(this);
-        saveRunningPlanButton = view.findViewById(R.id.activity_running_plan_details_button_save);
+        saveRunningPlanButton = view.findViewById(R.id.button_save_fragment_running_plan_details);
         saveRunningPlanButton.setOnClickListener(this);
         // initialize the switch
-        activeRunningPlanSwitch = view.findViewById(R.id.activity_running_plan_details_switch_active_runningplan);
+        activeRunningPlanSwitch = view.findViewById(R.id.switch_compat_fragment_running_plan_details);
         // initialize the spinner
-        startWeekSpinner = view.findViewById(R.id.activity_running_plan_details_spinner_start_week);
+        startWeekSpinner = view.findViewById(R.id.spinner_start_week_fragment_running_plan_details);
         // creating adapter for spinner with an empty list
         startWeekSpinnerArrayAdapter = new StartDateArrayAdapter(
                 requireContext(),

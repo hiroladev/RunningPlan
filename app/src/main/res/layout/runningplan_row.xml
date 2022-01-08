@@ -8,46 +8,54 @@ A row view to show running plan details in list.
 @author Michael Schmidt (Hirola)
 @since 1.1.1
 </copyright-->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <!--- Name des Laufplans -->
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <!--- Status des Laufplans, abgeschlossen, aktueller Plan, unvollständig-->
-        <ImageView
-                android:id="@+id/runningplan_row_state_imageview"
-                app:srcCompat="@drawable/unused20x20"
-                android:contentDescription="@string/state"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_weight="1"/>
-        <!--- Name des Laufplans-->
-        <TextView
-                android:id="@+id/runningplan_row_name_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        />
-    </LinearLayout>
-
-    <!--- Beschreibung des Laufplans-->
+    <ImageView
+            android:id="@+id/runningplan_row_state_imageview"
+            app:srcCompat="@drawable/unused20x20"
+            android:contentDescription="@string/state"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_weight="1" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="15dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="10dp"/>
+    <TextView
+            android:id="@+id/runningplan_row_name_textview"
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:ems="10"
+            android:clickable="false"
+            android:focusable="false"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintStart_toEndOf="@+id/runningplan_row_state_imageview" android:layout_marginStart="5dp"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="15dp"
+            app:layout_constraintHorizontal_bias="1.0"/>
     <TextView
             android:id="@+id/runningplan_row_remarks_textview"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintEnd_toEndOf="@+id/runningplan_row_name_textview"
+            app:layout_constraintStart_toStartOf="@+id/runningplan_row_state_imageview"
+            app:layout_constraintTop_toBottomOf="@+id/runningplan_row_name_textview"
+            android:layout_marginTop="5dp"
+            app:layout_constraintHorizontal_bias="0.0"/>
 
-    <!--- Details des Laufplans-->
     <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintTop_toBottomOf="@+id/runningplan_row_remarks_textview"
+            app:layout_constraintStart_toStartOf="@+id/runningplan_row_remarks_textview"
+            app:layout_constraintEnd_toEndOf="@+id/runningplan_row_remarks_textview">
 
         <!--- Startdatum-->
         <ImageView
@@ -91,9 +99,5 @@ A row view to show running plan details in list.
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
     </LinearLayout>
-    <androidx.constraintlayout.widget.Barrier
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:barrierDirection="left" android:layout_weight="2"/>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

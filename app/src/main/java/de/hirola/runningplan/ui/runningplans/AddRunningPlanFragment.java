@@ -1,17 +1,33 @@
 package de.hirola.runningplan.ui.runningplans;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.model.MutableListLiveData;
+import de.hirola.runningplan.RunningPlanApplication;
 import de.hirola.runningplan.model.RunningPlanViewModel;
+import de.hirola.sportslibrary.DataRepository;
+import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
+import de.hirola.sportslibrary.ui.ModalOptionDialog;
+import de.hirola.sportslibrary.util.RunningPlanTemplate;
+import de.hirola.sportslibrary.util.TemplateLoader;
 
-import java.util.List;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -22,10 +38,19 @@ import java.util.List;
  * @author Michael Schmidt (Hirola)
  * @since 1.1.1
  */
-public class AddRunningPlanFragment extends Fragment {
+public class AddRunningPlanFragment extends Fragment implements View.OnClickListener {
 
+    // view model
+    private RunningPlanViewModel viewModel;
     // cached list of running plans
-    private List<RunningPlan> runningPlans;
+    private RunningPlanTemplate runningPlanTemplate;
+    private ActivityResultLauncher<Intent> someActivityResultLauncher;
+    private TextView runningPlanNameTextView;
+    private TextView runningPlanRemarksTextView;
+    private TextView importFileNameLabel;
+    private Button selectImportFileButton;
+    private Button importRunningPlanButton;
+    private SwitchCompat importAsTemplateSwitch;
 
     public AddRunningPlanFragment() {
         // Required empty public constructor
@@ -34,15 +59,142 @@ public class AddRunningPlanFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RunningPlanViewModel viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
-        MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
-        runningPlans = mutableRunningPlans.getValue();
+        // add ActivityResultLauncher for file dialog
+        someActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            // There are no request codes
+                            Intent data = result.getData();
+                            loadTemplateFromFile(data);
+                        }
+                    }
+                });
+        viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_running_plan, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_running_plan, container, false);
+        // initialize the ui
+        setViewElements(view);
+        return view;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == selectImportFileButton) {
+            // select the template file
+            selectTemplateFile();
+        }
+        if (v == importRunningPlanButton) {
+            // import the running plan template
+            importRunningPlanTemplate();
+        }
+    }
+
+    private void setViewElements(View view) {
+        // initialize the text views
+        runningPlanNameTextView = view.findViewById(R.id.edittext_running_plan_name_fragment_add_running_plan);
+        runningPlanRemarksTextView = view.findViewById(R.id.edittext_running_plan_remarks_fragment_add_running_plan);
+        importFileNameLabel = view.findViewById(R.id.label_file_name_fragment_add_running_plan);
+        // initialize the button
+        selectImportFileButton = view.findViewById(R.id.button_select_import_fragment_add_running_plan);
+        selectImportFileButton.setOnClickListener(this);
+        importRunningPlanButton = view.findViewById(R.id.button_import_fragment_add_running_plan);
+        importRunningPlanButton.setOnClickListener(this);
+        // initialize the switch
+        importAsTemplateSwitch = view.findViewById(R.id.switch_compat_fragment_add_running_plan);
+    }
+
+    private void selectTemplateFile() {
+        // start the select file dialog
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT)
+            .addCategory(Intent.CATEGORY_OPENABLE)
+            .setType("*/*");
+
+        someActivityResultLauncher.launch((Intent.createChooser(intent, getString(R.string.select_import_file))));
+    }
+
+    private void loadTemplateFromFile(Intent data) {
+        if (data != null) {
+            Uri uri = data.getData();
+            importFileNameLabel.setText(uri.getLastPathSegment());
+            try {
+                InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
+                RunningPlanApplication runningPlanApplication = ((RunningPlanApplication) requireActivity().getApplication());
+                DataRepository dataRepository = runningPlanApplication.getSportsLibrary().getDataRepository();
+                TemplateLoader templateLoader = new TemplateLoader(dataRepository);
+                importFileNameLabel.setText(getString(R.string.loading_file_succeed));
+                // load the template from json
+                runningPlanTemplate = templateLoader.loadRunningPlanTemplateFromJSON(inputStream);
+                // show data from template in ui
+                runningPlanNameTextView.setText(runningPlanTemplate.getName());
+                runningPlanRemarksTextView.setText(runningPlanTemplate.getRemarks());
+                // enable the import button
+                importRunningPlanButton.setEnabled(true);
+            } catch (FileNotFoundException | SportsLibraryException exception) {
+                exception.printStackTrace();
+            }
+        } else {
+            ModalOptionDialog.showMessageDialog(
+                    ModalOptionDialog.DialogStyle.WARNING,
+                    requireContext(),
+                    null,
+                    getString(R.string.no_file_selected),
+                    null);
+        }
+    }
+
+    private void importRunningPlanTemplate() {
+        if (runningPlanTemplate != null) {
+            String title = runningPlanNameTextView.getText().toString();
+            String remarks = runningPlanRemarksTextView.getText().toString();
+            if (title.length() == 0) {
+                ModalOptionDialog.showMessageDialog(
+                        ModalOptionDialog.DialogStyle.WARNING,
+                        requireContext(),
+                        null,
+                        getString(R.string.name_must_be_not_null),
+                        null);
+            } else {
+                try {
+                    RunningPlanApplication runningPlanApplication = ((RunningPlanApplication) requireActivity().getApplication());
+                    DataRepository dataRepository = runningPlanApplication.getSportsLibrary().getDataRepository();
+                    TemplateLoader templateLoader = new TemplateLoader(dataRepository);
+                    // create an updated template from import
+                    RunningPlanTemplate runningPlanTemplateToImport = new RunningPlanTemplate(title, remarks,
+                            runningPlanTemplate.getOrderNumber(),
+                            importAsTemplateSwitch.isChecked(),
+                            runningPlanTemplate.getTrainingUnits());
+                    RunningPlan runningPlan = templateLoader.importRunningPlanFromTemplate(runningPlanTemplateToImport);
+                    if (runningPlan != null) {
+                        viewModel.add(runningPlan);
+                        // info to user
+                        ModalOptionDialog.showMessageDialog(
+                                ModalOptionDialog.DialogStyle.INFORMATION,
+                                requireContext(),
+                                null,
+                                getString(R.string.import_succeed),
+                                null);
+                        // back to the running plan list
+                        getParentFragmentManager().popBackStack();
+                    } else {
+                        ModalOptionDialog.showMessageDialog(
+                                ModalOptionDialog.DialogStyle.WARNING,
+                                requireContext(),
+                                null,
+                                getString(R.string.import_failed),
+                                null);
+                    }
+                } catch (SportsLibraryException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
     }
 }

@@ -13,15 +13,14 @@ The running plan view, contains different fragments.
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".MainActivity">
 
-    <ListView
-            android:id="@android:id/list"
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_running_plans"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            tools:listitem="@layout/runningplan_row"
-            android:padding="20dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

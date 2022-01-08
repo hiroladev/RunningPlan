@@ -6,13 +6,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <EditText
-            android:id="@+id/activity_running_plan_details_label_runningplan_name"
+            android:id="@+id/label_running_plan_name_fragment_running_plan_details"
             android:layout_width="152dp"
             android:layout_height="44dp"
             android:inputType="none"
             android:text="@string/running_plan_name"
             android:importantForAutofill="no"
-            android:labelFor="@id/activity_running_plan_details_edit_runningplan_name"
+            android:labelFor="@id/edittext_running_plan_name_fragment_add_running_plan"
             android:ems="10"
             android:clickable="false"
             android:focusable="false"
@@ -24,16 +24,16 @@
             android:layout_marginTop="15dp" android:layout_marginStart="10dp"/>
 
     <EditText
-            android:id="@+id/activity_running_plan_details_edit_runningplan_name"
+            android:id="@+id/edittext_running_plan_name_fragment_running_plan_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
-            app:layout_constraintStart_toEndOf="@+id/activity_running_plan_details_label_runningplan_name"
+            app:layout_constraintStart_toEndOf="@+id/label_running_plan_name_fragment_running_plan_details"
             android:layout_marginStart="5dp" android:layout_marginEnd="10dp" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="15dp"/>
     <EditText
-            android:id="@+id/activity_running_plan_details_label_runningplan_remarks"
+            android:id="@+id/label_running_plan_remarks_fragment_running_plan_details"
             android:layout_width="368dp"
             android:layout_height="46dp"
             android:inputType="none"
@@ -44,43 +44,43 @@
             android:minHeight="48dp"
             android:textStyle="bold"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="@+id/activity_running_plan_details_edit_runningplan_name"
-            app:layout_constraintTop_toBottomOf="@+id/activity_running_plan_details_edit_runningplan_name"
+            app:layout_constraintEnd_toEndOf="@+id/edittext_running_plan_name_fragment_running_plan_details"
+            app:layout_constraintTop_toBottomOf="@+id/edittext_running_plan_name_fragment_running_plan_details"
             android:layout_marginTop="15dp"
-            app:layout_constraintStart_toStartOf="@+id/activity_running_plan_details_label_runningplan_name"/>
+            app:layout_constraintStart_toStartOf="@+id/label_running_plan_name_fragment_running_plan_details"/>
     <EditText
             android:layout_width="362dp"
             android:layout_height="216dp"
             android:inputType="textMultiLine"
             android:gravity="start|top"
             android:ems="10"
-            android:id="@+id/activity_running_plan_details_edit_runningplan_remarks"
-            app:layout_constraintStart_toStartOf="@+id/activity_running_plan_details_label_runningplan_remarks"
-            app:layout_constraintTop_toBottomOf="@+id/activity_running_plan_details_label_runningplan_remarks"
+            android:id="@+id/edittext_running_plan_remarks_fragment_running_plan_details"
+            app:layout_constraintStart_toStartOf="@+id/label_running_plan_remarks_fragment_running_plan_details"
+            app:layout_constraintTop_toBottomOf="@+id/label_running_plan_remarks_fragment_running_plan_details"
             android:layout_marginTop="15dp"
-            app:layout_constraintEnd_toEndOf="@+id/activity_running_plan_details_label_runningplan_remarks"
+            app:layout_constraintEnd_toEndOf="@+id/label_running_plan_remarks_fragment_running_plan_details"
             app:layout_constraintHorizontal_bias="0.0"/>
     <Button
-            android:id="@+id/activity_runningplan_details_button_training_details"
+            android:id="@+id/button_training_details_fragment_running_plan_details"
             android:text="@string/show_training_details"
             android:layout_height="43dp"
             android:layout_width="wrap_content"
             android:layout_marginTop="20dp"
-            app:layout_constraintTop_toBottomOf="@+id/activity_running_plan_details_edit_runningplan_remarks"
-            app:layout_constraintStart_toStartOf="@+id/activity_running_plan_details_edit_runningplan_remarks"/>
+            app:layout_constraintTop_toBottomOf="@+id/edittext_running_plan_remarks_fragment_running_plan_details"
+            app:layout_constraintStart_toStartOf="@+id/edittext_running_plan_remarks_fragment_running_plan_details"/>
 
     <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/activity_running_plan_details_switch_active_runningplan"
+            android:id="@+id/switch_compat_fragment_running_plan_details"
             android:text="@string/select_as_active_runningplan"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            app:layout_constraintTop_toBottomOf="@+id/activity_runningplan_details_button_training_details"
-            app:layout_constraintStart_toStartOf="@+id/activity_runningplan_details_button_training_details"
-            app:layout_constraintEnd_toEndOf="@+id/activity_runningplan_details_button_training_details"/>
+            app:layout_constraintTop_toBottomOf="@+id/button_training_details_fragment_running_plan_details"
+            app:layout_constraintStart_toStartOf="@+id/button_training_details_fragment_running_plan_details"
+            app:layout_constraintEnd_toEndOf="@+id/button_training_details_fragment_running_plan_details"/>
 
     <EditText
-            android:id="@+id/activity_running_plan_details_label_start_week"
+            android:id="@+id/label_start_week_fragment_running_plan_details"
             android:layout_width="0dp"
             android:layout_height="44dp"
             android:inputType="none"
@@ -92,25 +92,25 @@
             android:minHeight="48dp"
             android:textStyle="bold"
             android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@+id/activity_running_plan_details_switch_active_runningplan"
+            app:layout_constraintTop_toBottomOf="@+id/switch_compat_fragment_running_plan_details"
             android:layout_marginTop="15dp"
-            app:layout_constraintStart_toStartOf="@+id/activity_running_plan_details_switch_active_runningplan"
-            app:layout_constraintEnd_toEndOf="@+id/activity_running_plan_details_switch_active_runningplan"/>
+            app:layout_constraintStart_toStartOf="@+id/switch_compat_fragment_running_plan_details"
+            app:layout_constraintEnd_toEndOf="@+id/switch_compat_fragment_running_plan_details"/>
     <Spinner
-            android:id="@+id/activity_running_plan_details_spinner_start_week"
+            android:id="@+id/spinner_start_week_fragment_running_plan_details"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/activity_running_plan_details_label_start_week"
+            app:layout_constraintTop_toBottomOf="@+id/label_start_week_fragment_running_plan_details"
             android:layout_marginTop="15dp"
-            app:layout_constraintStart_toStartOf="@+id/activity_running_plan_details_label_start_week"
-            app:layout_constraintEnd_toEndOf="@+id/activity_running_plan_details_label_start_week"/>
+            app:layout_constraintStart_toStartOf="@+id/label_start_week_fragment_running_plan_details"
+            app:layout_constraintEnd_toEndOf="@+id/label_start_week_fragment_running_plan_details"/>
     <Button
-            android:id="@+id/activity_running_plan_details_button_save"
+            android:id="@+id/button_save_fragment_running_plan_details"
             android:text="@string/save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@+id/activity_running_plan_details_spinner_start_week"
-            app:layout_constraintTop_toBottomOf="@+id/activity_running_plan_details_spinner_start_week"
+            app:layout_constraintStart_toStartOf="@+id/spinner_start_week_fragment_running_plan_details"
+            app:layout_constraintTop_toBottomOf="@+id/spinner_start_week_fragment_running_plan_details"
             android:layout_marginTop="20dp"/>
 
 

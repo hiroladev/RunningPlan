@@ -32,6 +32,8 @@
     <string name="save_data_error">Die Daten konnten nicht gespeichert werden.</string>
     <string name="name_must_be_not_null">Der Name darf nicht leer sein.</string>
     <string name="remove_active_runningplan">Soll mit diesem Laufplan wirklich nicht mehr trainiert werden?</string>
+    <string name="no_file_selected">Es wurde keine Datei ausgewählt.</string>
+    <string name="no_valid_file_format">Die gewählte Datei besitzt nicht das richtige Format (json).</string>
 
     <!-- Common -->
     <string name="name">Name</string>
@@ -57,6 +59,12 @@
     <string name="pause">Pause</string>
     <string name="stop">Stopp</string>
     <string name="save">Speichern</string>
+    <string name="import_running_plan">Importieren</string>
+    <string name="select_import_file">Importdatei auswählen</string>
+    <string name="loading_file_succeed">Einlesen der Datei erfolgreich</string>
+    <string name="mark_as_template">als Vorlage markieren</string>
+    <string name="import_failed">Der Import ist fehlgeschlagen.</string>
+    <string name="import_succeed">Import erfolgreich</string>
 
     <!-- Infos -->
     <string name="start_training">Start des Trainings</string>
@@ -149,7 +157,5 @@
     <string name="notifications">Benachrichtigungen</string>
     <string name="todo_data_summary_on" translatable="false">Summary when on</string>
     <string name="todo_data_summary_off" translatable="false">Summary when off</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

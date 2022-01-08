@@ -1,11 +1,14 @@
 package de.hirola.runningplan.ui.runningplans;
 
-import android.widget.Button;
 import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import de.hirola.runningplan.R;
 
@@ -17,6 +20,8 @@ import androidx.fragment.app.ListFragment;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.model.RunningPlan;
+import de.hirola.sportslibrary.ui.ModalOptionDialog;
+import de.hirola.sportslibrary.ui.ModalOptionDialogListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -31,7 +36,7 @@ import java.util.List;
  * @author Michael Schmidt (Hirola)
  * @since 1.1.1
  */
-public class RunningPlanListFragment extends ListFragment {
+public class RunningPlanListFragment extends Fragment {
 
     // last selected running plan (list index)
     private int lastSelectedIndex;
@@ -51,9 +56,6 @@ public class RunningPlanListFragment extends ListFragment {
         MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
         mutableRunningPlans.observe(requireActivity(), this::onListChanged);
         runningPlans = mutableRunningPlans.getValue();
-        // visualize th list of running plans
-        RunningPlanArrayAdapter listAdapter = new RunningPlanArrayAdapter(requireContext(), runningPlans);
-        setListAdapter(listAdapter);
     }
 
     @Override
@@ -61,6 +63,47 @@ public class RunningPlanListFragment extends ListFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_running_plan_list, container, false);
+        // visualize the list of running plans
+        RunningPlanRecyclerView listAdapter = new RunningPlanRecyclerView(requireContext(), runningPlans);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView_running_plans);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        // remove running plan on swipe to left
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT ) {
+            @Override
+            public boolean onMove(@NonNull @NotNull RecyclerView recyclerView,
+                                  @NonNull @NotNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull @NotNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                // warning before remove
+                ModalOptionDialog.showOptionDialog(requireContext(),
+                        null,
+                        getString(R.string.warning),
+                        null,
+                        null,
+                        new ModalOptionDialogListener() {
+                            @Override
+                            public void onButtonClicked(int button) {
+                                if (button == ModalOptionDialog.Button.OK) {
+                                    // get the running plan
+                                    int position = viewHolder.getBindingAdapterPosition();
+                                    System.out.println(position);
+                                    // remove running plan
+
+                                }
+                            }
+                        });
+                //listAdapter.notifyDataSetChanged();
+            }
+        });
+
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+        recyclerView.setAdapter(listAdapter);
+        // button to add (import) new templates
         FloatingActionButton addRunningPlanButton = view.findViewById(R.id.button_add_runningplan);
         addRunningPlanButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,7 +134,6 @@ public class RunningPlanListFragment extends ListFragment {
         outState.putInt("lastSelectedIndex", lastSelectedIndex);
     }
 
-    @Override
     public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
         showDetailsForRunningPlanAtIndex(position);
     }

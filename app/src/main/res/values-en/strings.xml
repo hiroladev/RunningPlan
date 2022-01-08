@@ -102,4 +102,12 @@
     <string name="name_must_be_not_null">The name must be not null.</string>
     <string name="error">Error</string>
     <string name="warning">Warning</string>
+    <string name="import_running_plan">Import</string>
+    <string name="select_import_file">Select import file</string>
+    <string name="mark_as_template">Mark as template</string>
+    <string name="no_file_selected">-</string>
+    <string name="no_valid_file_format">-</string>
+    <string name="import_succeed">Import succeed</string>
+    <string name="import_failed">Import failed</string>
+    <string name="loading_file_succeed">File successfully read</string>
 </resources>

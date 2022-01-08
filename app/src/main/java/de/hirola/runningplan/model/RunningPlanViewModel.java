@@ -9,6 +9,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -37,6 +38,10 @@ public class RunningPlanViewModel extends AndroidViewModel {
         runningPlans.setValue(repository.getRunningPlans());
     }
 
+    public RunningPlanRepository getRepository() {
+        return repository;
+    }
+
     public User getAppUser() {
         return repository.getAppUser();
     }
@@ -63,4 +68,5 @@ public class RunningPlanViewModel extends AndroidViewModel {
             runningPlans.updateItem((RunningPlan) persistentObject);
         }
     }
+
 }
