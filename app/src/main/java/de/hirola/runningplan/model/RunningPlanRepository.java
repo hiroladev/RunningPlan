@@ -58,4 +58,8 @@ public class RunningPlanRepository {
     public void update(PersistentObject persistentObject) throws SportsLibraryException {
         dataRepository.update(persistentObject);
     }
+
+    public void remove(PersistentObject persistentObject) throws SportsLibraryException {
+        dataRepository.remove(persistentObject);
+    }
 }

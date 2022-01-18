@@ -47,7 +47,7 @@
     <string name="movement_type_more_speedy_running">More speedy Running</string>
     <string name="runningplan_start_remarks">-</string>
     <string name="runningplan_start_60_remarks">-</string>
-    <string name="name">Name</string>
+    <string name="name">Übersetzungsergebnisse</string>
     <string name="remarks">Remarks</string>
     <string name="title_runningplan_details">Running Plan Details</string>
     <string name="no_remarks">No remarks available.</string>
@@ -110,4 +110,6 @@
     <string name="import_succeed">Import succeed</string>
     <string name="import_failed">Import failed</string>
     <string name="loading_file_succeed">File successfully read</string>
+    <string name="ask_before_remove_running_plan">Do you really want to delete the plan?</string>
+    <string name="remove_running_plan_failed">The plan could not be deleted.</string>
 </resources>

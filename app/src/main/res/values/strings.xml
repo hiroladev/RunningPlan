@@ -34,6 +34,8 @@
     <string name="remove_active_runningplan">Soll mit diesem Laufplan wirklich nicht mehr trainiert werden?</string>
     <string name="no_file_selected">Es wurde keine Datei ausgewählt.</string>
     <string name="no_valid_file_format">Die gewählte Datei besitzt nicht das richtige Format (json).</string>
+    <string name="ask_before_remove_running_plan">Soll der Laufplan wirklich gelöscht werden?</string>
+    <string name="remove_running_plan_failed">Der Laufplan konnte nicht gelöscht werden.</string>
 
     <!-- Common -->
     <string name="name">Name</string>

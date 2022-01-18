@@ -69,4 +69,12 @@ public class RunningPlanViewModel extends AndroidViewModel {
         }
     }
 
+    public void remove(PersistentObject persistentObject) throws SportsLibraryException {
+        // remove object from datastore
+        repository.remove(persistentObject);
+        if (persistentObject instanceof RunningPlan) {
+            runningPlans.removeItem((RunningPlan) persistentObject);
+        }
+    }
+
 }

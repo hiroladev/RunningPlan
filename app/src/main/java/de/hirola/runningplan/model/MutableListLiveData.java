@@ -41,6 +41,11 @@ public class MutableListLiveData<T> extends MutableLiveData<List<T>> {
         onListModified();
     }
 
+    public void removeItem(T item) {
+        items.remove(item);
+        onListModified();
+    }
+
     public void updateItem(T item) {
         int position = items.indexOf(item);
         if (position > -1) {

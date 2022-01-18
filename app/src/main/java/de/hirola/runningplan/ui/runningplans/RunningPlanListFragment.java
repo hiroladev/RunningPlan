@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import androidx.fragment.app.ListFragment;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
+import de.hirola.sportslibrary.Global;
+import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.ui.ModalOptionDialog;
 import de.hirola.sportslibrary.ui.ModalOptionDialogListener;
@@ -38,6 +40,8 @@ import java.util.List;
  */
 public class RunningPlanListFragment extends Fragment {
 
+    // view model
+    private RunningPlanViewModel viewModel;
     // last selected running plan (list index)
     private int lastSelectedIndex;
     // cached list of running plans
@@ -52,7 +56,7 @@ public class RunningPlanListFragment extends Fragment {
         }
         // load the running plans
         // data
-        RunningPlanViewModel viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
         MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
         mutableRunningPlans.observe(requireActivity(), this::onListChanged);
         runningPlans = mutableRunningPlans.getValue();
@@ -79,10 +83,11 @@ public class RunningPlanListFragment extends Fragment {
 
             @Override
             public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                // TODO: show menu on swipe (https://www.freecodecamp.org/news/how-to-implement-swipe-for-options-in-recyclerview/)
                 // warning before remove
                 ModalOptionDialog.showOptionDialog(requireContext(),
                         null,
-                        getString(R.string.warning),
+                        getString(R.string.ask_before_remove_running_plan),
                         null,
                         null,
                         new ModalOptionDialogListener() {
@@ -91,13 +96,27 @@ public class RunningPlanListFragment extends Fragment {
                                 if (button == ModalOptionDialog.Button.OK) {
                                     // get the running plan
                                     int position = viewHolder.getBindingAdapterPosition();
-                                    System.out.println(position);
-                                    // remove running plan
-
+                                    if (runningPlans.size() > position) {
+                                        RunningPlan runningPlan = runningPlans.get(position);
+                                        // remove running plan
+                                        try {
+                                            viewModel.remove(runningPlan);
+                                            runningPlans.remove(position);
+                                        } catch (SportsLibraryException exception) {
+                                            ModalOptionDialog.showMessageDialog(
+                                                    ModalOptionDialog.DialogStyle.CRITICAL,
+                                                    requireContext(),
+                                                    null, getString(R.string.remove_active_runningplan),
+                                                    null);
+                                            if (Global.DEBUG) {
+                                                //TODO: Logging
+                                            }
+                                        }
+                                    }
                                 }
+                                listAdapter.notifyDataSetChanged();
                             }
                         });
-                //listAdapter.notifyDataSetChanged();
             }
         });
 
