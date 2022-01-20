@@ -123,9 +123,4 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
         return 0;
     }
 
-    public void submitList(List<RunningPlan> runningPlans) {
-        // update the data
-        this.runningPlans = runningPlans;
-        System.out.println("---------------------List updated----------------------------");
-    }
 }

@@ -351,36 +351,38 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     }
 
     private void showRunningPlanInView() {
-        // show the name aof active running plan in view
-        runningPlanNameLabel.setText(runningPlan.getName());
-        // show the training days (running plan entries) of running plan in spinner
-        // add data to spinner
-        // addAll(java.lang.Object[]), insert, remove, clear, sort(java.util.Comparator))
-        // automatically call notifyDataSetChanged.
-        trainingDaysSpinnerArrayAdapter.clear();
-        trainingDaysSpinnerArrayAdapter.addAll(getTrainingDaysAsStrings());
-        if (allRunningPlansCompleted) {
-            // TODO: Alle Laufpläne abgeschlossen: UI anpassen
-            //  aktive Trainingseinheit (Tag) setzen
-            //  erste offene Einheit aus Liste wählen
-            // Hinweis an Nutzer
-            trainingInfolabel.setText(R.string.all_runninplans_completed);
-        } else {
-            // select the training date in spinner
-            int index = runningPlan.getEntries().indexOf(runningPlanEntry);
-            if (index > -1) {
-                trainingDaysSpinner.setSelection(index);
+        if (runningPlan != null) {
+            // show the name of active running plan in view
+            runningPlanNameLabel.setText(runningPlan.getName());
+            // show the training days (running plan entries) of running plan in spinner
+            // add data to spinner
+            // addAll(java.lang.Object[]), insert, remove, clear, sort(java.util.Comparator))
+            // automatically call notifyDataSetChanged.
+            trainingDaysSpinnerArrayAdapter.clear();
+            trainingDaysSpinnerArrayAdapter.addAll(getTrainingDaysAsStrings());
+            if (allRunningPlansCompleted) {
+                // TODO: Alle Laufpläne abgeschlossen: UI anpassen
+                //  aktive Trainingseinheit (Tag) setzen
+                //  erste offene Einheit aus Liste wählen
+                // Hinweis an Nutzer
+                trainingInfolabel.setText(R.string.all_runninplans_completed);
+            } else {
+                // select the training date in spinner
+                int index = runningPlan.getEntries().indexOf(runningPlanEntry);
+                if (index > -1) {
+                    trainingDaysSpinner.setSelection(index);
+                }
             }
+            // TODO: Bilder
+            /*
+            /  Status-Bild anzeigen
+            if let trainingStatusImage = UIImage(named: "trainingcompleted30x30") {
+            //  Bild für den Status des Laufplanes
+            self.completedEntryImageView.image = trainingStatusImage
+             */
+            // Dauer des gesamten Trainings anzeigen
+            showRunningPlanEntryInView();
         }
-        // TODO: Bilder
-        /*
-        /  Status-Bild anzeigen
-        if let trainingStatusImage = UIImage(named: "trainingcompleted30x30") {
-        //  Bild für den Status des Laufplanes
-        self.completedEntryImageView.image = trainingStatusImage
-         */
-        // Dauer des gesamten Trainings anzeigen
-        showRunningPlanEntryInView();
     }
 
     // shows the duration of the running plan entry

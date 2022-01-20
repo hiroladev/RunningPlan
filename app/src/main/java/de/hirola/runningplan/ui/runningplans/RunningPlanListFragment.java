@@ -1,5 +1,7 @@
 package de.hirola.runningplan.ui.runningplans;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -26,7 +28,10 @@ import de.hirola.sportslibrary.ui.ModalOptionDialog;
 import de.hirola.sportslibrary.ui.ModalOptionDialogListener;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -67,57 +72,76 @@ public class RunningPlanListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_running_plan_list, container, false);
+        // should I hide templates?
+        SharedPreferences sharedPreferences =
+                requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
+        boolean hideTemplates = sharedPreferences.getBoolean(Global.PreferencesKeys.hideTemplates,false);
         // visualize the list of running plans
-        RunningPlanRecyclerView listAdapter = new RunningPlanRecyclerView(requireContext(), runningPlans);
+        RunningPlanRecyclerView listAdapter;
+        if (hideTemplates) {
+            Stream<RunningPlan> filteredStream = runningPlans.stream().filter(runningPlan -> !runningPlan.isTemplate());
+            listAdapter = new RunningPlanRecyclerView(requireContext(), filteredStream.collect(Collectors.toList()));
+        } else {
+            listAdapter = new RunningPlanRecyclerView(requireContext(), runningPlans);
+        }
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView_running_plans);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         // remove running plan on swipe to left
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
                 new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT ) {
-            @Override
-            public boolean onMove(@NonNull @NotNull RecyclerView recyclerView,
-                                  @NonNull @NotNull RecyclerView.ViewHolder viewHolder,
-                                  @NonNull @NotNull RecyclerView.ViewHolder target) {
-                return false;
-            }
 
-            @Override
-            public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                // TODO: show menu on swipe (https://www.freecodecamp.org/news/how-to-implement-swipe-for-options-in-recyclerview/)
-                // warning before remove
-                ModalOptionDialog.showOptionDialog(requireContext(),
-                        null,
-                        getString(R.string.ask_before_remove_running_plan),
-                        null,
-                        null,
-                        new ModalOptionDialogListener() {
-                            @Override
-                            public void onButtonClicked(int button) {
-                                if (button == ModalOptionDialog.Button.OK) {
-                                    // get the running plan
-                                    int position = viewHolder.getBindingAdapterPosition();
-                                    if (runningPlans.size() > position) {
-                                        RunningPlan runningPlan = runningPlans.get(position);
-                                        // remove running plan
-                                        try {
-                                            viewModel.remove(runningPlan);
-                                            runningPlans.remove(position);
-                                        } catch (SportsLibraryException exception) {
-                                            ModalOptionDialog.showMessageDialog(
-                                                    ModalOptionDialog.DialogStyle.CRITICAL,
-                                                    requireContext(),
-                                                    null, getString(R.string.remove_active_runningplan),
-                                                    null);
-                                            if (Global.DEBUG) {
-                                                //TODO: Logging
+                    @Override
+                    public boolean onMove(@NonNull @NotNull RecyclerView recyclerView,
+                                          @NonNull @NotNull RecyclerView.ViewHolder viewHolder,
+                                          @NonNull @NotNull RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                        // TODO: show menu on swipe (https://www.freecodecamp.org/news/how-to-implement-swipe-for-options-in-recyclerview/)
+                        int position = viewHolder.getBindingAdapterPosition();
+                        // is it allowed to remove templates
+                        if (runningPlans.size() > position) {
+                            RunningPlan runningPlan = runningPlans.get(position);
+                            if (!runningPlan.isTemplate()) {
+                                // warning before remove
+                                ModalOptionDialog.showOptionDialog(requireContext(),
+                                        null,
+                                        getString(R.string.ask_before_remove_running_plan),
+                                        null,
+                                        null,
+                                        new ModalOptionDialogListener() {
+                                            @Override
+                                            public void onButtonClicked(int button) {
+                                                if (button == ModalOptionDialog.Button.OK) {
+                                                    // get the running plan
+                                                    int position = viewHolder.getBindingAdapterPosition();
+                                                    RunningPlan runningPlan = runningPlans.get(position);
+                                                    // remove running plan
+                                                    try {
+                                                        viewModel.remove(runningPlan);
+                                                        listAdapter.notifyItemRemoved(position);
+                                                    } catch (SportsLibraryException exception) {
+                                                        ModalOptionDialog.showMessageDialog(
+                                                                ModalOptionDialog.DialogStyle.CRITICAL,
+                                                                requireContext(),
+                                                                null, getString(R.string.remove_active_runningplan),
+                                                                null);
+                                                        if (Global.DEBUG) {
+                                                            //TODO: Logging
+                                                        }
+                                                    }
+                                                }
                                             }
-                                        }
-                                    }
-                                }
+                                        });
+                            } else {
+                                //TODO: Nutzer informieren
                                 listAdapter.notifyDataSetChanged();
                             }
-                        });
-            }
+
+                    }
+                }
         });
 
         itemTouchHelper.attachToRecyclerView(recyclerView);
