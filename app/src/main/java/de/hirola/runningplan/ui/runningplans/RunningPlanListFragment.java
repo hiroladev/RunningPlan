@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +17,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.fragment.app.ListFragment;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.Global;
@@ -28,7 +26,6 @@ import de.hirola.sportslibrary.ui.ModalOptionDialog;
 import de.hirola.sportslibrary.ui.ModalOptionDialogListener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,10 +40,12 @@ import java.util.stream.Stream;
  * @author Michael Schmidt (Hirola)
  * @since 1.1.1
  */
-public class RunningPlanListFragment extends Fragment {
+public class RunningPlanListFragment extends Fragment implements View.OnClickListener {
 
     // view model
     private RunningPlanViewModel viewModel;
+    // recycler view list adapter
+    private RecyclerView recyclerView;
     // last selected running plan (list index)
     private int lastSelectedIndex;
     // cached list of running plans
@@ -84,7 +83,9 @@ public class RunningPlanListFragment extends Fragment {
         } else {
             listAdapter = new RunningPlanRecyclerView(requireContext(), runningPlans);
         }
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView_running_plans);
+        // details on click
+        listAdapter.setOnClickListener(this);
+        recyclerView = view.findViewById(R.id.recyclerView_running_plans);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         // remove running plan on swipe to left
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
@@ -177,8 +178,10 @@ public class RunningPlanListFragment extends Fragment {
         outState.putInt("lastSelectedIndex", lastSelectedIndex);
     }
 
-    public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
-        showDetailsForRunningPlanAtIndex(position);
+    @Override
+    public void onClick(View v) {
+        int itemPosition = recyclerView.getChildLayoutPosition(v);
+        showDetailsForRunningPlanAtIndex(itemPosition);
     }
 
     private void showDetailsForRunningPlanAtIndex(int index) {

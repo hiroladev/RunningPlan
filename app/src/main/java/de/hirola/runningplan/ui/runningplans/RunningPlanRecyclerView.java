@@ -29,6 +29,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
 
     private final Context context;
     private List<RunningPlan> runningPlans;
+    private View.OnClickListener onClickListener;
 
     public RunningPlanRecyclerView(Context context, List<RunningPlan> runningPlans) {
         this.context = context;
@@ -40,6 +41,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.runningplan_row, parent, false);
+        v.setOnClickListener(onClickListener);
         return new RunningPlanRecyclerViewHolder(v);
     }
 
@@ -121,6 +123,10 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
             return runningPlans.size();
         }
         return 0;
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
 }
