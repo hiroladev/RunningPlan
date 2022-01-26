@@ -2,6 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="de.hirola.runningplan">
 
+    <!-- Always include this permission -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Include only if your app benefits from precise location access. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- Required only when requesting background location access on
+       Android 10 (API level 29) and higher. -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
     <application
             android:name=".RunningPlanApplication"
             android:allowBackup="false"
@@ -10,6 +20,7 @@
             android:roundIcon="@mipmap/ic_running_plan_round"
             android:supportsRtl="true"
             android:theme="@style/Theme.RunningPlan">
+
         <activity
                 android:name=".MainActivity"
                 android:exported="true"
@@ -20,6 +31,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- location update service -->
+        <service android:name=".LocationService" />
+
     </application>
 
 </manifest>

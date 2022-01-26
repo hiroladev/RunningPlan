@@ -1,13 +1,22 @@
 package de.hirola.runningplan.ui.training;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.widget.*;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import de.hirola.runningplan.LocationService;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.Global;
@@ -29,7 +38,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 
-public class TrainingFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class TrainingFragment extends Fragment
+        implements AdapterView.OnItemSelectedListener, Chronometer.OnChronometerTickListener {
     // Preferences
     private SharedPreferences sharedPreferences;
     // Spinner
@@ -81,40 +91,51 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     // was timer active
     private boolean wasTimerRunning;
     //  Trainingszeit in Sekunden
-    private int secondsInActivity;
+    private long secondsInActivity;
     //  Pause-Zeit in Sekunden
     private long secondsWhenStopped;
-    //  Dateipfad für Zwischenspeichern der Trainingsdauer
-    /// private var durationSaveFilePath: URL?
-    //  Intervall zum Zwischenspeichern (in Sekunden)
-    private int saveInterval;
-    //  Zeit beim Starten des Trainings
-    private LocalDate runningStartDate;
-    //  Zeit beim Starten der Pause
-    private LocalDate activityStartPauseDate;
-    //  Pausen-Zeit berechnet?
-    private boolean didPausedSecondsCalculated;
+    //  time when app paused
+    private long timeWhenPaused;
     //  Benachrichtigungen
     // private let userNotificationCenter = UNUserNotificationCenter.current()
     private boolean useNotifications;
-    /*//  GPS
-    //  Location-Manager
-    private var locationManager: CLLocationManager = Global.locationManager
-    //  aufgezeichnete Daten
-    private var trackLocations: [CLLocation] = []
-    //  Index für Genauigkeit - ab wann beginnt die Aufzeichnung
-    //  siehe Global
-    private var locationRecordingIndex: Int = 0
-    //  Dateipfad für Zwischenspeichern des Tracks
-    private var trackSaveFilePath: URL?
-    //  Track-Aufzeichnung gefunden?
-    private var didSavedTrackFound: Bool = false
-      */
+    // location services
+    // location update service
+    private Intent locationUpdateService;
+    // must be initialized in onCreate
+    private ActivityResultLauncher<String[]> locationPermissionRequest;
+    // user want to use location services
     private boolean useLocationData;
+    // user has using locations allowed and services are available
+    private boolean locationServicesAllowed;
+    // running track
+    private List<Location> trackLocations;
+    // distance
+    private float runningDistance;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // app preferences
+        sharedPreferences = requireContext().getSharedPreferences(
+                getString(R.string.preference_file), Context.MODE_PRIVATE);
+        useLocationData = sharedPreferences.getBoolean(Global.PreferencesKeys.useLocationData, false);
+        // checking location permissions
+        locationPermissionRequest =
+            registerForActivityResult(new ActivityResultContracts
+                            .RequestMultiplePermissions(), result -> {
+                        Boolean fineLocationGranted = result.getOrDefault(
+                                Manifest.permission.ACCESS_FINE_LOCATION, false);
+                        if (fineLocationGranted != null && fineLocationGranted) {
+                            // Precise location access granted.
+                            locationServicesAllowed = true;
+                        } else {
+                            // No location access granted.
+                            locationServicesAllowed = false;
+                        }
+                    }
+            );
+        initializeLocationService();
         if (savedInstanceState != null) {
             // load the timer values, if the app restored
             // default: 0
@@ -122,8 +143,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             // default: false
             isTimerRunning = savedInstanceState.getBoolean("isTimerRunning");
         }
-        sharedPreferences = requireContext().getSharedPreferences(
-                getString(R.string.preference_file), Context.MODE_PRIVATE);
         // load running plans
         viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
         // training data
@@ -146,6 +165,14 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     public View onCreateView(@NotNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // restore saved data
+        if (savedInstanceState != null) {
+            secondsInActivity = savedInstanceState.getLong("secondsInActivity", 0);
+            isTimerRunning = savedInstanceState.getBoolean("isTimerRunning", false);
+            runningDistance = savedInstanceState.getFloat("runningDistance", 0);
+        }
+        // location services
+        initializeLocationService();
         View trainingView = inflater.inflate(R.layout.fragment_training, container, false);
         // initialize ui elements
         setViewElements(trainingView);
@@ -155,8 +182,10 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // save the timer values
-        savedInstanceState.putInt("secondsInActivity", secondsInActivity);
+        savedInstanceState.putLong("secondsInActivity", secondsInActivity);
         savedInstanceState.putBoolean("isTimerRunning", isTimerRunning);
+        // save distance
+        savedInstanceState.putFloat("runningDistance", runningDistance);
     }
 
     @Override
@@ -166,41 +195,26 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         super.onPause();
         wasTimerRunning = isTimerRunning;
         isTimerRunning = false;
+        timeWhenPaused = timer.getBase();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        // start the timer again, if he was running
+        // location permissions can be changed by user
+        initializeLocationService();
         if (wasTimerRunning) {
+            // start the timer again, if he was running
             isTimerRunning = true;
+            // calculated the duration in background
+            // ans set the new activity time
+            secondsInActivity = (SystemClock.elapsedRealtime() - timeWhenPaused) / 1000;
         }
-        // evtl.wurde ein neuer Laufplan ausgewählt
+        // evtl. wurde ein neuer Laufplan ausgewählt
         setActiveRunningPlan();
         // UI aktualisieren
         showRunningPlanInView();
         showRunningPlanEntryInView();
-        // TODO: iOS-Migration
-        // App wechselt vom Hintergrund zurück, Timer lief nicht im Hintergrund,
-        // Differenz der gesicherten Zeit mit aktueller Zeit zu den aktuellen Sekunden dazurechnen
-        /*//  Karten-Einstellungen aktivieren oder deaktivieren
-        //  nur wenn kein Training läuft
-        if !self.isTrainingRunning {
-            self.locationSettings()
-        }
-        if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useNotification) {
-            //  Prüfen, ob Benachrichtigung (noch) "erwünscht" sind
-            self.requestNotificationAuthorization()
-        }
-        //  Laufpläne neu laden
-        self.loadRunningPlanes()
-        //  aktiven Laufplan setzen - kann in Laufplan-Detail geändert worden sein
-        self.setActiveRunningPlan()
-        //  Startdatum kann geändert wurden sein - PickerView anpassen
-        self.trainingDayPickerView.reloadComponent(0)
-        //  Laufplan eventl. geändert - Trainingseinträge laden
-        self.trainingUnitsPickerView.reloadComponent(0)
-        */
     }
 
     @Override
@@ -242,6 +256,15 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onChronometerTick(Chronometer chronometer) {
+        secondsInActivity = secondsInActivity + 1;
+        if (Global.DEBUG) {
+            System.out.println(secondsInActivity);
+        }
+        monitoringTraining();
     }
 
     // set the active running plan for the view
@@ -420,22 +443,26 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     //
     // start recording training
     private void startRecordingTraining() {
-        if (useLocationData) {
+        if (locationServicesAllowed) {
             if (!isTrainingRunning) {
-                //  Aufzeichnung und Monitoring des Trainings neu starten
-                //  Reset des (vorherigen) Tracks
-                // self.trackLocations.removeAll()
+                //  reset the recorded track
+
             }
-            //  Ereignisverarbeitung (Delegate) starten, wenn neuer Standort verfügbar
-            // self.locationManager.startUpdatingLocation()
-            //self.locationManager.startMonitoringSignificantLocationChanges()
+            if (locationUpdateService != null) {
+                // start the service
+                requireActivity().startService(locationUpdateService);
+            }
         }
     }
 
     // stop recording training
     private void stopRecordingTraining() {
-        if (useLocationData) {
-            // GPS-Aufzeichnung anhalten
+        if (locationServicesAllowed) {
+            // stop location service
+            if (locationUpdateService != null) {
+                runningDistance = locationUpdateService.getFloatExtra("runningDistance", 0);
+                requireActivity().stopService(locationUpdateService);
+            }
             // self.locationManager.stopUpdatingLocation()
             // self.locationManager.stopMonitoringSignificantLocationChanges()
             // Pause-Zeit "merken"
@@ -449,7 +476,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         trainingDaysSpinner.setEnabled(false);
         trainingUnitsSpinner.setEnabled(false);
         if (isTrainingRunning) {
-            //  Aufzeichnung (wieder) starten
+            //  start recording location (again)
             startRecordingTraining();
             // set an info text
             trainingInfolabel.setText(R.string.continue_training);
@@ -462,6 +489,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 //  Aufzeichnung und Monitoring des Trainings starten
                 startRecordingTraining();
                 isTrainingRunning = true;
+                secondsInActivity = 0;
                 // show info
                 trainingInfolabel.setText(R.string.start_training);
             } else {
@@ -481,7 +509,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     //  Trainingspause
     private void pauseTraining() {
-        // GPS-Aufzeichnung stoppen
+        // paused record locations
         stopRecordingTraining();
         // show info
         trainingInfolabel.setText(R.string.pause_training);
@@ -493,14 +521,12 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     private void cancelTraining() {
         // show info
         trainingInfolabel.setText(R.string.cancel_training);
-        // Timer resetten
+        // reset timer
         resetTimer();
-        // Aufzeichnung GPS stoppen
+        // stop recording locations
         stopRecordingTraining();
         //  evtl. aufgezeichnete Daten löschen
         //trackLocations.removeAll();
-        //  Sicherungen löschen
-        removeSavedTraining();
         //  Flag setzen
         isTrainingRunning = false;
         // Info-Label wieder auf "normale" Farben setzen
@@ -510,74 +536,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         trainingUnitsSpinner.setEnabled(true);
         // Status-Bild anzeigen
         // TODO: Status-Bild trainingplanned30x30
-    }
-
-    //  Location-Daten aus Cache einlesen und
-    //  Aufzeichnung fortsetzen
-    private void continueTraining() {
-        //  Datei wieder einlesen
-        /*if (didSavedTrackFound) {
-            do {
-                let data = try Data(contentsOf: self.trackSaveFilePath!)
-                if let savedLocations = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? [CLLocation] {
-                    //  Track wiederherstellen
-                    self.trackLocations.removeAll()
-                    self.trackLocations.append(contentsOf: savedLocations)
-                }
-            } catch (let error){
-                //  Training muss mit neuem Track fortgesetzt werden
-                //  Hinweis an Nutzer
-                let alert = UIAlertController(title: AppMessages.readFromFileError,
-                        message: NSLocalizedString("Der Track kann nicht fortgesetzt werden.",
-                        comment: "Der Track kann nicht fortgesetzt werden."),
-                preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                    //  zentrales Logging
-                    if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useRemoteLogging) || Global.AppSettings.debug {
-                    var errorMessage = LogEntry.debugInformations
-                    errorMessage.append(" - ")
-                    errorMessage.append(error.localizedDescription)
-                    self.app.appLogger.error(errorMessage)
-                }
-            }
-        }
-        if self.didSavedDurationFound {
-            //  Zeit einlesen und setzen
-            //  Datei wieder einlesen
-            if self.durationSaveFilePath != nil {
-                do {
-                    let data = try Data(contentsOf: self.durationSaveFilePath!)
-                    if let duration = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? Int {
-                        //  Zeit vor Abbruch dazu rechnen
-                        self.secondsInActivity += duration
-                    }
-                } catch (let error){
-                    //  Datei kann nicht eingelesen werden, Zeit beginnt bei 0
-                    //  Hinweis an Nutzer
-                    let alert = UIAlertController(title: AppMessages.readFromFileError,
-                            message: NSLocalizedString("Die Trainingsdauer beginnt leider wieder bei 0.",
-                            comment: "Die Trainingsdauer beginnt leider wieder bei 0."),
-                    preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
-                        //  zentrales Logging
-                        if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useRemoteLogging) || Global.AppSettings.debug {
-                        var errorMessage = LogEntry.debugInformations
-                        errorMessage.append(" - ")
-                        errorMessage.append(error.localizedDescription)
-                        self.app.appLogger.error(errorMessage)
-                    }
-                }
-            }
-        }
-        */
-        // Training als aktiv markieren
-        isTrainingRunning = true;
-        // Timer starten / fortsetzen
-        startTimer();
-        // Training starten / fortsetzen
-        startTraining();
     }
 
     //  Training "überwachen"
@@ -593,7 +551,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             if (secondsInActivity >= 60) {
                 int duration = runningUnit.getDuration();
                 // TODO: Sekunden immer int?
-                int minutes = secondsInActivity / 60;
+                long minutes = secondsInActivity / 60;
                 if (minutes >= duration) {
                     //  Trainingseinheit wurde abgeschlossen
                     //  TODO: Benachrichtigung an Nutzer
@@ -650,36 +608,32 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // setInfoLabelDefaultColors();
         //  Training wurde endgültig gestoppt (abgeschlossen)
         isTrainingRunning = false;
-        //  gespeicherte Trainingsdaten löschen
-        removeSavedTraining();
         //  show info
         trainingInfolabel.setText(R.string.training_completed);
         // TODO: Status image trainingcompleted30x30
-        if (useLocationData) {
-            // Aufzeichnung stoppen
+        if (locationServicesAllowed) {
+            // stops recording locations
             stopRecordingTraining();
-            //  Trainingsdaten anzeigen
-            String trainingTrackInfoString = "\n";
-            trainingTrackInfoString+= R.string.distance;
+            // show training infos
+            String trainingTrackInfoString = getString(R.string.distance);
             trainingTrackInfoString+= ": ";
-            //  Länge der Strecke in m
-            double distance = 100.00; //self.trackLocations.totalDistance
-            if (distance < 999.99) {
+            if (runningDistance < 999.99) {
                 //  Angabe in m
-                trainingTrackInfoString+= distance;
+                trainingTrackInfoString+= Math.round(runningDistance);
                 trainingTrackInfoString+= " m";
             } else {
                 //  Angabe in km
-                distance = distance / 1000;
+                runningDistance = runningDistance / 1000;
                 // TODO: Formatierung Komma
-                trainingTrackInfoString+= distance;
+                trainingTrackInfoString+= Math.round(runningDistance);
                 trainingTrackInfoString+= " km, ";
             }
+            trainingTrackInfoString+= "\n";
             //  Geschwindigkeit in m/s
-            double averageSpeed = 3.0; //self.trackLocations.averageSpeed
+            double averageSpeed = runningDistance / secondsInActivity;
             //  Geschwindigkeit in km/h
             averageSpeed = averageSpeed * 3.6;
-            trainingTrackInfoString+= R.string.speed;
+            trainingTrackInfoString+= getString(R.string.speed);
             // TODO: Formatierung Komma
             trainingTrackInfoString+= averageSpeed;
             trainingTrackInfoString+= " km/h";
@@ -703,6 +657,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         stopButton.setEnabled(false);
         //  Reset der Stopp-Uhr
         resetTimer();
+        secondsInActivity = 0;
     }
 
     // save the training
@@ -824,63 +779,32 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         }*/
     }
 
-    // Location-Daten zwischenspeichern - für evtl. Abstürze
-    // User beendet App ohne Absicht, ...
-    private void saveLocations() {
-        // Datei in Cache ablegen
-        /*if self.trackSaveFilePath != nil {
-            do {
-                //  Array in Datei schreiben (überschreiben)
-                let data = try NSKeyedArchiver.archivedData(withRootObject: self.trackLocations, requiringSecureCoding: false)
-                try data.write(to: trackSaveFilePath!)
-            } catch (let error){
-                //  zentrales Logging
-                if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useRemoteLogging) || Global.AppSettings.debug {
-                    var errorMessage = LogEntry.debugInformations
-                    errorMessage.append(" - ")
-                    errorMessage.append(error.localizedDescription)
-                    self.app.appLogger.error(errorMessage)
-                }
+    private void initializeLocationService() {
+        if (useLocationData) {
+            // check for location permissions
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                locationServicesAllowed = true;
+            } else {
+                locationPermissionRequest.launch(new String[] {
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                });
             }
-        }*/
-    }
-
-    //  aufgezeichnete Daten löschen
-    private void removeSavedTraining() {
-        //  Dateien löschen
-        /*let fileManager = FileManager.default
-        //  zwischengespeicherten Track löschen
-        if fileManager.fileExists(atPath: self.trackSaveFilePath!.path) {
-            if fileManager.isDeletableFile(atPath: self.trackSaveFilePath!.path) {
-                do {
-                    try fileManager.removeItem(atPath: self.trackSaveFilePath!.path)
-                } catch (let error) {
-                    //  zentrales Logging
-                    if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useRemoteLogging) || Global.AppSettings.debug {
-                        var errorMessage = LogEntry.debugInformations
-                        errorMessage.append(" - ")
-                        errorMessage.append(error.localizedDescription)
-                        self.app.appLogger.error(errorMessage)
-                    }
-                }
+            // get the location manager
+            LocationManager locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
+            if (locationServicesAllowed) {
+                // actual we use only gps ...
+                locationServicesAllowed = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            }
+            if (locationServicesAllowed && locationUpdateService == null) {
+                // create the service
+                locationUpdateService = new Intent(requireActivity(), LocationService.class);
             }
         }
-        //  zwischengespeicherte Trainingsdauer löschen
-        if fileManager.fileExists(atPath: self.durationSaveFilePath!.path) {
-            if fileManager.isDeletableFile(atPath: self.durationSaveFilePath!.path) {
-                do {
-                    try fileManager.removeItem(atPath: self.durationSaveFilePath!.path)
-                } catch (let error) {
-                    //  zentrales Logging
-                    if self.app.userSettings.getBool(forKey: UserSettings.KeyNames.useRemoteLogging) || Global.AppSettings.debug {
-                        var errorMessage = LogEntry.debugInformations
-                        errorMessage.append(" - ")
-                        errorMessage.append(error.localizedDescription)
-                        self.app.appLogger.error(errorMessage)
-                    }
-                }
-            }
-        }*/
+        if (Global.DEBUG) {
+            //TODO: Logging
+            System.out.println(locationServicesAllowed);
+        }
     }
 
     //
@@ -898,6 +822,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // add the time, before timer paused
         timer.setBase(SystemClock.elapsedRealtime() + secondsWhenStopped);
         // (re) start the timer
+        timer.setOnChronometerTickListener(this);
         timer.start();
     }
 
@@ -917,8 +842,12 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     // stop the timer
     private void stopTimer() {
+        // Stop counting up. This does not affect the base as set from setBase(long),
+        // just the view display.
+        timer.setOnChronometerTickListener(null);
         // stop the timer
         timer.stop();
+        timer.setBase(0);
         // set the attribute values
         isTimerRunning = false;
         isTrainingPaused = true;
@@ -974,7 +903,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     private void initializeAttributes() {
         secondsInActivity = 0;
         secondsWhenStopped = 0;
-        saveInterval = 15;
         // timer in sec.
         timerInterval = 1;
         isTimerRunning = false;

@@ -50,12 +50,6 @@
                 app:key="use_location_data"
                 app:title="@string/use_location_data"/>
 
-        <SwitchPreferenceCompat
-                app:key="use_fine_location_data"
-                app:title="@string/use_fine_location_data"
-                app:summaryOn="@string/fine_location_data_summary_on"
-                app:summaryOff="@string/fine_location_data_summary_off"/>
-
     </PreferenceCategory>
 
     <PreferenceCategory
