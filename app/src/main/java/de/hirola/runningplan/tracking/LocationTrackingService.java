@@ -1,4 +1,4 @@
-package de.hirola.runningplan;
+package de.hirola.runningplan.tracking;
 
 import android.app.Service;
 import android.content.Context;
@@ -19,19 +19,22 @@ import java.util.List;
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
  * This software us licensed under the AGPL-3.0 or later.
  *
- * A foreground service to get location updates for recording trainings.
+ * A background service to get location updates for recording trainings.
+ * The tracks are saved in a local datastore.
  *
  * @author Michael Schmidt (Hirola)
  * @since 1.1.1
  */
-public class LocationService extends Service  implements LocationListener {
+public class LocationTrackingService extends Service  implements LocationListener {
 
-    // intent to pass data
-    private Intent intent;
     //  location manager
     private LocationManager locationManager;
     // running track
     private List<Location> trackLocations;
+    // flag the state of recording track
+    private boolean isRecording;
+    // (gps) tracking available?
+    private boolean gpsAvailable;
     // distance
     private float runningDistance;
 
@@ -47,6 +50,7 @@ public class LocationService extends Service  implements LocationListener {
         if (trackLocations == null) {
             trackLocations = new ArrayList<>();
         }
+        isRecording = false;
     }
 
     @Override
@@ -54,29 +58,11 @@ public class LocationService extends Service  implements LocationListener {
         super.onDestroy();
         // stop location updates
         locationManager.removeUpdates(this);
-        // put distance to intent
-        intent.putExtra("runningDistance", runningDistance);
+        locationManager = null;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-        this.intent = intent;
-        // start location updates
-        try {
-            // get location manager
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            // locationServicesAllowed is true, if gps available
-            // minimal time between update = 1 sec
-            // minimal distance = 1 m
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
-        } catch (SecurityException exception) {
-            if (Global.DEBUG) {
-                //TODO: Logging
-                exception.printStackTrace();
-                return START_NOT_STICKY;
-            }
-        }
         return START_STICKY;
     }
 
@@ -113,8 +99,51 @@ public class LocationService extends Service  implements LocationListener {
     // https://stackoverflow.com/questions/64638260/android-locationlistener-abstractmethoderror-on-onstatuschanged-and-onproviderd
     public void onStatusChanged(String provider, int status, Bundle extras) {}
 
+    public String startTrackRecording() {
+        if (isRecording) {
+            if (Global.DEBUG) {
+                //TODO: Logging
+            }
+            return null;
+        }
+        // create an new track and start recording
+        return "";
+    }
+
+    public void pauseTrackRecording() {
+
+    }
+
+    public void resumeTrackRecording(int id) {
+
+    }
+
+    public void stopTrackRecording() {
+
+    }
+
     public List<Location> getTrackLocations() {
         return trackLocations;
+    }
+
+    private void initializeGPSLocationManager() throws SecurityException {
+        // start location updates
+        // get location manager
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        // locationServicesAllowed is true, if gps available
+        // minimal time between update = 1 sec
+        // minimal distance = 1 m
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
+        gpsAvailable = true;
+        try {
+
+        } catch (SecurityException exception) {
+            gpsAvailable = false;
+            if (Global.DEBUG) {
+                //TODO: Logging
+                exception.printStackTrace();
+            }
+        }
     }
 
 }

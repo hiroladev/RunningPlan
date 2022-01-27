@@ -33,7 +33,7 @@
         </activity>
 
         <!-- location update service -->
-        <service android:name=".LocationService" />
+        <service android:name=".tracking.LocationTrackingService" />
 
     </application>
 

@@ -16,7 +16,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import de.hirola.runningplan.LocationService;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportslibrary.Global;
@@ -798,7 +797,7 @@ public class TrainingFragment extends Fragment
             }
             if (locationServicesAllowed && locationUpdateService == null) {
                 // create the service
-                locationUpdateService = new Intent(requireActivity(), LocationService.class);
+                //locationUpdateService = new Intent(requireActivity(), LocationService.class);
             }
         }
         if (Global.DEBUG) {
