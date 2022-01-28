@@ -17,7 +17,7 @@ import de.hirola.sportslibrary.tables.TrackColumns;
  * @author Michael Schmidt (Hirola)
  * @since 1.1.1
  */
-public class TrackingDatabaseHelper extends SQLiteOpenHelper {
+public class LocationTrackingDatabaseHelper extends SQLiteOpenHelper {
 
     // if you change the database schema, increment the database version
     private static final int DATABASE_VERSION = 1;
@@ -29,7 +29,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_TRACKS =
             "DROP TABLE IF EXISTS " + LocationDataColumns.TABLE_NAME;
 
-    public TrackingDatabaseHelper(@Nullable Context context) {
+    public LocationTrackingDatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

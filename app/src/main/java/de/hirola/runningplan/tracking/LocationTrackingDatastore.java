@@ -9,6 +9,6 @@ package de.hirola.runningplan.tracking;
  * @author Michael Schmidt (Hirola)
  * @since 1.1.1
  */
-public class TrackingDatastore {
+public class LocationTrackingDatastore {
 
 }
