@@ -1,5 +1,7 @@
 package de.hirola.runningplan.tracking;
 
+import android.content.Context;
+import android.content.Intent;
 import androidx.annotation.NonNull;
 
 /**
@@ -25,7 +27,13 @@ public class LocationTrackingServiceConnection {
         this.callback = callback;
     }
 
-    public void connectAndStartService() {
+    public void connectAndStartService(@NonNull Context context) {
+        if (locationTrackingService != null) {
+            // service already connected
+            return;
+        }
+        // start the service
+        context.startService(new Intent(context, LocationTrackingService.class));
 
     }
 
