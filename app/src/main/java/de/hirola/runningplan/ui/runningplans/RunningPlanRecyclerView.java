@@ -91,12 +91,12 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
             viewHolder.startDateTextView.setText(formatter.format(runningPlan.getStartDate()));
             // Gesamtdauer des Trainings (komplette Trainingszeit in Minuten!)
             viewHolder.durationTextView.setText("");
-            int duration = runningPlan.getDuration();
+            long duration = runningPlan.getDuration();
             if (duration > 0) {
                 //  Darstellung in hh:mm
                 //  in h und min umrechnen
-                int hours = duration / 60;
-                int minutes = duration % 60;
+                long hours = duration / 60;
+                long minutes = duration % 60;
                 String durationString;
                 if (hours > 0) {
                     durationString = hours

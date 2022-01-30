@@ -7,7 +7,7 @@
     <string name="fine_location_data_summary_off">The app use less accurate location data. Using the battery slower.</string>
     <string name="title_training">Training</string>
     <string name="training_level">Level</string>
-    <string name="title_movementtype">Movement Type</string>
+    <string name="title_movement_type">Movement Type</string>
     <string name="title_user">User</string>
     <string name="email_address">E-Mail</string>
     <string name="gender">Gender</string>
@@ -30,15 +30,15 @@
     <string name="pulse_summary">-</string>
     <string name="max_pulse">maximal Pulse</string>
     <string name="title_start">Start</string>
-    <string name="title_runningplans">Plans</string>
+    <string name="title_running_plans">Plans</string>
     <string name="title_settings">Profile</string>
     <string name="title_info">Info</string>
     <string name="title_user_settings">User</string>
-    <string name="title_othersettings">Other Settings</string>
+    <string name="title_other_settings">Other Settings</string>
     <string name="state">State</string>
     <string name="percent">Percent</string>
     <string name="duration">Duration</string>
-    <string name="startdate">Start date</string>
+    <string name="start_date">Start date</string>
     <string name="completed">completed</string>
     <string name="add">Add</string>
     <string name="movement_type_slowing_running">Slow Running</string>
@@ -112,4 +112,5 @@
     <string name="loading_file_succeed">File successfully read</string>
     <string name="ask_before_remove_running_plan">Do you really want to delete the plan?</string>
     <string name="remove_running_plan_failed">The plan could not be deleted.</string>
+    <string name="recorded_track_not_found">The recording of the training was not found.</string>
 </resources>

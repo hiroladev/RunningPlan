@@ -1,14 +1,13 @@
 package de.hirola.runningplan.ui.training;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.widget.*;
 import androidx.activity.result.ActivityResultLauncher;
@@ -18,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
+import de.hirola.runningplan.tracking.LocationTrackingService;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.*;
@@ -37,8 +37,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 
-public class TrainingFragment extends Fragment
-        implements AdapterView.OnItemSelectedListener, Chronometer.OnChronometerTickListener {
+public class TrainingFragment extends Fragment implements AdapterView.OnItemSelectedListener,
+        Chronometer.OnChronometerTickListener {
+
     // Preferences
     private SharedPreferences sharedPreferences;
     // Spinner
@@ -91,26 +92,30 @@ public class TrainingFragment extends Fragment
     private boolean wasTimerRunning;
     //  Trainingszeit in Sekunden
     private long secondsInActivity;
-    //  Pause-Zeit in Sekunden
     private long secondsWhenStopped;
-    //  time when app paused
-    private long timeWhenPaused;
-    //  Benachrichtigungen
-    // private let userNotificationCenter = UNUserNotificationCenter.current()
-    private boolean useNotifications;
+    private long timeWhenPaused; //  time when app paused
+    //  notifications
+    private boolean useNotifications; // user want to use notifications
     // location services
-    // location update service
-    private Intent locationUpdateService;
-    // must be initialized in onCreate
-    private ActivityResultLauncher<String[]> locationPermissionRequest;
-    // user want to use location services
-    private boolean useLocationData;
-    // user has using locations allowed and services are available
-    private boolean locationServicesAllowed;
-    // running track
-    private List<Location> trackLocations;
-    // distance
-    private float runningDistance;
+    private ActivityResultLauncher<String[]> locationPermissionRequest = null; // must be initialized in onCreate
+    private boolean useLocationData; // user want to use location services
+    private boolean locationServicesAllowed; // user has using locations allowed and services are available
+    // get location updates in background as service
+    private Track.Id trackId = null; // the id of the actual track
+    private final ServiceConnection locationTrackingServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LocationTrackingService.LocationTrackingServiceBinder serviceBinder =
+                    (LocationTrackingService.LocationTrackingServiceBinder) service;
+            locationTrackingService = serviceBinder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            locationTrackingService = null;
+        }
+    }; // service connection
+    private LocationTrackingService locationTrackingService = null; // location tracking service
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -134,7 +139,8 @@ public class TrainingFragment extends Fragment
                         }
                     }
             );
-        initializeLocationService();
+        // initialize the location tracking service
+        handleLocationTrackingService();
         if (savedInstanceState != null) {
             // load the timer values, if the app restored
             // default: 0
@@ -168,10 +174,8 @@ public class TrainingFragment extends Fragment
         if (savedInstanceState != null) {
             secondsInActivity = savedInstanceState.getLong("secondsInActivity", 0);
             isTimerRunning = savedInstanceState.getBoolean("isTimerRunning", false);
-            runningDistance = savedInstanceState.getFloat("runningDistance", 0);
+            trackId = savedInstanceState.getParcelable("trackId");
         }
-        // location services
-        initializeLocationService();
         View trainingView = inflater.inflate(R.layout.fragment_training, container, false);
         // initialize ui elements
         setViewElements(trainingView);
@@ -183,13 +187,15 @@ public class TrainingFragment extends Fragment
         // save the timer values
         savedInstanceState.putLong("secondsInActivity", secondsInActivity);
         savedInstanceState.putBoolean("isTimerRunning", isTimerRunning);
-        // save distance
-        savedInstanceState.putFloat("runningDistance", runningDistance);
+        // save track id
+        if (trackId != null) {
+            savedInstanceState.putParcelable("trackId", trackId);
+        }
+
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         // if the app is paused, stop the timer
         super.onPause();
         wasTimerRunning = isTimerRunning;
@@ -201,17 +207,17 @@ public class TrainingFragment extends Fragment
     public void onResume() {
         super.onResume();
         // location permissions can be changed by user
-        initializeLocationService();
+        handleLocationTrackingService();
         if (wasTimerRunning) {
             // start the timer again, if he was running
             isTimerRunning = true;
             // calculated the duration in background
-            // ans set the new activity time
+            // and set the new activity time
             secondsInActivity = (SystemClock.elapsedRealtime() - timeWhenPaused) / 1000;
         }
-        // evtl. wurde ein neuer Laufplan ausgewählt
+        // maybe user has changed the active plan
         setActiveRunningPlan();
-        // UI aktualisieren
+        // show possible changes in ui
         showRunningPlanInView();
         showRunningPlanEntryInView();
     }
@@ -219,6 +225,10 @@ public class TrainingFragment extends Fragment
     @Override
     public void onStop() {
         super.onStop();
+        if (locationTrackingService != null) {
+            requireActivity().unbindService(locationTrackingServiceConnection);
+            locationTrackingService = null;
+        }
     }
 
     @Override
@@ -264,6 +274,42 @@ public class TrainingFragment extends Fragment
             System.out.println(secondsInActivity);
         }
         monitoringTraining();
+    }
+
+    // initialize or stop the location tracking service
+    private void handleLocationTrackingService() {
+        if (useLocationData) {
+            // check for location permissions
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                locationServicesAllowed = true;
+            } else {
+                locationPermissionRequest.launch(new String[] {
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                });
+            }
+            // get the location manager
+            LocationManager locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
+            if (locationServicesAllowed) {
+                // actual we use only gps ...
+                locationServicesAllowed = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            }
+            if (!locationServicesAllowed) {
+                // stop the service, if location tracking not allowed now
+                locationTrackingService.stopAndRemoveTrackRecording();
+                requireActivity().unbindService(locationTrackingServiceConnection);
+                locationTrackingService = null;
+            }
+            if (locationServicesAllowed && locationTrackingService == null) {
+                // bind the service
+                Intent intent = new Intent(requireActivity(), LocationTrackingService.class);
+                requireActivity().bindService(intent, locationTrackingServiceConnection, Context.BIND_AUTO_CREATE);
+            }
+        }
+        if (Global.DEBUG) {
+            //TODO: Logging
+            System.out.println(locationServicesAllowed);
+        }
     }
 
     // set the active running plan for the view
@@ -418,7 +464,7 @@ public class TrainingFragment extends Fragment
             trainingUnitsSpinnerArrayAdapter.addAll(getTrainingUnitsAsStrings());
             // show the complete training time
             String durationString = getString(R.string.total_time)+ " ";
-            int duration = runningPlanEntry.getDuration();
+            long duration = runningPlanEntry.getDuration();
             // Stunden oder Minuten?
             //  Gesamtdauer des Trainings (gespeichert in min)
             if (duration < 60) {
@@ -426,8 +472,8 @@ public class TrainingFragment extends Fragment
                 durationString+= " min";
             } else {
                 //  in h und min umrechnen
-                int hours = (duration * 60) / 3600;
-                int minutes = (duration / 60) % 60;
+                long hours = (duration * 60) / 3600;
+                long minutes = (duration / 60) % 60;
                 durationString+= String.valueOf(hours);
                 durationString+= " h : ";
                 durationString+= String.valueOf(minutes);
@@ -440,16 +486,16 @@ public class TrainingFragment extends Fragment
     //
     // training methods
     //
-    // start recording training
+    // start or resume recording training
     private void startRecordingTraining() {
         if (locationServicesAllowed) {
-            if (!isTrainingRunning) {
-                //  reset the recorded track
-
-            }
-            if (locationUpdateService != null) {
-                // start the service
-                requireActivity().startService(locationUpdateService);
+            if (isTrainingRunning && trackId != null) {
+                //  resume the track
+                // TODO: TrackId was not found
+                locationTrackingService.resumeTrackRecording(trackId);
+            } else {
+                // start recording a new track
+                trackId = locationTrackingService.startTrackRecording();
             }
         }
     }
@@ -457,16 +503,13 @@ public class TrainingFragment extends Fragment
     // stop recording training
     private void stopRecordingTraining() {
         if (locationServicesAllowed) {
-            // stop location service
-            if (locationUpdateService != null) {
-                runningDistance = locationUpdateService.getFloatExtra("runningDistance", 0);
-                requireActivity().stopService(locationUpdateService);
+            // pause location tracking
+            if (isTrainingRunning) {
+                locationTrackingService.pauseTrackRecording();
+            } else {
+                // stop recording
+                locationTrackingService.stopTrackRecording();
             }
-            // self.locationManager.stopUpdatingLocation()
-            // self.locationManager.stopMonitoringSignificantLocationChanges()
-            // Pause-Zeit "merken"
-            // self.activityStartPauseDate = self.trackLocations.last?.timestamp ?? Date()
-            // self.didPausedSecondsCalulated = false
         }
     }
 
@@ -496,7 +539,7 @@ public class TrainingFragment extends Fragment
                 // data could not saved
                 // alert dialog to user
                 ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
-                        getContext(),
+                        requireContext(),
                         getString(R.string.error),
                         getString(R.string.save_data_error),
                         getString(R.string.ok));
@@ -548,7 +591,7 @@ public class TrainingFragment extends Fragment
             // TODO: Was ist bei GPS-Timer?
             // Dauer einer Einheit beträgt mindestens 1 min
             if (secondsInActivity >= 60) {
-                int duration = runningUnit.getDuration();
+                long duration = runningUnit.getDuration();
                 // TODO: Sekunden immer int?
                 long minutes = secondsInActivity / 60;
                 if (minutes >= duration) {
@@ -613,30 +656,41 @@ public class TrainingFragment extends Fragment
         if (locationServicesAllowed) {
             // stops recording locations
             stopRecordingTraining();
-            // show training infos
-            String trainingTrackInfoString = getString(R.string.distance);
-            trainingTrackInfoString+= ": ";
-            if (runningDistance < 999.99) {
-                //  Angabe in m
-                trainingTrackInfoString+= Math.round(runningDistance);
-                trainingTrackInfoString+= " m";
+            // get the recorded data
+            Track recorderdTrack = locationTrackingService.getRecordedTrack(trackId);
+            if (recorderdTrack == null) {
+                ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                        requireContext(),
+                        getString(R.string.error),
+                        getString(R.string.recorded_track_not_found),
+                        getString(R.string.ok));
             } else {
-                //  Angabe in km
-                runningDistance = runningDistance / 1000;
+                // show training infos
+                String trainingTrackInfoString = getString(R.string.distance);
+                trainingTrackInfoString += ": ";
+                double runningDistance = recorderdTrack.getDistance();
+                if (runningDistance < 999.99) {
+                    //  Angabe in m
+                    trainingTrackInfoString += Math.round(runningDistance);
+                    trainingTrackInfoString += " m";
+                } else {
+                    //  Angabe in km
+                    runningDistance = runningDistance / 1000;
+                    // TODO: Formatierung Komma
+                    trainingTrackInfoString += Math.round(runningDistance);
+                    trainingTrackInfoString += " km, ";
+                }
+                trainingTrackInfoString += "\n";
+                //  Geschwindigkeit in m/s
+                double averageSpeed = recorderdTrack.getAvgspeed();
+                //  Geschwindigkeit in km/h
+                averageSpeed = averageSpeed * 3.6;
+                trainingTrackInfoString += getString(R.string.speed);
                 // TODO: Formatierung Komma
-                trainingTrackInfoString+= Math.round(runningDistance);
-                trainingTrackInfoString+= " km, ";
+                trainingTrackInfoString += averageSpeed;
+                trainingTrackInfoString += " km/h";
+                trainingInfolabel.setText(trainingTrackInfoString);
             }
-            trainingTrackInfoString+= "\n";
-            //  Geschwindigkeit in m/s
-            double averageSpeed = runningDistance / secondsInActivity;
-            //  Geschwindigkeit in km/h
-            averageSpeed = averageSpeed * 3.6;
-            trainingTrackInfoString+= getString(R.string.speed);
-            // TODO: Formatierung Komma
-            trainingTrackInfoString+= averageSpeed;
-            trainingTrackInfoString+= " km/h";
-            trainingInfolabel.setText(trainingTrackInfoString);
         }
 
         //  Speichern der Trainingsdaten
@@ -776,34 +830,6 @@ public class TrainingFragment extends Fragment
             }))
             self.present(alert, animated: true, completion: nil)
         }*/
-    }
-
-    private void initializeLocationService() {
-        if (useLocationData) {
-            // check for location permissions
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                locationServicesAllowed = true;
-            } else {
-                locationPermissionRequest.launch(new String[] {
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                });
-            }
-            // get the location manager
-            LocationManager locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
-            if (locationServicesAllowed) {
-                // actual we use only gps ...
-                locationServicesAllowed = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            }
-            if (locationServicesAllowed && locationUpdateService == null) {
-                // create the service
-                //locationUpdateService = new Intent(requireActivity(), LocationService.class);
-            }
-        }
-        if (Global.DEBUG) {
-            //TODO: Logging
-            System.out.println(locationServicesAllowed);
-        }
     }
 
     //

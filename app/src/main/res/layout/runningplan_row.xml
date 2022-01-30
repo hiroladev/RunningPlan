@@ -61,7 +61,7 @@ A row view to show running plan details in list.
         <ImageView
                 android:id="@+id/runningplan_row_startdate_imageview"
                 app:srcCompat="@drawable/baseline_calendar_today_black_24"
-                android:contentDescription="@string/startdate"
+                android:contentDescription="@string/start_date"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"/>

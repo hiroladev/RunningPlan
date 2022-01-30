@@ -7,7 +7,7 @@
     <!-- Navigation -->
     <string name="title_start">Start</string>
     <string name="title_training">Training</string>
-    <string name="title_runningplans">Laufpläne</string>
+    <string name="title_running_plans">Laufpläne</string>
     <string name="title_settings">Profil</string>
     <string name="title_info">Info</string>
 
@@ -15,9 +15,9 @@
     <string name="title_user">Nutzer</string>
     <string name="title_user_settings">Nutzer</string>
     <string name="title_training_settings">Trainingsdaten</string>
-    <string name="title_othersettings">Sonstige Einstellungen</string>
+    <string name="title_other_settings">Sonstige Einstellungen</string>
     <string name="title_location">Standort</string>
-    <string name="title_movementtype">Bewegungsart</string>
+    <string name="title_movement_type">Bewegungsart</string>
 
     <!-- Alerts -->
     <string name="ok" translatable="false">OK</string>
@@ -36,13 +36,14 @@
     <string name="no_valid_file_format">Die gewählte Datei besitzt nicht das richtige Format (json).</string>
     <string name="ask_before_remove_running_plan">Soll der Laufplan wirklich gelöscht werden?</string>
     <string name="remove_running_plan_failed">Der Laufplan konnte nicht gelöscht werden.</string>
+    <string name="recorded_track_not_found">Die Aufzeichnung des Trainings wurde nicht gefunden.</string>
 
     <!-- Common -->
     <string name="name">Name</string>
     <string name="remarks">Anmerkungen</string>
     <string name="color">Farbe</string>
     <string name="pace">Geschwindigkeit (Pace)</string>
-    <string name="startdate">Start-Datum</string>
+    <string name="start_date">Start-Datum</string>
     <string name="select">Auswahl</string>
     <string name="state">Status</string>
     <string name="percent">Prozent</string>
@@ -53,7 +54,7 @@
 
     <!-- Location data -->
     <string name="distance">Strecke</string>
-    <string name="speed">Geschw.</string>
+    <string name="speed">Geschwindigkeit</string>
 
     <!-- Actions -->
     <string name="add">Hinzufügen</string>

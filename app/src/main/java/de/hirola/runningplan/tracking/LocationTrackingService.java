@@ -12,6 +12,7 @@ import android.os.IBinder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.sportslibrary.Global;
+import de.hirola.sportslibrary.model.Track;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,31 +27,25 @@ import java.util.List;
  * @author Michael Schmidt (Hirola)
  * @since 1.1.1
  */
-public class LocationTrackingService extends Service  implements LocationListener {
+public class LocationTrackingService extends Service implements LocationListener {
 
-    //  location manager
-    private LocationManager locationManager;
-    // running track
-    private List<Location> trackLocations;
-    // flag the state of recording track
-    private boolean isRecording;
-    // (gps) tracking available?
-    private boolean gpsAvailable;
-    // distance
-    private float runningDistance;
+    private final IBinder serviceBinder = new LocationTrackingServiceBinder();
+    private final LocationTrackingDatabaseHelper databaseHelper = new LocationTrackingDatabaseHelper(null);
+    private Track.Id trackId = null; // actual recording track
+    private LocationManager locationManager; // location manager
+    private boolean isRecording; // flag the state of recording track
+    private boolean gpsAvailable; // (gps) tracking available?
+    private float runningDistance; // distance
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return serviceBinder;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        if (trackLocations == null) {
-            trackLocations = new ArrayList<>();
-        }
         isRecording = false;
     }
 
@@ -60,6 +55,7 @@ public class LocationTrackingService extends Service  implements LocationListene
         // stop location updates
         locationManager.removeUpdates(this);
         locationManager = null;
+        // remove the recorded track
     }
 
     @Override
@@ -85,14 +81,8 @@ public class LocationTrackingService extends Service  implements LocationListene
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        // add location to list
-        trackLocations.add(location);
-        // calculate the distance
-        int size = trackLocations.size();
-        if (size > 2) {
-            runningDistance = runningDistance + trackLocations.get(size - 2).distanceTo(trackLocations.get(size - 1));
-        }
-        System.out.println(Math.round(runningDistance));
+        // insert location to local tracking database
+        databaseHelper.insertLocation(location);
     }
 
     @Override
@@ -100,22 +90,42 @@ public class LocationTrackingService extends Service  implements LocationListene
     // https://stackoverflow.com/questions/64638260/android-locationlistener-abstractmethoderror-on-onstatuschanged-and-onproviderd
     public void onStatusChanged(String provider, int status, Bundle extras) {}
 
-    public String startTrackRecording() {
+    public class LocationTrackingServiceBinder extends Binder {
+
+        public LocationTrackingServiceBinder() {
+            super();
+        }
+
+        public LocationTrackingService getService() {
+            return LocationTrackingService.this;
+        }
+
+    }
+
+    public Track.Id startTrackRecording() {
         if (isRecording) {
             if (Global.DEBUG) {
                 //TODO: Logging
             }
-            return null;
+            return trackId;
         }
-        // create an new track and start recording
-        return "";
+        // create a new track and start recording
+        // we needed name, description, start time
+        Track track = new Track("Running unit");
+        long primaryKey = databaseHelper.insertTrack(track);
+        trackId = new Track.Id(primaryKey);
+        return trackId;
     }
 
     public void pauseTrackRecording() {
 
     }
 
-    public void resumeTrackRecording(int id) {
+    public void resumeTrackRecording(Track.Id id) {
+
+    }
+
+    public void stopAndRemoveTrackRecording() {
 
     }
 
@@ -123,8 +133,12 @@ public class LocationTrackingService extends Service  implements LocationListene
 
     }
 
-    public List<Location> getTrackLocations() {
-        return trackLocations;
+    @Nullable
+    public Track getRecordedTrack(Track.Id trackId) {
+        if (!this.trackId.equals(trackId) ) {
+            return databaseHelper.getTrack(trackId);
+        }
+        return null;
     }
 
     private void initializeGPSLocationManager() throws SecurityException {

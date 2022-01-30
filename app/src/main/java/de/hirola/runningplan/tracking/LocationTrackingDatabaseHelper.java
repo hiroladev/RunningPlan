@@ -3,7 +3,9 @@ package de.hirola.runningplan.tracking;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
 import androidx.annotation.Nullable;
+import de.hirola.sportslibrary.model.Track;
 import de.hirola.sportslibrary.tables.LocationDataColumns;
 import de.hirola.sportslibrary.tables.TrackColumns;
 
@@ -43,10 +45,30 @@ public class LocationTrackingDatabaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+    }
+
+    @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         // actual there are no upgrades possible
         sqLiteDatabase.execSQL(SQL_DELETE_LOCATION_DATA);
         sqLiteDatabase.execSQL(SQL_DELETE_TRACKS);
         onCreate(sqLiteDatabase);
     }
+
+    public long insertTrack(Track track) {
+        //SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        return 0l;
+    }
+
+    public void insertLocation(Location location) {
+
+    }
+
+    @Nullable
+    public Track getTrack(Track.Id trackId) {
+        return null;
+    }
+
 }

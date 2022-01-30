@@ -14,7 +14,7 @@
     <item
             android:id="@+id/navigation_running_plans"
             android:icon="@drawable/baseline_list_black_24"
-            android:title="@string/title_runningplans"/>
+            android:title="@string/title_running_plans"/>
 
     <item
             android:id="@+id/navigation_settings"
