@@ -77,6 +77,7 @@
     <string name="training_is_planned">Training ist in Planung</string>
     <string name="training_is_running">Training läuft</string>
     <string name="new_training_unit_starts">Neue Laufeinheit beginnt</string>
+    <string name="training_unit_finished">Laufeinheit abgeschlossen</string>
     <string name="training_completed">Training abgeschlossen</string>
 
     <!-- Tooltips -->

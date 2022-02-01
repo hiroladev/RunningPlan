@@ -113,4 +113,5 @@
     <string name="ask_before_remove_running_plan">Do you really want to delete the plan?</string>
     <string name="remove_running_plan_failed">The plan could not be deleted.</string>
     <string name="recorded_track_not_found">The recording of the training was not found.</string>
+    <string name="training_unit_finished">Unit completed</string>
 </resources>

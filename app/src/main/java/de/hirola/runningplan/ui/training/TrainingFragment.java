@@ -4,11 +4,6 @@ import android.Manifest;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.location.Location;
-import android.location.LocationManager;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.SystemClock;
 import android.widget.*;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -17,7 +12,9 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
-import de.hirola.runningplan.tracking.LocationTrackingService;
+import de.hirola.runningplan.services.ServiceCallback;
+import de.hirola.runningplan.services.timer.TimerServiceConnection;
+import de.hirola.runningplan.services.tracking.TrackingServiceConnection;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.*;
@@ -37,8 +34,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 
-public class TrainingFragment extends Fragment implements AdapterView.OnItemSelectedListener,
-        Chronometer.OnChronometerTickListener {
+public class TrainingFragment extends Fragment implements AdapterView.OnItemSelectedListener, ServiceCallback {
 
     // Preferences
     private SharedPreferences sharedPreferences;
@@ -79,52 +75,52 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     //  aktive Laufplan-Trainingseinheit
     //  Fehler beim Speichern der abgeschlossenen Trainingseinheit
     private boolean didCompleteUpdateError;
-
     private boolean didAllRunningPlanesCompleted;
-    //  Trainingszeit
-    private Chronometer timer;
-    private Handler timeHandler;
-    // Intervall des Timers
-    private int timerInterval;
+    //  training time
+    BroadcastReceiver backgroundTimeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            timeToRun = intent
+                    .getExtras()
+                    .getLong(ServiceCallback.SERVICE_RECEIVER_INTENT_EXRAS_DURATION, 0L);
+            // refresh the time label
+            updateTimerLabel();
+            // check the training state
+            monitoringTraining();
+        }
+    };
+    // get the time from background service
+    private boolean backgroundTimerServiceIsConnected = false;
+    private final TimerServiceConnection timerServiceConnection =
+            new TimerServiceConnection(this); // background timer service
+    private TextView timerLabel; // timer label
+    private long timeToRun = 0; // remaining time of running unit
     // Timer aktiv?
-    private boolean isTimerRunning;
+    private boolean isTimerRunning = false;
     // was timer active
-    private boolean wasTimerRunning;
-    //  Trainingszeit in Sekunden
-    private long secondsInActivity;
-    private long secondsWhenStopped;
-    private long timeWhenPaused; //  time when app paused
-    //  notifications
-    private boolean useNotifications; // user want to use notifications
+    private boolean wasTimerRunning= false;
     // location services
+    // get location updates in background as service
     private ActivityResultLauncher<String[]> locationPermissionRequest = null; // must be initialized in onCreate
     private boolean useLocationData; // user want to use location services
     private boolean locationServicesAllowed; // user has using locations allowed and services are available
-    // get location updates in background as service
+    private boolean locationTrackingServiceIsConnected = false;
     private Track.Id trackId = null; // the id of the actual track
-    private final ServiceConnection locationTrackingServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            LocationTrackingService.LocationTrackingServiceBinder serviceBinder =
-                    (LocationTrackingService.LocationTrackingServiceBinder) service;
-            locationTrackingService = serviceBinder.getService();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            locationTrackingService = null;
-        }
-    }; // service connection
-    private LocationTrackingService locationTrackingService = null; // location tracking service
+    private final TrackingServiceConnection trackingServiceConnection =
+            new TrackingServiceConnection(this); // service connection
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            // load the track id, if the app restored
+            trackId = savedInstanceState.getParcelable("trackid");
+        }
         // app preferences
         sharedPreferences = requireContext().getSharedPreferences(
                 getString(R.string.preference_file), Context.MODE_PRIVATE);
-        useLocationData = sharedPreferences.getBoolean(Global.PreferencesKeys.useLocationData, false);
         // checking location permissions
+        useLocationData = sharedPreferences.getBoolean(Global.PreferencesKeys.useLocationData, false);
         locationPermissionRequest =
             registerForActivityResult(new ActivityResultContracts
                             .RequestMultiplePermissions(), result -> {
@@ -139,15 +135,13 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                         }
                     }
             );
+        // register receiver for timer
+        requireActivity().registerReceiver(backgroundTimeReceiver,
+                new IntentFilter(ServiceCallback.SERVICE_RECEIVER_ACTION));
         // initialize the location tracking service
         handleLocationTrackingService();
-        if (savedInstanceState != null) {
-            // load the timer values, if the app restored
-            // default: 0
-            secondsInActivity = savedInstanceState.getInt("secondsInActivity");
-            // default: false
-            isTimerRunning = savedInstanceState.getBoolean("isTimerRunning");
-        }
+        // initialize background timer service
+        handleBackgroundTimerService();
         // load running plans
         viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
         // training data
@@ -155,16 +149,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
         mutableRunningPlans.observe(this, this::onListChanged);
         runningPlans = mutableRunningPlans.getValue();
-        // initialize attributes
-        initializeAttributes();
-        // determine if user (app) can use location data
-        setUseLocationData();
-        // determine if user (app) can use notifications
-        setUseNotifications();
         // set user activated running plan
         setActiveRunningPlan();
-        // check if a training can continued
-        checkForSavedTraining();
+        //TODO: check if a training can continued
     }
 
     public View onCreateView(@NotNull LayoutInflater inflater,
@@ -172,8 +159,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         super.onCreate(savedInstanceState);
         // restore saved data
         if (savedInstanceState != null) {
-            secondsInActivity = savedInstanceState.getLong("secondsInActivity", 0);
-            isTimerRunning = savedInstanceState.getBoolean("isTimerRunning", false);
             trackId = savedInstanceState.getParcelable("trackId");
         }
         View trainingView = inflater.inflate(R.layout.fragment_training, container, false);
@@ -184,23 +169,17 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        // save the timer values
-        savedInstanceState.putLong("secondsInActivity", secondsInActivity);
-        savedInstanceState.putBoolean("isTimerRunning", isTimerRunning);
-        // save track id
+        // save the track id
         if (trackId != null) {
             savedInstanceState.putParcelable("trackId", trackId);
         }
-
     }
 
     @Override
     public void onPause() {
-        // if the app is paused, stop the timer
-        super.onPause();
         wasTimerRunning = isTimerRunning;
         isTimerRunning = false;
-        timeWhenPaused = timer.getBase();
+        super.onPause();
     }
 
     @Override
@@ -211,9 +190,11 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         if (wasTimerRunning) {
             // start the timer again, if he was running
             isTimerRunning = true;
-            // calculated the duration in background
-            // and set the new activity time
-            secondsInActivity = (SystemClock.elapsedRealtime() - timeWhenPaused) / 1000;
+            // refresh the timer label
+            long duration = timerServiceConnection.getActualDuration();
+            if (duration > -1) {
+                timerLabel.setText(String.valueOf(duration));
+            }
         }
         // maybe user has changed the active plan
         setActiveRunningPlan();
@@ -225,10 +206,16 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     @Override
     public void onStop() {
         super.onStop();
-        if (locationTrackingService != null) {
-            requireActivity().unbindService(locationTrackingServiceConnection);
-            locationTrackingService = null;
-        }
+    }
+
+    @Override
+    public void onDestroy() {
+        // unregister receiver
+        requireActivity().unregisterReceiver(backgroundTimeReceiver);
+        // unbind service connections
+        trackingServiceConnection.stopAndUnbindService(requireContext());
+        timerServiceConnection.stopAndUnbindService(requireContext());
+        super.onDestroy();
     }
 
     @Override
@@ -268,12 +255,31 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     }
 
     @Override
-    public void onChronometerTick(Chronometer chronometer) {
-        secondsInActivity = secondsInActivity + 1;
-        if (Global.DEBUG) {
-            System.out.println(secondsInActivity);
+    public void onServiceConnected(ServiceConnection connection) {
+        if (connection instanceof TrackingServiceConnection) {
+            locationTrackingServiceIsConnected = true;
         }
-        monitoringTraining();
+        if (connection instanceof TimerServiceConnection) {
+            backgroundTimerServiceIsConnected = true;
+        }
+    }
+
+    @Override
+    public void onServiceDisconnected(ServiceConnection connection) {
+        if (connection instanceof TrackingServiceConnection) {
+            locationTrackingServiceIsConnected = false;
+        }
+        if (connection instanceof TimerServiceConnection) {
+            backgroundTimerServiceIsConnected = false;
+        }
+    }
+
+    @Override
+    public void onServiceErrorOccurred(String errorMessage) {
+        if (Global.DEBUG) {
+            //TODO: logging / alerts
+            System.out.println(errorMessage);
+        }
     }
 
     // initialize or stop the location tracking service
@@ -288,27 +294,27 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                         Manifest.permission.ACCESS_COARSE_LOCATION
                 });
             }
-            // get the location manager
-            LocationManager locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
-            if (locationServicesAllowed) {
-                // actual we use only gps ...
-                locationServicesAllowed = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            if (locationServicesAllowed && !locationTrackingServiceIsConnected) {
+                // bind and start service
+                trackingServiceConnection.bindAndStartService(requireContext());
             }
             if (!locationServicesAllowed) {
                 // stop the service, if location tracking not allowed now
-                locationTrackingService.stopAndRemoveTrackRecording();
-                requireActivity().unbindService(locationTrackingServiceConnection);
-                locationTrackingService = null;
-            }
-            if (locationServicesAllowed && locationTrackingService == null) {
-                // bind the service
-                Intent intent = new Intent(requireActivity(), LocationTrackingService.class);
-                requireActivity().bindService(intent, locationTrackingServiceConnection, Context.BIND_AUTO_CREATE);
+                trackingServiceConnection.stopAndRemoveTrackRecording();
             }
         }
         if (Global.DEBUG) {
             //TODO: Logging
             System.out.println(locationServicesAllowed);
+        }
+    }
+
+    // initialize background timer service
+    private void handleBackgroundTimerService() {
+        timerServiceConnection.bindAndStartService(requireContext());
+        if (Global.DEBUG) {
+            //TODO: Logging
+            System.out.println("Background Timer");
         }
     }
 
@@ -381,8 +387,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     }
 
     private void setViewElements(@NotNull View trainingView) {
-        // initialize the timer
-        timer = trainingView.findViewById(R.id.chronometer);
+        // timer label starts with 00:00:00
+        timerLabel = trainingView.findViewById(R.id.timer);
+        updateTimerLabel();
         // initialize the training days spinner
         // if user select another day, the spinner for unit changed too
         trainingDaysSpinner = trainingView.findViewById(R.id.spinnerTrainingDay);
@@ -492,10 +499,10 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             if (isTrainingRunning && trackId != null) {
                 //  resume the track
                 // TODO: TrackId was not found
-                locationTrackingService.resumeTrackRecording(trackId);
+                trackingServiceConnection.resumeTrackRecording(trackId);
             } else {
                 // start recording a new track
-                trackId = locationTrackingService.startTrackRecording();
+                trackId = trackingServiceConnection.startTrackRecording();
             }
         }
     }
@@ -505,10 +512,10 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         if (locationServicesAllowed) {
             // pause location tracking
             if (isTrainingRunning) {
-                locationTrackingService.pauseTrackRecording();
+                trackingServiceConnection.pauseTrackRecording();
             } else {
                 // stop recording
-                locationTrackingService.stopTrackRecording();
+                trackingServiceConnection.stopTrackRecording();
             }
         }
     }
@@ -531,7 +538,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 //  Aufzeichnung und Monitoring des Trainings starten
                 startRecordingTraining();
                 isTrainingRunning = true;
-                secondsInActivity = 0;
                 // show info
                 trainingInfolabel.setText(R.string.start_training);
             } else {
@@ -588,54 +594,45 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             // Status-Bild anzeigen
             // TODO: Status-Bild trainingactive30x30
             // Monitoring der Trainingszeit
-            // TODO: Was ist bei GPS-Timer?
-            // Dauer einer Einheit beträgt mindestens 1 min
-            if (secondsInActivity >= 60) {
-                long duration = runningUnit.getDuration();
-                // TODO: Sekunden immer int?
-                long minutes = secondsInActivity / 60;
-                if (minutes >= duration) {
-                    //  Trainingseinheit wurde abgeschlossen
-                    //  TODO: Benachrichtigung an Nutzer
-                    if (useNotifications) {
-
+            if (timeToRun == 0) {
+                //  Trainingseinheit wurde abgeschlossen
+                // stop the timer
+                stopTimer();
+                //  Status abgeschlossen für Abschnitt speichern
+                try {
+                    runningUnit.setCompleted(true);
+                    viewModel.update(runningUnit);
+                } catch (SportsLibraryException exception) {
+                    // error occurred
+                    didCompleteUpdateError = true;
+                    // TOD: Logging / Info
+                    if (Global.DEBUG) {
+                        exception.printStackTrace();
                     }
-                    //  Status abgeschlossen für Abschnitt speichern
-                    try {
-                        runningUnit.setCompleted(true);
-                        viewModel.update(runningUnit);
-                    } catch (SportsLibraryException exception) {
-                        // error occurred
-                        didCompleteUpdateError = true;
-                        // TOD: Logging / Info
-                        if (Global.DEBUG) {
-                            exception.printStackTrace();
-                        }
-                    }
-                    // weitere Einheiten des Trainingsabschnittes verfügbar?
-                    // welche Trainingseinheit wurde vom Nutzer ausgewählt?
-                    //  nächsten Trainingsabschnitt setzen
-                    //  nächsten Trainingsabschnitt in spinner auswählen
-                    // TODO: next unit
-                    if (false) {
-                        resetTimer();
-                        //  Training geht weiter ...
-                        //  Hinweis an Nutzer - Vibration / Ton?
-                        //    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-                        // show info
-                        trainingInfolabel.setText(R.string.new_training_unit_starts);
-                        // Timer (wieder) starten
-                        startTimer();
-                    } else {
-                        //  alle Einheiten des Abschnittes (Tages) abgeschlossen
-                        //  Benachrichtigung an Nutzer
-                        //  Vibration
-                        // AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-                        //  Hinweise
-                        // self.sendUserNotification(cause:1)
-                        // Training abgeschlossen
-                        completeTraining();
-                    }
+                }
+                // weitere Einheiten des Trainingsabschnittes verfügbar?
+                // welche Trainingseinheit wurde vom Nutzer ausgewählt?
+                //  nächsten Trainingsabschnitt setzen
+                //  nächsten Trainingsabschnitt in spinner auswählen
+                // TODO: next unit
+                if (false) {
+                    resetTimer();
+                    //  Training geht weiter ...
+                    //  Hinweis an Nutzer - Vibration / Ton?
+                    //    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+                    // show info
+                    trainingInfolabel.setText(R.string.new_training_unit_starts);
+                    // Timer (wieder) starten
+                    startTimer();
+                } else {
+                    //  alle Einheiten des Abschnittes (Tages) abgeschlossen
+                    //  Benachrichtigung an Nutzer
+                    //  Vibration
+                    // AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+                    //  Hinweise
+                    // self.sendUserNotification(cause:1)
+                    // Training abgeschlossen
+                    completeTraining();
                 }
             }
         }
@@ -643,10 +640,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     //  Training wurde abgeschlossen
     private void completeTraining() {
-        // Timer stoppen
-        stopTimer();
-        // TODO:
-        //  Info-Label wieder auf "normale" Farben setzen
+        // TODO: Info-Label wieder auf "normale" Farben setzen
         // setInfoLabelDefaultColors();
         //  Training wurde endgültig gestoppt (abgeschlossen)
         isTrainingRunning = false;
@@ -657,7 +651,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             // stops recording locations
             stopRecordingTraining();
             // get the recorded data
-            Track recorderdTrack = locationTrackingService.getRecordedTrack(trackId);
+            Track recorderdTrack = trackingServiceConnection.getRecordedTrack(trackId);
             if (recorderdTrack == null) {
                 ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
                         requireContext(),
@@ -710,7 +704,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         stopButton.setEnabled(false);
         //  Reset der Stopp-Uhr
         resetTimer();
-        secondsInActivity = 0;
     }
 
     // save the training
@@ -773,129 +766,71 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         }*/
     }
 
-    //
-    //  DATA-RECOVERY
-    //
-    //  Prüfen, ob evtl. bereits ein Track vorliegt, dann fortsetzen
-    private void checkForSavedTraining() {
-        /*let fileManager = FileManager.default
-        let urls = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)
-        //  Pfad zu gespeicherten Track
-        self.trackSaveFilePath = urls.first?.appendingPathComponent("track.saved")
-        //  Pfad zur gespeicherten Trainingsdauer
-        self.durationSaveFilePath = urls.first?.appendingPathComponent("duration.saved")
-        //  gespeicherter Track vorhanden?
-        if self.trackSaveFilePath != nil {
-            if fileManager.fileExists(atPath: self.trackSaveFilePath!.path) {
-                if fileManager.isReadableFile(atPath: self.trackSaveFilePath!.path) ||
-                fileManager.isWritableFile(atPath: self.trackSaveFilePath!.path) {self.didSavedTrackFound = true {
-                } else {
-                    //  Datei löschen, da nicht verwendbar
-                    self.removeSavedTraining()
-                }
-            }
-        }
-        //  gespeicherte Trainingsdauer vorhanden?
-        if self.durationSaveFilePath != nil {
-            if fileManager.fileExists(atPath: self.durationSaveFilePath!.path) {
-                if fileManager.isReadableFile(atPath: self.durationSaveFilePath!.path) ||
-                fileManager.isWritableFile(atPath: self.durationSaveFilePath!.path) {
-                    self.didSavedDurationFound = true
-                } else {
-                    //  Datei löschen, da nicht verwendbar
-                    self.removeSavedTraining()
-                }
-            }
-        }
-        if self.didSavedTrackFound || self.didSavedDurationFound {
-            //  Nutzer fragen, ob das Training fortgesetzt werden soll
-            let alert = UIAlertController(title: NSLocalizedString("Es wurde ein aufgezeichnetes Training gefunden. Fortsetzen?",
-                    comment: "Es wurde ein aufgezeichnetes Training gefunden. Fortsetzen?"),
-            message: "",
-                    preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Ja", comment: "Ja"),
-            style: .default,
-                handler: { (action: UIAlertAction!) in
-                    //  Training fortsetzen
-                    self.continueTraining()
-                    return
-                }))
-                //  Training nicht fortsetzen
-                alert.addAction(UIAlertAction(title: NSLocalizedString("Nein", comment: "Nein"),
-                style: .cancel,
-                        handler: { (action: UIAlertAction!) in
-                //  Aufzeichnung löschen
-                self.removeSavedTraining()
-                return
-            }))
-            self.present(alert, animated: true, completion: nil)
-        }*/
-    }
-
-    //
     // timer
     // start or restart the timer
     // enable and disable the timer buttons
     private void startTimer() {
-        // set the attribute values
-        isTimerRunning = true;
-        isTrainingPaused = false;
-        //  Pause und Stopp sind nun möglich
-        startButton.setEnabled(false);
-        pauseButton.setEnabled(true);
-        stopButton.setEnabled(true);
-        // add the time, before timer paused
-        timer.setBase(SystemClock.elapsedRealtime() + secondsWhenStopped);
-        // (re) start the timer
-        timer.setOnChronometerTickListener(this);
-        timer.start();
+        if (backgroundTimerServiceIsConnected) {
+            if (wasTimerRunning) {
+                // resume timer
+                timerServiceConnection.resumeTimer();
+            } else {
+                // start the background timer
+                if (runningUnit != null) {
+                    timeToRun = runningUnit.getDuration() * 60;
+                    updateTimerLabel();
+                    timerServiceConnection.startTimer(timeToRun);
+                }
+            }
+            // set the attribute values
+            isTimerRunning = true;
+            isTrainingPaused = false;
+            //  Pause und Stopp sind nun möglich
+            startButton.setEnabled(false);
+            pauseButton.setEnabled(true);
+            stopButton.setEnabled(true);
+        }
     }
 
     // paused the timer
     private void pausedTimer() {
-        // stop the timer
-        timer.stop();
-        // save the stop time
-        secondsWhenStopped = timer.getBase() - SystemClock.elapsedRealtime();
-        // set the attribute values
-        isTimerRunning = true;
-        isTrainingPaused = true;
-        //  Start-Button ist wieder aktiv, Pause nicht mehr nutzbar
-        startButton.setEnabled(true);
-        pauseButton.setEnabled(true);
+        if (backgroundTimerServiceIsConnected) {
+            // pause the timer
+            timerServiceConnection.pauseTimer();
+            // set the attribute values
+            isTimerRunning = true;
+            isTrainingPaused = true;
+            //  Start-Button ist wieder aktiv, Pause nicht mehr nutzbar
+            startButton.setEnabled(true);
+            pauseButton.setEnabled(true);
+        }
     }
 
     // stop the timer
     private void stopTimer() {
-        // Stop counting up. This does not affect the base as set from setBase(long),
-        // just the view display.
-        timer.setOnChronometerTickListener(null);
-        // stop the timer
-        timer.stop();
-        timer.setBase(0);
-        // set the attribute values
-        isTimerRunning = false;
-        isTrainingPaused = true;
-        // Pause und Stop sind nicht mehr möglich
-        startButton.setEnabled(false);
-        pauseButton.setEnabled(false);
-        stopButton.setEnabled(false);
+        if (backgroundTimerServiceIsConnected) {
+            // stop the timer
+            timerServiceConnection.stopTimer();
+            // set the attribute values
+            isTimerRunning = false;
+            isTrainingPaused = true;
+            // Pause und Stop sind nicht mehr möglich
+            startButton.setEnabled(false);
+            pauseButton.setEnabled(false);
+            stopButton.setEnabled(false);
+        }
     }
 
     // reset the timer
     private void resetTimer() {
-        //  reset the timer
-        timer.setBase(SystemClock.elapsedRealtime());
         // set the attribute values
+        timeToRun = 0;
         isTimerRunning = false;
-        secondsInActivity = 0;
-        secondsWhenStopped = 0;
         startButton.setEnabled(true);
         pauseButton.setEnabled(false);
         stopButton.setEnabled(false);
-        // runningStartDate = nil
-        // activityStartPauseDate = nil
-        // didPausedSecondsCalulated = true
+        // refresh the timer label
+        updateTimerLabel();
     }
 
     private void startButtonClicked(View view) {
@@ -922,17 +857,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             stopTimer();
             cancelTraining();
         }
-    }
-
-    // initialize attributes
-    private void initializeAttributes() {
-        secondsInActivity = 0;
-        secondsWhenStopped = 0;
-        // timer in sec.
-        timerInterval = 1;
-        isTimerRunning = false;
-        isTrainingPaused = true;
-        isTrainingRunning = false;
     }
 
     // list of training days from selected running plan as string
@@ -1025,17 +949,14 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         return true;
     }
 
-    // determine if the app can use location data
-    // TODO: Location
-    private void setUseLocationData() {
-        //SharedPreferences sharedPref = getContext().getSharedPreferences(
-        //        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        useLocationData = false;
+    // format the time and refresh the label
+    private void updateTimerLabel() {
+        // duration in seconds
+        // 00:00:00 (hh:mm:ss)
+        long hh= timeToRun / 3600;
+        long mm = (timeToRun % 3600) / 60;
+        long ss = timeToRun % 60;
+        timerLabel.setText(String.format(Locale.ENGLISH, "%02d:%02d:%02d", hh, mm, ss));
     }
 
-    // determine if the app can use notifications
-    // TODO: Notifications
-    private void setUseNotifications() {
-        useNotifications = false;
-    }
 }
