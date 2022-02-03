@@ -40,12 +40,9 @@
         </activity>
 
         <!-- location update service -->
-        <service
-                android:name=".services.tracking.TrackingService"
-                android:enabled="true"/>
         <!-- background timer service -->
         <service
-                android:name=".services.timer.TimerService"
+                android:name=".services.training.TrainingService"
                 android:enabled="true"/>
     </application>
 

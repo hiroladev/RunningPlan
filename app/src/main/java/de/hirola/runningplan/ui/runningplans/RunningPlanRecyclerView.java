@@ -56,7 +56,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
                 if (runningPlan.isActive()) {
                     viewHolder.statusImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.active20x20, null));
                 }
-                if (runningPlan.completed()) {
+                if (runningPlan.isCompleted()) {
                     viewHolder.statusImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.completed20x20, null));
                 }
             } catch (Resources.NotFoundException exception) {

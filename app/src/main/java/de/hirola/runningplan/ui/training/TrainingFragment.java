@@ -9,12 +9,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
-import de.hirola.runningplan.services.ServiceCallback;
-import de.hirola.runningplan.services.timer.TimerServiceConnection;
-import de.hirola.runningplan.services.tracking.TrackingServiceConnection;
+import de.hirola.runningplan.services.training.TrainingServiceCallback;
+import de.hirola.runningplan.services.training.TrainingServiceConnection;
+import de.hirola.runningplan.ui.runningplans.RunningPlanListFragment;
+import de.hirola.runningplan.util.TrainingNotificationManager;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.*;
@@ -34,88 +36,76 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 
-public class TrainingFragment extends Fragment implements AdapterView.OnItemSelectedListener, ServiceCallback {
+public class TrainingFragment extends Fragment implements AdapterView.OnItemSelectedListener, TrainingServiceCallback {
 
-    // Preferences
-    private SharedPreferences sharedPreferences;
-    // Spinner
+    private SharedPreferences sharedPreferences; // user and app preferences
+    private TrainingNotificationManager notificationManager; // sends notification to user
+
+    // app data
+    private RunningPlanViewModel viewModel;
+    private List<RunningPlan> runningPlans; // cached list of running plans
+    private RunningPlan runningPlan; // the actual running plan, selected by the user
+                                     // if no running plan selected, the plan with the lowest order number
+                                     // will be selected
+    private RunningPlanEntry runningPlanEntry; // training entry for a day
+    private RunningUnit runningUnit; // active training unit
+    private boolean isTrainingRunning = false;
+    private boolean isTrainingPaused = false;
+    private boolean didCompleteUpdateError; // error occurred while save complete state on units
+
+    // spinner
     private Spinner trainingDaysSpinner;
     private ArrayAdapter<String> trainingDaysSpinnerArrayAdapter;
     Spinner trainingUnitsSpinner;
     private ArrayAdapter<String>  trainingUnitsSpinnerArrayAdapter;
-    // Timer button
+
+    // training action button
     private AppCompatImageButton startButton;
     private AppCompatImageButton stopButton;
     private AppCompatImageButton pauseButton;
-    // Label
+
+    // label
     private TextView runningPlanNameLabel;
     private TextView trainingInfolabel;
-    // app data
-    private RunningPlanViewModel viewModel;
-    // cached list of running plans
-    private List<RunningPlan> runningPlans;
-    // the actual running plan, selected by the user
-    // if no running plan selected, the plan with the lowest order number will be selected
-    private RunningPlan runningPlan;
-    // alle Laufpläne abgeschlossen?
-    private boolean allRunningPlansCompleted;
-    //  aktuell aktive Trainingseinheit zum ausgewählten Trainingsplan
-    //  z.B. Woche: 3, Tag: 1 (Montag), 7 min gesamt,  2 min Laufen, 3 min langsames Gehen, 2 min Laufen
-    private RunningPlanEntry runningPlanEntry;
-    // training day
-    private LocalDate trainingDate;
-    //  aktive Laufplan-Trainingseinheit
-    private RunningUnit runningUnit;
-    //  Training wurde gestartet?
-    private boolean isTrainingRunning;
-    //  Training pausiert?
-    private boolean isTrainingPaused;
-    //  Trainingsdauer-Aufzeichnung gefunden?
-    private boolean didSavedDurationFound;
-    //  aktive Laufplan-Trainingseinheit
-    //  Fehler beim Speichern der abgeschlossenen Trainingseinheit
-    private boolean didCompleteUpdateError;
-    private boolean didAllRunningPlanesCompleted;
-    //  training time
-    BroadcastReceiver backgroundTimeReceiver = new BroadcastReceiver() {
+    private TextView timerLabel; // countdown label
+
+    // training info label
+    private ImageView trainingInfoImageView;
+
+    // training data
+    private long timeToRun = 0; // remaining time of running unit
+    private final TrainingServiceConnection trainingServiceConnection =
+            new TrainingServiceConnection(this); // trainings service for timer and location updates
+    private ActivityResultLauncher<String[]> locationPermissionRequest = null; // must be initialized in onCreate
+    private boolean useLocationData; // user want to use location services
+    private boolean locationServicesAllowed; // user has using locations allowed and services are available
+    private boolean isTrainingServiceConnected = false; //only if connected to service wie can start a training
+    private Track.Id trackId = null; // the id of the actual track
+    private final BroadcastReceiver backgroundTimeReceiver = new BroadcastReceiver() { // training time from service
         @Override
         public void onReceive(Context context, Intent intent) {
             timeToRun = intent
                     .getExtras()
-                    .getLong(ServiceCallback.SERVICE_RECEIVER_INTENT_EXRAS_DURATION, 0L);
+                    .getLong(TrainingServiceCallback.SERVICE_RECEIVER_INTENT_EXRAS_DURATION, 0L);
             // refresh the time label
             updateTimerLabel();
             // check the training state
             monitoringTraining();
         }
     };
-    // get the time from background service
-    private boolean backgroundTimerServiceIsConnected = false;
-    private final TimerServiceConnection timerServiceConnection =
-            new TimerServiceConnection(this); // background timer service
-    private TextView timerLabel; // timer label
-    private long timeToRun = 0; // remaining time of running unit
-    // Timer aktiv?
-    private boolean isTimerRunning = false;
-    // was timer active
-    private boolean wasTimerRunning= false;
-    // location services
-    // get location updates in background as service
-    private ActivityResultLauncher<String[]> locationPermissionRequest = null; // must be initialized in onCreate
-    private boolean useLocationData; // user want to use location services
-    private boolean locationServicesAllowed; // user has using locations allowed and services are available
-    private boolean locationTrackingServiceIsConnected = false;
-    private Track.Id trackId = null; // the id of the actual track
-    private final TrackingServiceConnection trackingServiceConnection =
-            new TrackingServiceConnection(this); // service connection
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // restore saved data
         if (savedInstanceState != null) {
-            // load the track id, if the app restored
-            trackId = savedInstanceState.getParcelable("trackid");
+            trackId = savedInstanceState.getParcelable("trackId");
+            isTrainingRunning = savedInstanceState.getBoolean("isTrainingRunning", false);
+            isTrainingPaused = savedInstanceState.getBoolean("isTrainingPaused", false);
         }
+        // enable notification for training infos
+        notificationManager = new TrainingNotificationManager(requireActivity().getApplicationContext());
         // app preferences
         sharedPreferences = requireContext().getSharedPreferences(
                 getString(R.string.preference_file), Context.MODE_PRIVATE);
@@ -137,9 +127,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             );
         // register receiver for timer
         requireActivity().registerReceiver(backgroundTimeReceiver,
-                new IntentFilter(ServiceCallback.SERVICE_RECEIVER_ACTION));
+                new IntentFilter(TrainingServiceCallback.SERVICE_RECEIVER_ACTION));
         // initialize the location tracking service
-        handleLocationTrackingService();
+        checkLocationPermissions();
         // initialize background timer service
         handleBackgroundTimerService();
         // load running plans
@@ -156,11 +146,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     public View onCreateView(@NotNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // restore saved data
-        if (savedInstanceState != null) {
-            trackId = savedInstanceState.getParcelable("trackId");
-        }
         View trainingView = inflater.inflate(R.layout.fragment_training, container, false);
         // initialize ui elements
         setViewElements(trainingView);
@@ -173,12 +158,13 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         if (trackId != null) {
             savedInstanceState.putParcelable("trackId", trackId);
         }
+        // save training state
+        savedInstanceState.putBoolean("isTrainingRunning", isTrainingRunning);
+        savedInstanceState.putBoolean("isTrainingPaused", isTrainingPaused);
     }
 
     @Override
     public void onPause() {
-        wasTimerRunning = isTimerRunning;
-        isTimerRunning = false;
         super.onPause();
     }
 
@@ -186,21 +172,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     public void onResume() {
         super.onResume();
         // location permissions can be changed by user
-        handleLocationTrackingService();
-        if (wasTimerRunning) {
-            // start the timer again, if he was running
-            isTimerRunning = true;
-            // refresh the timer label
-            long duration = timerServiceConnection.getActualDuration();
-            if (duration > -1) {
-                timerLabel.setText(String.valueOf(duration));
-            }
-        }
-        // maybe user has changed the active plan
-        setActiveRunningPlan();
-        // show possible changes in ui
-        showRunningPlanInView();
-        showRunningPlanEntryInView();
+        checkLocationPermissions();
     }
 
     @Override
@@ -210,11 +182,12 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     @Override
     public void onDestroy() {
-        // unregister receiver
+        notificationManager = null;
         requireActivity().unregisterReceiver(backgroundTimeReceiver);
-        // unbind service connections
-        trackingServiceConnection.stopAndUnbindService(requireContext());
-        timerServiceConnection.stopAndUnbindService(requireContext());
+        if (!trainingServiceConnection.isTrainingActive()) {
+            // unbind service connections only if no training active
+            trainingServiceConnection.stopAndUnbindService(requireActivity().getApplicationContext());
+        }
         super.onDestroy();
     }
 
@@ -256,22 +229,12 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     @Override
     public void onServiceConnected(ServiceConnection connection) {
-        if (connection instanceof TrackingServiceConnection) {
-            locationTrackingServiceIsConnected = true;
-        }
-        if (connection instanceof TimerServiceConnection) {
-            backgroundTimerServiceIsConnected = true;
-        }
+        isTrainingServiceConnected = true;
     }
 
     @Override
     public void onServiceDisconnected(ServiceConnection connection) {
-        if (connection instanceof TrackingServiceConnection) {
-            locationTrackingServiceIsConnected = false;
-        }
-        if (connection instanceof TimerServiceConnection) {
-            backgroundTimerServiceIsConnected = false;
-        }
+            isTrainingServiceConnected = false;
     }
 
     @Override
@@ -282,8 +245,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         }
     }
 
-    // initialize or stop the location tracking service
-    private void handleLocationTrackingService() {
+    // check for permissions to track location updates
+    private void checkLocationPermissions() {
         if (useLocationData) {
             // check for location permissions
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -294,14 +257,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                         Manifest.permission.ACCESS_COARSE_LOCATION
                 });
             }
-            if (locationServicesAllowed && !locationTrackingServiceIsConnected) {
-                // bind and start service
-                trackingServiceConnection.bindAndStartService(requireContext());
-            }
-            if (!locationServicesAllowed) {
-                // stop the service, if location tracking not allowed now
-                trackingServiceConnection.stopAndRemoveTrackRecording();
-            }
         }
         if (Global.DEBUG) {
             //TODO: Logging
@@ -311,7 +266,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     // initialize background timer service
     private void handleBackgroundTimerService() {
-        timerServiceConnection.bindAndStartService(requireContext());
+        // bind and start service on application context
+        // on fragment the service is destroyed when switching to another fragment
+        trainingServiceConnection.bindAndStartService(requireActivity().getApplicationContext());
         if (Global.DEBUG) {
             //TODO: Logging
             System.out.println("Background Timer");
@@ -319,9 +276,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     }
 
     // set the active running plan for the view
+    // is no running plan available, no training is possible
     private void setActiveRunningPlan() {
-        //  einen Laufplan vorauswählen und alle entsprechenden Daten darstellen
-        boolean userHasRunningPlan = false;
+        // set the active running plan from user
         if (!runningPlans.isEmpty()) {
             User appUser = viewModel.getAppUser();
             if (appUser != null) {
@@ -331,44 +288,16 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                     if (index > -1) {
                         this.runningPlan = runningPlans.get(index);
                     }
-                    userHasRunningPlan = true;
-                }
-            }
-            // es konnte kein Plan ermittelt werden
-            if (this.runningPlan == null) {
-                Optional<RunningPlan>  runningPlan = runningPlans
-                        .stream()
-                        .filter(r -> !r.completed())
-                        .min(Comparator.comparing(RunningPlan::getOrderNumber));
-                // den (nicht abgeschlossenen) Plan mit der niedrigsten Nummer zuordnen
-                runningPlan.ifPresent(plan -> this.runningPlan = plan);
-            }
-            // evtl. wurden alle Laufpläne durchgeführt
-            if (this.runningPlan == null) {
-                // alle Laufpläne wurde abgeschlossen
-                if (runningPlans.stream().allMatch(RunningPlan::completed)) {
-                    allRunningPlansCompleted = true;
-                } else {
-                    allRunningPlansCompleted = false;
-                }
-                // erster Laufplan wird zugewiesen
-                runningPlan = runningPlans.get(0);
-            }
-            // Zuordnung des aktuellen Laufplans beim Nutzer speichern,
-            // wenn noch nicht zugeordnet
-            if (appUser != null && !userHasRunningPlan) {
-                appUser.setActiveRunningPlan(runningPlan);
-                try {
-                    viewModel.update(appUser);
-                } catch (SportsLibraryException exception) {
-                    if (Global.DEBUG) {
-                        // TODO: Logging
-                        exception.printStackTrace();
+                    // check if the users running plan completed
+                    if (runningPlan.isCompleted()) {
+                        // ask user how we proceed further
+                        handleRunningPlan();
+                        return;
                     }
                 }
             }
-            List<RunningPlanEntry> entries = runningPlan.getEntries();
             // set the next uncompleted training day
+            List<RunningPlanEntry> entries = runningPlan.getEntries();
             Optional<RunningPlanEntry> entry = entries
                     .stream()
                     .filter(r -> !r.completed())
@@ -383,6 +312,18 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                         .findFirst();
                 unit.ifPresent(value -> runningUnit = value);
             }
+        } else {
+            // info to user
+            ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                    requireContext(),
+                    getString(R.string.information),
+                    getString(R.string.no_running_plans_available),
+                    getString(R.string.ok));
+            // no training possible
+            // disable the button
+            startButton.setEnabled(false);
+            pauseButton.setEnabled(false);
+            stopButton.setEnabled(false);
         }
     }
 
@@ -390,6 +331,10 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // timer label starts with 00:00:00
         timerLabel = trainingView.findViewById(R.id.timer);
         updateTimerLabel();
+        // training state image view
+        // first state info ist paused
+        trainingInfoImageView = trainingView.findViewById(R.id.imageViewTrainingInfo);
+        trainingInfoImageView.setImageResource(R.drawable.baseline_free_breakfast_black_24);
         // initialize the training days spinner
         // if user select another day, the spinner for unit changed too
         trainingDaysSpinner = trainingView.findViewById(R.id.spinnerTrainingDay);
@@ -435,27 +380,11 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             // automatically call notifyDataSetChanged.
             trainingDaysSpinnerArrayAdapter.clear();
             trainingDaysSpinnerArrayAdapter.addAll(getTrainingDaysAsStrings());
-            if (allRunningPlansCompleted) {
-                // TODO: Alle Laufpläne abgeschlossen: UI anpassen
-                //  aktive Trainingseinheit (Tag) setzen
-                //  erste offene Einheit aus Liste wählen
-                // Hinweis an Nutzer
-                trainingInfolabel.setText(R.string.all_runninplans_completed);
-            } else {
-                // select the training date in spinner
-                int index = runningPlan.getEntries().indexOf(runningPlanEntry);
-                if (index > -1) {
-                    trainingDaysSpinner.setSelection(index);
-                }
+            // select the training date in spinner
+            int index = runningPlan.getEntries().indexOf(runningPlanEntry);
+            if (index > -1) {
+                trainingDaysSpinner.setSelection(index);
             }
-            // TODO: Bilder
-            /*
-            /  Status-Bild anzeigen
-            if let trainingStatusImage = UIImage(named: "trainingcompleted30x30") {
-            //  Bild für den Status des Laufplanes
-            self.completedEntryImageView.image = trainingStatusImage
-             */
-            // Dauer des gesamten Trainings anzeigen
             showRunningPlanEntryInView();
         }
     }
@@ -491,219 +420,180 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     }
 
     //
-    // training methods
+    // training
     //
-    // start or resume recording training
-    private void startRecordingTraining() {
-        if (locationServicesAllowed) {
-            if (isTrainingRunning && trackId != null) {
-                //  resume the track
-                // TODO: TrackId was not found
-                trackingServiceConnection.resumeTrackRecording(trackId);
-            } else {
-                // start recording a new track
-                trackId = trackingServiceConnection.startTrackRecording();
-            }
-        }
-    }
-
-    // stop recording training
-    private void stopRecordingTraining() {
-        if (locationServicesAllowed) {
-            // pause location tracking
-            if (isTrainingRunning) {
-                trackingServiceConnection.pauseTrackRecording();
-            } else {
-                // stop recording
-                trackingServiceConnection.stopTrackRecording();
-            }
-        }
-    }
-
-    // start the training
+    // start or restart the training
     private void startTraining() {
-        trainingDaysSpinner.setEnabled(false);
-        trainingUnitsSpinner.setEnabled(false);
-        if (isTrainingRunning) {
-            //  start recording location (again)
-            startRecordingTraining();
-            // set an info text
-            trainingInfolabel.setText(R.string.continue_training);
-        } else {
-            // prüfen, ob aktueller Tag ein Trainingstag ist und / oder
-            // noch Einheiten offen sind
-            if (isValidTraining()) {
-                // aktuellen Trainingstag in Spinner auswählen
-                // erste Trainingseinheit auswählen
-                //  Aufzeichnung und Monitoring des Trainings starten
-                startRecordingTraining();
-                isTrainingRunning = true;
-                // show info
+        if (isTrainingServiceConnected) {
+            // disable ui elements to avoid changing while training runs
+            trainingDaysSpinner.setEnabled(false);
+            trainingUnitsSpinner.setEnabled(false);
+            startButton.setEnabled(false);
+            stopButton.setEnabled(true);
+            pauseButton.setEnabled(true);
+            trainingInfoImageView.setImageResource(R.drawable.baseline_directions_run_black_24);
+            // set value for countdown
+            timeToRun = runningUnit.getDuration() * 60;
+            if (isTrainingRunning) {
+                //  resume the training, track id can be null
+                trainingInfolabel.setText(R.string.continue_training);
+                trainingServiceConnection.resumeTraining(TrainingServiceCallback.INVALID_TRAINING_DURATION, trackId);
+            } else if (isValidTraining()) {
+                // start a new training
                 trainingInfolabel.setText(R.string.start_training);
-            } else {
-                //TODO: Hinweis an Nutzer
-                // data could not saved
-                // alert dialog to user
-                ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
-                        requireContext(),
-                        getString(R.string.error),
-                        getString(R.string.save_data_error),
-                        getString(R.string.ok));
+                trackId = trainingServiceConnection.startTraining(timeToRun, locationServicesAllowed);
+                isTrainingRunning = true;
             }
         }
-        //  Status-Bild anzeigen
-        // TODO: Status-Bild trainingactive30x30
     }
 
-    //  Trainingspause
+    // paused the training
     private void pauseTraining() {
-        // paused record locations
-        stopRecordingTraining();
-        // show info
-        trainingInfolabel.setText(R.string.pause_training);
-        // Status-Bild anzeigen
-        // TODO: Status-Bild trainingpaused30x30
+        if (isTrainingServiceConnected) {
+            if (isTrainingRunning) {
+                trainingServiceConnection.pauseTraining();
+                pauseButton.setEnabled(false);
+                stopButton.setEnabled(false);
+                startButton.setEnabled(true);
+                trainingInfolabel.setText(R.string.pause_training);
+                trainingInfoImageView.setImageResource(R.drawable.baseline_free_breakfast_black_24);
+                isTrainingPaused = true;
+            }
+        }
     }
 
     //  Trainingsabbruch
     private void cancelTraining() {
-        // show info
-        trainingInfolabel.setText(R.string.cancel_training);
-        // reset timer
-        resetTimer();
-        // stop recording locations
-        stopRecordingTraining();
-        //  evtl. aufgezeichnete Daten löschen
-        //trackLocations.removeAll();
-        //  Flag setzen
-        isTrainingRunning = false;
-        // Info-Label wieder auf "normale" Farben setzen
-        // TODO: Farben
-        // enable spinner and training date button
-        trainingDaysSpinner.setEnabled(true);
-        trainingUnitsSpinner.setEnabled(true);
-        // Status-Bild anzeigen
-        // TODO: Status-Bild trainingplanned30x30
+        if (isTrainingServiceConnected) {
+            if (isTrainingRunning) {
+                // ask user
+                ModalOptionDialog.showYesNoDialog(
+                        requireContext(),
+                        getString(R.string.question), getString(R.string.ask_for_cancel_training),
+                        getString(R.string.ok), getString(R.string.cancel),
+                        button -> {
+                            if (button == ModalOptionDialog.Button.OK) {
+                                // cancel training
+                                trainingServiceConnection.cancelTraining();
+                                trainingInfolabel.setText(R.string.cancel_training);
+                                trainingInfoImageView.setImageResource(R.drawable.baseline_free_breakfast_black_24);
+                                timeToRun = 0;
+                                updateTimerLabel();
+                                isTrainingRunning = false;
+                                isTrainingPaused = false;
+                                // enable spinner and training date button
+                                startButton.setEnabled(true);
+                                stopButton.setEnabled(false);
+                                pauseButton.setEnabled(false);
+                                trainingDaysSpinner.setEnabled(true);
+                                trainingUnitsSpinner.setEnabled(true);
+                            }
+                        });
+            }
+        }
     }
 
     //  Training "überwachen"
     private void monitoringTraining() {
-        if (runningPlanEntry != null && runningUnit != null) {
+        if (isTrainingServiceConnected) {
             // show info
             trainingInfolabel.setText(R.string.training_is_running);
-            // Status-Bild anzeigen
             // TODO: Status-Bild trainingactive30x30
-            // Monitoring der Trainingszeit
             if (timeToRun == 0) {
-                //  Trainingseinheit wurde abgeschlossen
-                // stop the timer
-                stopTimer();
-                //  Status abgeschlossen für Abschnitt speichern
+                // unit completed, save the state
                 try {
                     runningUnit.setCompleted(true);
                     viewModel.update(runningUnit);
                 } catch (SportsLibraryException exception) {
                     // error occurred
                     didCompleteUpdateError = true;
-                    // TOD: Logging / Info
+                    // TODO: Logging / Info
                     if (Global.DEBUG) {
                         exception.printStackTrace();
                     }
                 }
-                // weitere Einheiten des Trainingsabschnittes verfügbar?
-                // welche Trainingseinheit wurde vom Nutzer ausgewählt?
-                //  nächsten Trainingsabschnitt setzen
-                //  nächsten Trainingsabschnitt in spinner auswählen
+                // more units of the training section available
+                // than continue the training
                 // TODO: next unit
-                if (false) {
-                    resetTimer();
-                    //  Training geht weiter ...
-                    //  Hinweis an Nutzer - Vibration / Ton?
-                    //    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-                    // show info
+                if (nextUnit()) {
+                    // send notification
                     trainingInfolabel.setText(R.string.new_training_unit_starts);
-                    // Timer (wieder) starten
-                    startTimer();
+                    // resume training
+                    startTraining();
                 } else {
-                    //  alle Einheiten des Abschnittes (Tages) abgeschlossen
-                    //  Benachrichtigung an Nutzer
-                    //  Vibration
-                    // AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-                    //  Hinweise
-                    // self.sendUserNotification(cause:1)
-                    // Training abgeschlossen
+                    // all units of the entry (day) completed
                     completeTraining();
                 }
             }
         }
     }
 
-    //  Training wurde abgeschlossen
+    //  all units for entry are completed
     private void completeTraining() {
-        // TODO: Info-Label wieder auf "normale" Farben setzen
-        // setInfoLabelDefaultColors();
-        //  Training wurde endgültig gestoppt (abgeschlossen)
-        isTrainingRunning = false;
-        //  show info
-        trainingInfolabel.setText(R.string.training_completed);
-        // TODO: Status image trainingcompleted30x30
-        if (locationServicesAllowed) {
-            // stops recording locations
-            stopRecordingTraining();
-            // get the recorded data
-            Track recorderdTrack = trackingServiceConnection.getRecordedTrack(trackId);
-            if (recorderdTrack == null) {
-                ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
-                        requireContext(),
-                        getString(R.string.error),
-                        getString(R.string.recorded_track_not_found),
-                        getString(R.string.ok));
-            } else {
-                // show training infos
-                String trainingTrackInfoString = getString(R.string.distance);
-                trainingTrackInfoString += ": ";
-                double runningDistance = recorderdTrack.getDistance();
-                if (runningDistance < 999.99) {
-                    //  Angabe in m
-                    trainingTrackInfoString += Math.round(runningDistance);
-                    trainingTrackInfoString += " m";
+        // training entry (day) unit completed
+        if (isTrainingServiceConnected) {
+            isTrainingRunning = false;
+            timeToRun = 0L;
+            updateTimerLabel();
+            // info to user
+            notificationManager.sendNotification(getString(R.string.training_completed));
+            trainingInfolabel.setText(R.string.training_completed);
+            trainingInfoImageView.setImageResource(R.drawable.baseline_done_black_24);
+            if (locationServicesAllowed) {
+                // stop training
+                trainingServiceConnection.endTraining();
+                // get the recorded data
+                Track recorderdTrack = trainingServiceConnection.getRecordedTrack(trackId);
+                if (recorderdTrack == null) {
+                    ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                            requireContext(),
+                            getString(R.string.error),
+                            getString(R.string.recorded_track_not_found),
+                            getString(R.string.ok));
                 } else {
-                    //  Angabe in km
-                    runningDistance = runningDistance / 1000;
+                    // show training infos
+                    String trainingTrackInfoString = getString(R.string.training_completed) + "\n";
+                    trainingTrackInfoString += getString(R.string.distance) + ": ";
+                    double runningDistance = recorderdTrack.getDistance();
+                    if (runningDistance < 999.99) {
+                        //  Angabe in m
+                        trainingTrackInfoString += Math.round(runningDistance);
+                        trainingTrackInfoString += " m";
+                    } else {
+                        //  Angabe in km
+                        runningDistance = runningDistance / 1000;
+                        // TODO: Formatierung Komma
+                        trainingTrackInfoString += Math.round(runningDistance);
+                        trainingTrackInfoString += " km, ";
+                    }
+                    trainingTrackInfoString += "\n";
+                    //  Geschwindigkeit in m/s
+                    double averageSpeed = recorderdTrack.getAvg();
+                    //  Geschwindigkeit in km/h
+                    averageSpeed = averageSpeed * 3.6;
+                    trainingTrackInfoString += getString(R.string.speed);
+                    trainingTrackInfoString += ": ";
                     // TODO: Formatierung Komma
-                    trainingTrackInfoString += Math.round(runningDistance);
-                    trainingTrackInfoString += " km, ";
+                    trainingTrackInfoString += averageSpeed;
+                    trainingTrackInfoString += " km/h";
+                    trainingInfolabel.setText(trainingTrackInfoString);
                 }
-                trainingTrackInfoString += "\n";
-                //  Geschwindigkeit in m/s
-                double averageSpeed = recorderdTrack.getAvgspeed();
-                //  Geschwindigkeit in km/h
-                averageSpeed = averageSpeed * 3.6;
-                trainingTrackInfoString += getString(R.string.speed);
-                // TODO: Formatierung Komma
-                trainingTrackInfoString += averageSpeed;
-                trainingTrackInfoString += " km/h";
-                trainingInfolabel.setText(trainingTrackInfoString);
             }
-        }
 
-        //  Speichern der Trainingsdaten
-        //  ohne GPS, dann ohne Track / Route, aber mit Dauer, wenn vom Nutzer gewünscht
-        // user setting in one shared preference file
-        boolean saveTrainings = sharedPreferences.getBoolean(Global.PreferencesKeys.saveTrainings, false);
-        if (saveTrainings) {
-            // Nutzer fragen, ob gespeichert werden soll
-            // TODO: Alert-Dialog
-            saveTraining();
+            // save training
+            boolean saveTrainings = sharedPreferences.getBoolean(Global.PreferencesKeys.saveTrainings, false);
+            if (saveTrainings) {
+                // Nutzer fragen, ob gespeichert werden soll
+                // TODO: Alert-Dialog
+                saveTraining();
+            }
+            //  Elemente können wieder bedient werden
+            trainingDaysSpinner.setEnabled(true);
+            trainingUnitsSpinner.setEnabled(true);
+            startButton.setEnabled(true);
+            pauseButton.setEnabled(false);
+            stopButton.setEnabled(false);
         }
-        //  Elemente können wieder bedient werden
-        trainingDaysSpinner.setEnabled(true);
-        trainingUnitsSpinner.setEnabled(true);
-        startButton.setEnabled(true);
-        pauseButton.setEnabled(false);
-        stopButton.setEnabled(false);
-        //  Reset der Stopp-Uhr
-        resetTimer();
     }
 
     // save the training
@@ -766,97 +656,16 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         }*/
     }
 
-    // timer
-    // start or restart the timer
-    // enable and disable the timer buttons
-    private void startTimer() {
-        if (backgroundTimerServiceIsConnected) {
-            if (wasTimerRunning) {
-                // resume timer
-                timerServiceConnection.resumeTimer();
-            } else {
-                // start the background timer
-                if (runningUnit != null) {
-                    timeToRun = runningUnit.getDuration() * 60;
-                    updateTimerLabel();
-                    timerServiceConnection.startTimer(timeToRun);
-                }
-            }
-            // set the attribute values
-            isTimerRunning = true;
-            isTrainingPaused = false;
-            //  Pause und Stopp sind nun möglich
-            startButton.setEnabled(false);
-            pauseButton.setEnabled(true);
-            stopButton.setEnabled(true);
-        }
-    }
-
-    // paused the timer
-    private void pausedTimer() {
-        if (backgroundTimerServiceIsConnected) {
-            // pause the timer
-            timerServiceConnection.pauseTimer();
-            // set the attribute values
-            isTimerRunning = true;
-            isTrainingPaused = true;
-            //  Start-Button ist wieder aktiv, Pause nicht mehr nutzbar
-            startButton.setEnabled(true);
-            pauseButton.setEnabled(true);
-        }
-    }
-
-    // stop the timer
-    private void stopTimer() {
-        if (backgroundTimerServiceIsConnected) {
-            // stop the timer
-            timerServiceConnection.stopTimer();
-            // set the attribute values
-            isTimerRunning = false;
-            isTrainingPaused = true;
-            // Pause und Stop sind nicht mehr möglich
-            startButton.setEnabled(false);
-            pauseButton.setEnabled(false);
-            stopButton.setEnabled(false);
-        }
-    }
-
-    // reset the timer
-    private void resetTimer() {
-        // set the attribute values
-        timeToRun = 0;
-        isTimerRunning = false;
-        startButton.setEnabled(true);
-        pauseButton.setEnabled(false);
-        stopButton.setEnabled(false);
-        // refresh the timer label
-        updateTimerLabel();
-    }
-
     private void startButtonClicked(View view) {
-        // start or resume the timer
-        startTimer();
-        // start or resume the training
         startTraining();
     }
 
     private void pauseButtonClicked(View view) {
-        // paused the timer
-        pausedTimer();
-        // paused the training
         pauseTraining();
     }
 
     private void stopButtonClicked(View view) {
-        //  Timer stoppen
-        //  Timer läuft?
-        if (isTimerRunning) {
-            //  TODO: Nutzer fragen if else return
-            //  Hinweis an Nutzer
-            // Soll das Training wirklich beendet werden?",
-            stopTimer();
-            cancelTraining();
-        }
+        cancelTraining();
     }
 
     // list of training days from selected running plan as string
@@ -937,11 +746,125 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         runningPlans = changedList;
     }
 
+    // set the next unit of current running plan entry
+    private boolean nextUnit() {
+        // welche Trainingseinheit wurde vom Nutzer ausgewählt?
+        //  nächsten Trainingsabschnitt setzen
+        //  nächsten Trainingsabschnitt in spinner auswählen
+        if (runningPlanEntry != null) {
+            List<RunningUnit> units = runningPlanEntry.getRunningUnits();
+            Iterator<RunningUnit> iterator = units.iterator();
+            Optional<RunningUnit> unit = units
+                    .stream()
+                    .filter(runningUnit -> !runningUnit.isCompleted())
+                    .findFirst();
+            if (unit.isPresent()) {
+                runningUnit = unit.get();
+                // set the unit in spinner
+                int index = units.indexOf(runningUnit);
+                if (index > -1) {
+                    trainingUnitsSpinner.setSelection(index);
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    // ask user to reset the plan (repeat),
+    // select next plan (by order number) or
+    // select plan in list
+    private void handleRunningPlan() {
+        // active running plan is completed
+        // ask user for action
+        if (runningPlans != null && runningPlan != null) {
+            // deactivate option 3 (argument is null) if all running plans completed
+            String optionThreeButtonText = null;
+            if (runningPlans.stream().allMatch(RunningPlan::isCompleted)) {
+                optionThreeButtonText = getString(R.string.select_running_plan_option_3);
+            }
+            ModalOptionDialog.showThreeOptionsDialog(
+                    requireContext(),
+                    getString(R.string.running_plan_completed),
+                    getString(R.string.title_select_new_running_plan_options),
+                    getString(R.string.select_running_plan_option_1),
+                    getString(R.string.select_running_plan_option_2),
+                    optionThreeButtonText,
+                    button -> {
+                        // reset the active running plan
+                        if (button == ModalOptionDialog.Button.OPTION_1) {
+                            // reset
+                            resetRunningPlan();
+                        }
+                        // select the next running plan by order number
+                        if (button == ModalOptionDialog.Button.OPTION_2) {
+                            // select from list, open list fragment with running plans
+                            FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+                            Fragment fragment = new RunningPlanListFragment();
+                            fragmentTransaction.replace(R.id.content, fragment);
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.commit();
+                        }
+                        // select from list, open list fragment
+                        if (button == ModalOptionDialog.Button.OPTION_3) {
+                            Optional<RunningPlan> nextRunningPlan = runningPlans
+                                    .stream()
+                                    .filter(r -> !r.isCompleted())
+                                    .min(Comparator.comparing(RunningPlan::getOrderNumber));
+                            // try to get the next running plan
+                            nextRunningPlan.ifPresent(plan -> runningPlan = plan);
+                            // set the new plan as active
+                            User appUser = viewModel.getAppUser();
+                            if (appUser != null) {
+                                appUser.setActiveRunningPlan(runningPlan);
+                                try {
+                                    viewModel.update(appUser);
+                                    // recall the method to set active running plan
+                                    setActiveRunningPlan();
+                                } catch (SportsLibraryException exception) {
+                                    if (Global.DEBUG) {
+                                        // TODO: Logging
+                                        exception.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
+    // Reset the running plan. All units are reset as uncompleted.
+    private void resetRunningPlan() {
+        if (runningPlans != null && runningPlan != null) {
+            List<RunningPlanEntry> entries = runningPlan.getEntries();
+            // reset units
+            for (RunningPlanEntry entry : entries) {
+                List<RunningUnit> units = entry.getRunningUnits();
+                for (RunningUnit unit : units) {
+                    unit.setCompleted(false);
+                    // update in datastore
+                    try {
+                        viewModel.update(unit);
+                    } catch (SportsLibraryException exception) {
+                        if (Global.DEBUG) {
+                            //TODO: info to user
+                            exception.printStackTrace();
+                        }
+                    }
+                }
+            }
+            // refresh ui
+            setActiveRunningPlan();
+        }
+    }
+
     // check if valid running plan and training day
     private boolean isValidTraining() {
         // is running plan completed?
         if (runningPlan != null) {
-            if (runningPlan.completed()) {
+            if (runningPlan.isCompleted()) {
                 //TODO: Frage an Nutzer
                 //Plan neu starten?
             }

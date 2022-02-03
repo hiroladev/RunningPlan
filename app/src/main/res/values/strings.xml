@@ -8,8 +8,10 @@
     <string name="title_start">Start</string>
     <string name="title_training">Training</string>
     <string name="title_running_plans">Laufpläne</string>
+    <string name="title_movement_type">Bewegungsarten</string>
     <string name="title_settings">Profil</string>
-    <string name="title_info">Info</string>
+    <string name="title_information">Info</string>
+    <string name="title_select_new_running_plan">Einen neuen Laufplan auswählen</string>
 
     <!-- Dialoge -->
     <string name="title_user">Nutzer</string>
@@ -17,7 +19,12 @@
     <string name="title_training_settings">Trainingsdaten</string>
     <string name="title_other_settings">Sonstige Einstellungen</string>
     <string name="title_location">Standort</string>
-    <string name="title_movement_type">Bewegungsart</string>
+    <string name="title_select_new_running_plan_options">Sie können den Plan zurücksetzen oder einen neuen Plan
+        wählen.
+    </string>
+    <string name="select_running_plan_option_1">Reset</string>
+    <string name="select_running_plan_option_2">aus Liste</string>
+    <string name="select_running_plan_option_3">Nächster</string>
 
     <!-- Alerts -->
     <string name="ok" translatable="false">OK</string>
@@ -26,12 +33,15 @@
     <string name="no">Nein</string>
     <string name="question">Frage</string>
     <string name="hint">Hinweis</string>
+    <string name="information">Information</string>
     <string name="warning">Warnung</string>
     <string name="error">Fehler</string>
     <string name="preferences_not_set">Die Einstellungen konnten nicht gespeichert werden.</string>
     <string name="save_data_error">Die Daten konnten nicht gespeichert werden.</string>
     <string name="name_must_be_not_null">Der Name darf nicht leer sein.</string>
-    <string name="remove_active_runningplan">Soll mit diesem Laufplan wirklich nicht mehr trainiert werden?</string>
+    <string name="no_running_plans_available">Es sind keine Laufpläne vorhanden.</string>
+    <string name="remove_active_running_plan">Soll mit diesem Laufplan wirklich nicht mehr trainiert werden?</string>
+    <string name="ask_for_cancel_training">Soll das Training wirklich abgebrochen werden?</string>
     <string name="no_file_selected">Es wurde keine Datei ausgewählt.</string>
     <string name="no_valid_file_format">Die gewählte Datei besitzt nicht das richtige Format (json).</string>
     <string name="ask_before_remove_running_plan">Soll der Laufplan wirklich gelöscht werden?</string>
@@ -76,9 +86,11 @@
     <string name="cancel_training">Abbruch des Trainings</string>
     <string name="training_is_planned">Training ist in Planung</string>
     <string name="training_is_running">Training läuft</string>
+    <string name="running_unit_started_at">Laufeinheit gestartet um</string>
     <string name="new_training_unit_starts">Neue Laufeinheit beginnt</string>
     <string name="training_unit_finished">Laufeinheit abgeschlossen</string>
     <string name="training_completed">Training abgeschlossen</string>
+    <string name="running_plan_completed">Dieser Laufplan wurde bereits vollständig abgeschlossen.</string>
 
     <!-- Tooltips -->
     <string name="template_must_be_changed">Vorlagen dürfen nicht verändert werden</string>

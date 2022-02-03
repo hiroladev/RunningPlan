@@ -105,7 +105,7 @@
 
     <EditText
             android:id="@+id/editTextTrainingInfos"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
             android:labelFor="@id/editTextTrainingInfos"
@@ -113,10 +113,11 @@
             android:ems="10"
             android:clickable="false"
             android:focusable="false"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/timer"
+            app:layout_constraintEnd_toEndOf="@+id/timer"
             app:layout_constraintTop_toBottomOf="@+id/spinnerTrainingUnit"
-            android:layout_marginTop="15dp" android:height="60dp" android:textSize="14sp"/>
+            android:layout_marginTop="15dp" android:height="80dp" android:textSize="14sp"
+    />
 
     <EditText
             android:id="@+id/timer"
@@ -161,5 +162,12 @@
             android:contentDescription="@string/stop"
             app:layout_constraintTop_toTopOf="@+id/imageButtonStart"
             app:layout_constraintEnd_toStartOf="@+id/imageButtonStart" android:layout_marginEnd="60dp"/>
+    <ImageView
+            android:id="@+id/imageViewTrainingInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp" app:srcCompat="@drawable/baseline_free_breakfast_black_24"
+            app:layout_constraintEnd_toStartOf="@+id/editTextTrainingUnitInfoLabel" android:layout_marginEnd="5dp"
+            app:layout_constraintBottom_toBottomOf="@+id/editTextTrainingUnitInfoLabel"
+            app:layout_constraintTop_toTopOf="@+id/editTextTrainingUnitInfoLabel"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

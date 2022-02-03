@@ -32,7 +32,7 @@
     <string name="title_start">Start</string>
     <string name="title_running_plans">Plans</string>
     <string name="title_settings">Profile</string>
-    <string name="title_info">Info</string>
+    <string name="title_information">Info</string>
     <string name="title_user_settings">User</string>
     <string name="title_other_settings">Other Settings</string>
     <string name="state">State</string>
@@ -98,7 +98,7 @@
     <string name="template_must_be_changed">Templates must be changed</string>
     <string name="question">Question</string>
     <string name="hint">Hint</string>
-    <string name="remove_active_runningplan">Shouldn\'t this running plan really be used any more?</string>
+    <string name="remove_active_running_plan">Shouldn\'t this running plan really be used any more?</string>
     <string name="name_must_be_not_null">The name must be not null.</string>
     <string name="error">Error</string>
     <string name="warning">Warning</string>
@@ -114,4 +114,14 @@
     <string name="remove_running_plan_failed">The plan could not be deleted.</string>
     <string name="recorded_track_not_found">The recording of the training was not found.</string>
     <string name="training_unit_finished">Unit completed</string>
+    <string name="running_unit_started_at">Running unit started at</string>
+    <string name="running_plan_completed">The plan has been fully completed.</string>
+    <string name="ask_for_cancel_training">Should the training really be stopped?</string>
+    <string name="no_running_plans_available">There are no running plans.</string>
+    <string name="information">Information</string>
+    <string name="title_select_new_running_plan">Select a new running plan</string>
+    <string name="title_select_new_running_plan_options">You can reset the plan or start a new plan select.</string>
+    <string name="select_running_plan_option_1">Reset plan</string>
+    <string name="select_running_plan_option_2">Select from List</string>
+    <string name="select_running_plan_option_3">Next plan</string>
 </resources>

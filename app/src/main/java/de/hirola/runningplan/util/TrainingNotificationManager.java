@@ -1,4 +1,4 @@
-package de.hirola.runningplan.services.timer;
+package de.hirola.runningplan.util;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -21,14 +21,14 @@ import de.hirola.runningplan.R;
  * @author Michael Schmidt (Hirola)
  * @since 1.1.1
  */
-public class TimerServiceNotificationManager {
+public class TrainingNotificationManager {
 
     static final int NOTIFICATION_ID = 4711;
-    private static final String CHANNEL_ID = TimerServiceNotificationManager.class.getSimpleName();
+    private static final String CHANNEL_ID = TrainingNotificationManager.class.getSimpleName();
     private final NotificationCompat.Builder notificationBuilder;
     private final NotificationManager notificationManager;
 
-    public TimerServiceNotificationManager(@NonNull Context context) {
+    public TrainingNotificationManager(@NonNull Context context) {
 
         // Create an explicit intent for an Activity in your app
         Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);

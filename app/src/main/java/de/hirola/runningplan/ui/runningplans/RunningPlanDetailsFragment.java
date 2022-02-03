@@ -130,9 +130,9 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                 // active running plan
                 if (isUsersRunningPlan && !activeRunningPlanSwitch.isChecked()) {
                     // user would not like the running plan as active
-                    ModalOptionDialog.showOptionDialog(
+                    ModalOptionDialog.showYesNoDialog(
                             requireContext(),
-                            getString(R.string.question), getString(R.string.remove_active_runningplan),
+                            getString(R.string.question), getString(R.string.remove_active_running_plan),
                             getString(R.string.ok), getString(R.string.cancel),
                             button -> {
                                 if (button == ModalOptionDialog.Button.OK) {

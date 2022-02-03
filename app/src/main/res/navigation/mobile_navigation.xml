@@ -27,5 +27,5 @@
     <fragment
             android:id="@+id/navigation_info"
             android:name="de.hirola.runningplan.ui.info.InfoFragment"
-            android:label="@string/title_info"/>
+            android:label="@string/title_information"/>
 </navigation>

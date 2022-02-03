@@ -2,7 +2,6 @@ package de.hirola.runningplan.ui.runningplans;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -107,7 +106,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
                             RunningPlan runningPlan = runningPlans.get(position);
                             if (!runningPlan.isTemplate()) {
                                 // warning before remove
-                                ModalOptionDialog.showOptionDialog(requireContext(),
+                                ModalOptionDialog.showYesNoDialog(requireContext(),
                                         null,
                                         getString(R.string.ask_before_remove_running_plan),
                                         null,
@@ -127,7 +126,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
                                                         ModalOptionDialog.showMessageDialog(
                                                                 ModalOptionDialog.DialogStyle.CRITICAL,
                                                                 requireContext(),
-                                                                null, getString(R.string.remove_active_runningplan),
+                                                                null, getString(R.string.remove_active_running_plan),
                                                                 null);
                                                         if (Global.DEBUG) {
                                                             //TODO: Logging
