@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
+import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
@@ -30,6 +31,9 @@ import java.util.List;
 
 public class RunningPlanDetailsFragment extends Fragment implements View.OnClickListener {
 
+    private final static String TAG = RunningPlanDetailsFragment.class.getSimpleName();
+
+    private AppLogManager logManager;
     private RunningPlanViewModel viewModel;
     private User appUser;
     private String runningPlanUUID;
@@ -65,6 +69,8 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
         } else {
             runningPlanUUID = "";
         }
+        // app logger
+        logManager = AppLogManager.getInstance(requireContext());
         // app data
         viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
         appUser = viewModel.getAppUser();
@@ -149,14 +155,14 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                 try {
                     viewModel.update(appUser);
                     viewModel.update(runningPlan);
-                } catch (SportsLibraryException e) {
+                } catch (SportsLibraryException exception) {
                     ModalOptionDialog.showMessageDialog(
                             ModalOptionDialog.DialogStyle.CRITICAL,
                             requireContext(),
                             getString(R.string.error), getString(R.string.save_data_error),
                             getString(R.string.ok));
-                    if (Global.DEBUG) {
-                        // TODO: logging
+                    if (logManager.isDebugMode()) {
+                        logManager.log(exception,null,TAG);
                     }
                 }
 
@@ -208,8 +214,8 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                     }
                 } catch (Resources.NotFoundException exception) {
                     runningPlanRemarksTextView.setText(R.string.no_remarks);
-                    if (Global.DEBUG) {
-                        // TODO: Logging
+                    if (logManager.isDebugMode()) {
+                        logManager.log(exception,null,TAG);
                     }
                 }
             } else {

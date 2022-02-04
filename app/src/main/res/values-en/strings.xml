@@ -45,11 +45,8 @@
     <string name="movement_type_fast_running">Fast Running</string>
     <string name="movement_type_speedy_running">Speedy Running</string>
     <string name="movement_type_more_speedy_running">More speedy Running</string>
-    <string name="runningplan_start_remarks">-</string>
-    <string name="runningplan_start_60_remarks">-</string>
     <string name="name">Übersetzungsergebnisse</string>
     <string name="remarks">Remarks</string>
-    <string name="title_runningplan_details">Running Plan Details</string>
     <string name="no_remarks">No remarks available.</string>
     <string name="select">Choice</string>
     <string name="distance">Distance</string>
@@ -72,7 +69,6 @@
     <string name="running_plan">Running plan</string>
     <string name="running_plan_name">Running plan name</string>
     <string name="select_training_date">Select training day</string>
-    <string name="all_runninplans_completed">Alle plans are finished.</string>
     <string name="total_time">Total time</string>
     <string name="running_plan_entry">Running section</string>
     <string name="running_unit">Running unit</string>
@@ -84,15 +80,13 @@
     <string name="user_training_level">Training level</string>
     <string name="use_sync">Sync data</string>
     <string name="notifications">Notifications</string>
-    <string name="runningplan_start_test_remarks">A Template for testing the app.</string>
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
     <string name="no">No</string>
     <string name="preferences_not_set">The preferences could not saved.</string>
     <string name="save_data_error">The data could not saved.</string>
     <string name="hide_templates">Hide templates</string>
-    <string name="show_training_details">Show training details ...</string>
-    <string name="select_as_active_runningplan">Set as active plan</string>
+    <string name="show_training_details">Details of training</string>
     <string name="select_week_of_start">Set week of start</string>
     <string name="save">Save</string>
     <string name="template_must_be_changed">Templates must be changed</string>
@@ -105,8 +99,6 @@
     <string name="import_running_plan">Import</string>
     <string name="select_import_file">Select import file</string>
     <string name="mark_as_template">Mark as template</string>
-    <string name="no_file_selected">-</string>
-    <string name="no_valid_file_format">-</string>
     <string name="import_succeed">Import succeed</string>
     <string name="import_failed">Import failed</string>
     <string name="loading_file_succeed">File successfully read</string>
@@ -124,4 +116,20 @@
     <string name="select_running_plan_option_1">Reset plan</string>
     <string name="select_running_plan_option_2">Select from List</string>
     <string name="select_running_plan_option_3">Next plan</string>
+    <string name="debugging">Debugging</string>
+    <string name="debug_mode">Debug-Mode</string>
+    <string name="send_debug_log">Send debug log</string>
+    <string name="title_running_plan_details">Details of running plan</string>
+    <string name="all_running_plans_completed">All planes completed.</string>
+    <string name="select_as_active_running_plan">Select as active plan</string>
+    <string name="unit_time">Duration of unit</string>
+    <string name="running_plan_start_remarks">A template to get started with running. With friendly support from
+        https://lauftipps.ch. Without liability and guarantee.
+    </string>
+    <string name="running_plan_start_60_remarks">The 2nd level when starting to run. With the kind support of
+        https://lauftipps.ch. No liability or guarantee.
+    </string>
+    <string name="running_plan_start_test_remarks">A template for testing the app.</string>
+    <string name="no_file_selected">No file was selected</string>
+    <string name="no_valid_file_format">The selected file is not in the correct format (json).</string>
 </resources>

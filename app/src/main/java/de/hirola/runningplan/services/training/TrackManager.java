@@ -5,7 +5,6 @@ import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.services.training.TrackingDatabaseHelper;
 import de.hirola.sportslibrary.model.Track;
 
 import java.time.LocalDateTime;
@@ -26,9 +25,9 @@ import java.util.List;
  */
 public class TrackManager {
 
-    private List<Track.Id> tracks = null; // query the list to avoid get from sqlite
-    private Context context = null;
-    private TrackingDatabaseHelper databaseHelper = null;
+    private List<Track.Id> tracks; // query the list to avoid get from sqlite
+    private final Context context;
+    private final TrackingDatabaseHelper databaseHelper;
 
     public TrackManager(@NonNull Context context) {
         this.context = context;

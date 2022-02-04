@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.*;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.model.RunningPlanViewModel;
+import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.User;
@@ -25,12 +26,17 @@ import java.util.Map;
 public class SettingsFragment extends PreferenceFragmentCompat
         implements Preference.OnPreferenceChangeListener, EditTextPreference.OnBindEditTextListener {
 
+    private final static String TAG = SettingsFragment.class.getSimpleName();
+
+    private AppLogManager logManager;
     private RunningPlanViewModel viewModel;
     private User appUser;
     private SharedPreferences sharedPreferences;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        // app logger
+        logManager = AppLogManager.getInstance(requireContext());
         // set the preference ui elements
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         // get the view model for data handling
@@ -81,6 +87,16 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 // TODO: kinto dialog
                 editor.putBoolean(key, (Boolean) newValue);
             }
+            // set debug mode
+            if (key.equalsIgnoreCase(Global.PreferencesKeys.debugMode))
+            {
+                editor.putBoolean(key, (Boolean) newValue);
+            }
+            // send debug logs or not
+            if (key.equalsIgnoreCase(Global.PreferencesKeys.sendDebugLog))
+            {
+                editor.putBoolean(key, (Boolean) newValue);
+            }
         }
         // text preferences
         if (preference instanceof EditTextPreference) {
@@ -97,7 +113,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 try {
                     Integer.parseInt(maxPulse);
                 } catch (NumberFormatException exception) {
-                    if (Global.DEBUG) {
+                    if (logManager.isDebugMode()) {
                         exception.printStackTrace();
                     }
                     return false;
@@ -132,7 +148,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 "",
                                 getString(R.string.preferences_not_set),
                                 getString(R.string.ok));
-                        if (Global.DEBUG) {
+                        if (logManager.isDebugMode()) {
                             exception.printStackTrace();
                         }
                         return false;
@@ -151,7 +167,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 getString(R.string.warning),
                                 getString(R.string.preferences_not_set),
                                 getString(R.string.ok));
-                        if (Global.DEBUG) {
+                        if (logManager.isDebugMode()) {
                             exception.printStackTrace();
                         }
                         return false;
@@ -178,7 +194,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 getString(R.string.warning),
                                 getString(R.string.preferences_not_set),
                                 getString(R.string.ok));
-                        if (Global.DEBUG) {
+                        if (logManager.isDebugMode()) {
                             System.out.println(exception.getMessage());
                         }
                         return false;
@@ -197,7 +213,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     getString(R.string.error),
                     getString(R.string.save_data_error),
                     getString(R.string.ok));
-            if (Global.DEBUG) {
+            if (logManager.isDebugMode()) {
                 exception.printStackTrace();
             }
             return false;
@@ -228,9 +244,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 .setChecked(sharedPreferences.getBoolean(key, false));
                     } catch (ClassCastException exception) {
                         ((SwitchPreferenceCompat) preference).setChecked(false);
-                        if (Global.DEBUG) {
-                            // TODO: Logging
-                            exception.printStackTrace();
+                        if (logManager.isDebugMode()) {
+                            logManager.log(exception,null,TAG);
                         }
                     }
                 } else if (preference instanceof ListPreference) {
@@ -253,8 +268,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                     entry = requireContext().getString(resourceStringId);
                                 } catch (Resources.NotFoundException exception) {
                                     entry = getString(R.string.preference_not_found);
-                                    if (Global.DEBUG) {
-                                        // TODO: Logging
+                                    if (logManager.isDebugMode()) {
+                                        logManager.log(exception,null,TAG);
                                     }
                                 }
                             }
@@ -289,8 +304,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                     entry = requireContext().getString(resourceStringId);
                                 } catch (Resources.NotFoundException exception) {
                                     entry = getString(R.string.preference_not_found);
-                                    if (Global.DEBUG) {
-                                        // TODO: Logging
+                                    if (logManager.isDebugMode()) {
+                                        logManager.log(exception,null,TAG);
                                     }
                                 }
                             }
@@ -336,9 +351,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                         }
                     } catch (ClassCastException exception) {
                         ((EditTextPreference) preference).setText("");
-                        if (Global.DEBUG) {
-                            // TODO: Logging
-                            exception.printStackTrace();
+                        if (logManager.isDebugMode()) {
+                            logManager.log(exception,null,TAG);
                         }
                     }
                 }
@@ -402,7 +416,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     getString(R.string.error),
                     getString(R.string.save_data_error),
                     getString(R.string.ok));
-            if (Global.DEBUG) {
+            if (logManager.isDebugMode()) {
                 exception.printStackTrace();
             }
             return;

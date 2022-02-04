@@ -143,29 +143,31 @@
     <!-- Running Plans -->
     <string name="running_plan">Laufplan</string>
     <string name="running_plan_name">Laufplan-Name</string>
-    <string name="runningplan_start_remarks">Eine Vorlage zum Einstieg in das Laufen. Mit freundlicher Unterstützung von
+    <string name="running_plan_start_remarks">Eine Vorlage zum Einstieg in das Laufen. Mit freundlicher Unterstützung von
         https://lauftipps.ch. Ohne Haftung und Gewährleistung.
     </string>
-    <string name="runningplan_start_60_remarks">Die 2. Stufe beim Einsteig in das Laufen. Mit freundlicher Unterstützung
-        von https://lauftipps.ch. Ohne Haftung und Gewährleistung.
+    <string name="running_plan_start_60_remarks">Die 2. Stufe beim Einstieg in das Laufen. Mit freundlicher Unterstützung von https://lauftipps.ch. Ohne Haftung und Gewährleistung.
     </string>
-    <string name="runningplan_start_test_remarks">Eine Vorlage zum Testen der App.
-    </string>
+    <string name="running_plan_start_test_remarks">Eine Vorlage zum Testen der App.</string>
     <string name="no_remarks">Keine Anmerkungen vorhanden.</string>
-    <string name="title_runningplan_details">Laufplan-Details</string>
+    <string name="title_running_plan_details">Laufplan-Details</string>
     <string name="select_training_date">Trainingstag wählen</string>
-    <string name="all_runninplans_completed">Alle Laufpläne abgeschlossen.</string>
+    <string name="all_running_plans_completed">Alle Laufpläne abgeschlossen.</string>
     <string name="total_time">Gesamtdauer</string>
+    <string name="unit_time">Dauer Laufeinheit</string>
     <string name="running_plan_entry">Laufplan-Einheit</string>
     <string name="running_unit">Laufabschnitt</string>
     <string name="running_unit_infos">Infos zum Laufabschnitt</string>
     <string name="show_training_details">Trainingdetails anzeigen …</string>
-    <string name="select_as_active_runningplan">Als aktiven Plan auswählen</string>
+    <string name="select_as_active_running_plan">Als aktiven Plan auswählen</string>
     <string name="select_week_of_start">Startwoche festlegen</string>
 
     <!-- Preferences -->
     <string name="preference_not_found">Unbekannte Einstellung</string>
     <string name="other_settings">Weitere Einstellungen</string>
+    <string name="debugging">Fehlerbehebung</string>
+    <string name="debug_mode">Debug-Modus</string>
+    <string name="send_debug_log">Fehler-Log versenden</string>
     <string name="save_trainings">Trainings speichern</string>
     <string name="user_training_level">Trainingslevel</string>
     <string name="use_sync">Daten synchronisieren</string>

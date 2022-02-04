@@ -1,5 +1,6 @@
 package de.hirola.runningplan;
 
+import android.content.Context;
 import de.hirola.runningplan.databinding.ActivityMainBinding;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 
@@ -10,11 +11,11 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import de.hirola.sportslibrary.Global;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
     // holds the data (model) for the app
     private RunningPlanViewModel runningPlanViewModel;
 
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        de.hirola.runningplan.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         BottomNavigationView navView = findViewById(R.id.nav_view);

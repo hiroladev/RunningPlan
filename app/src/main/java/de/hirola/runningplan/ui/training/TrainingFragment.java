@@ -16,6 +16,7 @@ import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.runningplan.services.training.TrainingServiceCallback;
 import de.hirola.runningplan.services.training.TrainingServiceConnection;
 import de.hirola.runningplan.ui.runningplans.RunningPlanListFragment;
+import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.runningplan.util.TrainingNotificationManager;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
@@ -38,6 +39,9 @@ import java.util.*;
 
 public class TrainingFragment extends Fragment implements AdapterView.OnItemSelectedListener, TrainingServiceCallback {
 
+    private final static String TAG = TrainingFragment.class.getSimpleName();
+
+    private AppLogManager logManager; // app logging
     private SharedPreferences sharedPreferences; // user and app preferences
     private TrainingNotificationManager notificationManager; // sends notification to user
 
@@ -104,6 +108,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             isTrainingRunning = savedInstanceState.getBoolean("isTrainingRunning", false);
             isTrainingPaused = savedInstanceState.getBoolean("isTrainingPaused", false);
         }
+        // app logger
+        logManager = AppLogManager.getInstance(requireContext());
         // enable notification for training infos
         notificationManager = new TrainingNotificationManager(requireActivity().getApplicationContext());
         // app preferences
@@ -116,13 +122,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                             .RequestMultiplePermissions(), result -> {
                         Boolean fineLocationGranted = result.getOrDefault(
                                 Manifest.permission.ACCESS_FINE_LOCATION, false);
-                        if (fineLocationGranted != null && fineLocationGranted) {
-                            // Precise location access granted.
-                            locationServicesAllowed = true;
-                        } else {
-                            // No location access granted.
-                            locationServicesAllowed = false;
-                        }
+                // Precise location access granted.
+                // No location access granted.
+                locationServicesAllowed = fineLocationGranted != null && fineLocationGranted;
                     }
             );
         // register receiver for timer
@@ -153,7 +155,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(@NotNull Bundle savedInstanceState) {
         // save the track id
         if (trackId != null) {
             savedInstanceState.putParcelable("trackId", trackId);
@@ -217,6 +219,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 if (runningUnits.size() > position) {
                     // set the selected running unit
                     runningUnit = runningUnits.get(position);
+                    // set the new training time
+                    timeToRun = runningUnit.getDuration();
                 }
             }
         }
@@ -239,9 +243,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     @Override
     public void onServiceErrorOccurred(String errorMessage) {
-        if (Global.DEBUG) {
-            //TODO: logging / alerts
-            System.out.println(errorMessage);
+        //TODO: alert to user
+        if (logManager.isDebugMode()) {
+            logManager.log(null,errorMessage,TAG);
         }
     }
 
@@ -258,9 +262,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 });
             }
         }
-        if (Global.DEBUG) {
-            //TODO: Logging
-            System.out.println(locationServicesAllowed);
+        if (logManager.isDebugMode()) {
+            logManager.log(null,"Location updates are allowed: " + locationServicesAllowed,TAG);
         }
     }
 
@@ -269,9 +272,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // bind and start service on application context
         // on fragment the service is destroyed when switching to another fragment
         trainingServiceConnection.bindAndStartService(requireActivity().getApplicationContext());
-        if (Global.DEBUG) {
-            //TODO: Logging
-            System.out.println("Background Timer");
+        if (logManager.isDebugMode()) {
+            logManager.log(null,"Service bind and start.",TAG);
         }
     }
 
@@ -334,7 +336,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // training state image view
         // first state info ist paused
         trainingInfoImageView = trainingView.findViewById(R.id.imageViewTrainingInfo);
-        trainingInfoImageView.setImageResource(R.drawable.baseline_free_breakfast_black_24);
+        trainingInfoImageView.setImageResource(R.drawable.baseline_self_improvement_black_24);
         // initialize the training days spinner
         // if user select another day, the spinner for unit changed too
         trainingDaysSpinner = trainingView.findViewById(R.id.spinnerTrainingDay);
@@ -399,23 +401,15 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             trainingUnitsSpinnerArrayAdapter.clear();
             trainingUnitsSpinnerArrayAdapter.addAll(getTrainingUnitsAsStrings());
             // show the complete training time
-            String durationString = getString(R.string.total_time)+ " ";
             long duration = runningPlanEntry.getDuration();
-            // Stunden oder Minuten?
-            //  Gesamtdauer des Trainings (gespeichert in min)
-            if (duration < 60) {
-                durationString+= String.valueOf(duration);
-                durationString+= " min";
-            } else {
-                //  in h und min umrechnen
-                long hours = (duration * 60) / 3600;
-                long minutes = (duration / 60) % 60;
-                durationString+= String.valueOf(hours);
-                durationString+= " h : ";
-                durationString+= String.valueOf(minutes);
-                durationString+= " min";
-            }
+            String durationString = getString(R.string.total_time)+ ": " + buildStringForDuration(duration);
             trainingInfolabel.setText(durationString);
+            // display state by image
+            if (runningPlanEntry.completed()) {
+                trainingInfoImageView.setImageResource(R.drawable.baseline_done_black_24);
+            } else {
+                trainingInfoImageView.setImageResource(R.drawable.baseline_self_improvement_black_24);
+            }
         }
     }
 
@@ -437,7 +431,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             if (isTrainingRunning) {
                 //  resume the training, track id can be null
                 trainingInfolabel.setText(R.string.continue_training);
-                trainingServiceConnection.resumeTraining(TrainingServiceCallback.INVALID_TRAINING_DURATION, trackId);
+                trainingServiceConnection.resumeTraining(timeToRun, trackId);
             } else if (isValidTraining()) {
                 // start a new training
                 trainingInfolabel.setText(R.string.start_training);
@@ -456,7 +450,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 stopButton.setEnabled(false);
                 startButton.setEnabled(true);
                 trainingInfolabel.setText(R.string.pause_training);
-                trainingInfoImageView.setImageResource(R.drawable.baseline_free_breakfast_black_24);
+                trainingInfoImageView.setImageResource(R.drawable.baseline_self_improvement_black_24);
                 isTrainingPaused = true;
             }
         }
@@ -476,7 +470,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                                 // cancel training
                                 trainingServiceConnection.cancelTraining();
                                 trainingInfolabel.setText(R.string.cancel_training);
-                                trainingInfoImageView.setImageResource(R.drawable.baseline_free_breakfast_black_24);
+                                trainingInfoImageView.setImageResource(R.drawable.baseline_self_improvement_black_24);
                                 timeToRun = 0;
                                 updateTimerLabel();
                                 isTrainingRunning = false;
@@ -500,6 +494,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             trainingInfolabel.setText(R.string.training_is_running);
             // TODO: Status-Bild trainingactive30x30
             if (timeToRun == 0) {
+                // paused the training, maybe there is another one unit
+                pauseTraining();
                 // unit completed, save the state
                 try {
                     runningUnit.setCompleted(true);
@@ -507,9 +503,9 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 } catch (SportsLibraryException exception) {
                     // error occurred
                     didCompleteUpdateError = true;
-                    // TODO: Logging / Info
-                    if (Global.DEBUG) {
-                        exception.printStackTrace();
+                    // TODO: alert to user
+                    if (logManager.isDebugMode()) {
+                        logManager.log(exception,"A running unit couldn't set as completed.",TAG);
                     }
                 }
                 // more units of the training section available
@@ -518,7 +514,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 if (nextUnit()) {
                     // send notification
                     trainingInfolabel.setText(R.string.new_training_unit_starts);
-                    // resume training
+                    // resume training with another unit
                     startTraining();
                 } else {
                     // all units of the entry (day) completed
@@ -532,16 +528,18 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     private void completeTraining() {
         // training entry (day) unit completed
         if (isTrainingServiceConnected) {
+            // stop training
+            trainingServiceConnection.endTraining();
+            // update values / flags
             isTrainingRunning = false;
             timeToRun = 0L;
+            // refresh timer label
             updateTimerLabel();
             // info to user
             notificationManager.sendNotification(getString(R.string.training_completed));
             trainingInfolabel.setText(R.string.training_completed);
             trainingInfoImageView.setImageResource(R.drawable.baseline_done_black_24);
             if (locationServicesAllowed) {
-                // stop training
-                trainingServiceConnection.endTraining();
                 // get the recorded data
                 Track recorderdTrack = trainingServiceConnection.getRecordedTrack(trackId);
                 if (recorderdTrack == null) {
@@ -722,8 +720,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                         }
                     } catch (Resources.NotFoundException exception) {
                         trainingUnitsSpinnerElementString += R.string.movement_type_not_found;
-                        if (Global.DEBUG) {
-                            // TODO: Logging
+                        if (logManager.isDebugMode()) {
+                            logManager.log(exception,null,TAG);
                         }
                     }
                     // running unit duration
@@ -753,24 +751,36 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         //  nächsten Trainingsabschnitt in spinner auswählen
         if (runningPlanEntry != null) {
             List<RunningUnit> units = runningPlanEntry.getRunningUnits();
-            Iterator<RunningUnit> iterator = units.iterator();
             Optional<RunningUnit> unit = units
                     .stream()
                     .filter(runningUnit -> !runningUnit.isCompleted())
                     .findFirst();
             if (unit.isPresent()) {
                 runningUnit = unit.get();
-                // set the unit in spinner
-                int index = units.indexOf(runningUnit);
-                if (index > -1) {
-                    trainingUnitsSpinner.setSelection(index);
-                }
+                setRunningUnit();
                 return true;
             } else {
                 return false;
             }
         }
         return false;
+    }
+
+    // set the values if a running unit selected
+    // called by nextUnit
+    private void setRunningUnit() {
+        List<RunningUnit> units = runningPlanEntry.getRunningUnits();
+        // select the unit in spinner
+        int index = units.indexOf(runningUnit);
+        if (index > -1) {
+            trainingUnitsSpinner.setSelection(index);
+        }
+        // set the training time
+        timeToRun = runningUnit.getDuration();
+        // update training info label
+        // show the training time for the unit
+        String durationString = getString(R.string.unit_time)+ ": " + buildStringForDuration(timeToRun);
+        trainingInfolabel.setText(durationString);
     }
 
     // ask user to reset the plan (repeat),
@@ -824,9 +834,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                                     // recall the method to set active running plan
                                     setActiveRunningPlan();
                                 } catch (SportsLibraryException exception) {
-                                    if (Global.DEBUG) {
-                                        // TODO: Logging
-                                        exception.printStackTrace();
+                                    if (logManager.isDebugMode()) {
+                                        logManager.log(exception,null,TAG);
                                     }
                                 }
                             }
@@ -848,7 +857,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                     try {
                         viewModel.update(unit);
                     } catch (SportsLibraryException exception) {
-                        if (Global.DEBUG) {
+                        if (logManager.isDebugMode()) {
                             //TODO: info to user
                             exception.printStackTrace();
                         }
@@ -870,6 +879,24 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             }
         }
         return true;
+    }
+
+    private String buildStringForDuration(long duration) {
+        // show the complete training time
+        String durationString = getString(R.string.total_time)+ " ";
+        // display in hour or minutes?
+        if (duration < 60) {
+            durationString+= String.valueOf(duration);
+        } else {
+            //  in h und min umrechnen
+            long hours = (duration * 60) / 3600;
+            long minutes = (duration / 60) % 60;
+            durationString+= String.valueOf(hours);
+            durationString+= " h : ";
+            durationString+= String.valueOf(minutes);
+        }
+        durationString+= " min";
+        return durationString;
     }
 
     // format the time and refresh the label

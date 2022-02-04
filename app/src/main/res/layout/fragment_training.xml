@@ -125,6 +125,7 @@
             android:layout_height="48dp"
             android:clickable="false"
             android:focusable="false"
+            android:inputType="time"
             android:ems="10"
             tools:text="00:00:00"
             android:textAlignment="center"
@@ -165,7 +166,7 @@
     <ImageView
             android:id="@+id/imageViewTrainingInfo"
             android:layout_width="wrap_content"
-            android:layout_height="0dp" app:srcCompat="@drawable/baseline_free_breakfast_black_24"
+            android:layout_height="0dp" app:srcCompat="@drawable/baseline_self_improvement_black_24"
             app:layout_constraintEnd_toStartOf="@+id/editTextTrainingUnitInfoLabel" android:layout_marginEnd="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/editTextTrainingUnitInfoLabel"
             app:layout_constraintTop_toTopOf="@+id/editTextTrainingUnitInfoLabel"/>

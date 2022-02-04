@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import de.hirola.runningplan.MainActivity;
 import de.hirola.runningplan.R;
 
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
+import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
@@ -41,6 +43,9 @@ import java.util.stream.Stream;
  */
 public class RunningPlanListFragment extends Fragment implements View.OnClickListener {
 
+    private final static String TAG = RunningPlanListFragment.class.getSimpleName();
+
+    private AppLogManager logManager; // app logger
     // view model
     private RunningPlanViewModel viewModel;
     // recycler view list adapter
@@ -70,6 +75,8 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_running_plan_list, container, false);
+        // app logger
+        logManager = AppLogManager.getInstance(requireContext());
         // should I hide templates?
         SharedPreferences sharedPreferences =
                 requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
@@ -111,26 +118,23 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
                                         getString(R.string.ask_before_remove_running_plan),
                                         null,
                                         null,
-                                        new ModalOptionDialogListener() {
-                                            @Override
-                                            public void onButtonClicked(int button) {
-                                                if (button == ModalOptionDialog.Button.OK) {
-                                                    // get the running plan
-                                                    int position = viewHolder.getBindingAdapterPosition();
-                                                    RunningPlan runningPlan = runningPlans.get(position);
-                                                    // remove running plan
-                                                    try {
-                                                        viewModel.remove(runningPlan);
-                                                        listAdapter.notifyItemRemoved(position);
-                                                    } catch (SportsLibraryException exception) {
-                                                        ModalOptionDialog.showMessageDialog(
-                                                                ModalOptionDialog.DialogStyle.CRITICAL,
-                                                                requireContext(),
-                                                                null, getString(R.string.remove_active_running_plan),
-                                                                null);
-                                                        if (Global.DEBUG) {
-                                                            //TODO: Logging
-                                                        }
+                                        button -> {
+                                            if (button == ModalOptionDialog.Button.OK) {
+                                                // get the running plan
+                                                int position1 = viewHolder.getBindingAdapterPosition();
+                                                RunningPlan runningPlan1 = runningPlans.get(position1);
+                                                // remove running plan
+                                                try {
+                                                    viewModel.remove(runningPlan1);
+                                                    listAdapter.notifyItemRemoved(position1);
+                                                } catch (SportsLibraryException exception) {
+                                                    ModalOptionDialog.showMessageDialog(
+                                                            ModalOptionDialog.DialogStyle.CRITICAL,
+                                                            requireContext(),
+                                                            null, getString(R.string.remove_active_running_plan),
+                                                            null);
+                                                    if (logManager.isDebugMode()) {
+                                                        logManager.log(exception,null,TAG);
                                                     }
                                                 }
                                             }
@@ -148,24 +152,21 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
         recyclerView.setAdapter(listAdapter);
         // button to add (import) new templates
         FloatingActionButton addRunningPlanButton = view.findViewById(R.id.button_add_runningplan);
-        addRunningPlanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AddRunningPlanFragment addRunningPlanFragment = null;
-                List<Fragment> fragments = getParentFragmentManager().getFragments();
-                for (Fragment fragment : fragments) {
-                    if (fragment instanceof AddRunningPlanFragment) {
-                        addRunningPlanFragment = (AddRunningPlanFragment) fragment;
-                        break;
-                    }
+        addRunningPlanButton.setOnClickListener(v -> {
+            AddRunningPlanFragment addRunningPlanFragment = null;
+            List<Fragment> fragments = getParentFragmentManager().getFragments();
+            for (Fragment fragment : fragments) {
+                if (fragment instanceof AddRunningPlanFragment) {
+                    addRunningPlanFragment = (AddRunningPlanFragment) fragment;
+                    break;
                 }
-                if (addRunningPlanFragment == null) {
-                    // create a new fragment
-                    addRunningPlanFragment = new AddRunningPlanFragment();
-                }
-                // starts the RunningPlanAddFragment
-                showFragment(addRunningPlanFragment);
             }
+            if (addRunningPlanFragment == null) {
+                // create a new fragment
+                addRunningPlanFragment = new AddRunningPlanFragment();
+            }
+            // starts the RunningPlanAddFragment
+            showFragment(addRunningPlanFragment);
         });
         return view;
     }

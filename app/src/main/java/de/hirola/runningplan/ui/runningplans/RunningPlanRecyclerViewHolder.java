@@ -1,14 +1,11 @@
 package de.hirola.runningplan.ui.runningplans;
 
-import android.content.res.Resources;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
-import de.hirola.sportslibrary.Global;
-import de.hirola.sportslibrary.model.RunningPlan;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.format.DateTimeFormatter;

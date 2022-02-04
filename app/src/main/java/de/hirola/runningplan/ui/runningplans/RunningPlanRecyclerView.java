@@ -2,8 +2,9 @@ package de.hirola.runningplan.ui.runningplans;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import de.hirola.runningplan.MainActivity;
 import de.hirola.runningplan.R;
-import de.hirola.sportslibrary.Global;
+import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.model.RunningPlan;
 
 import android.content.res.Resources;
@@ -27,13 +28,17 @@ import java.util.List;
  */
 public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final static String TAG = RunningPlanRecyclerView.class.getSimpleName();
+
+    private final AppLogManager logManager;
     private final Context context;
-    private List<RunningPlan> runningPlans;
+    private final List<RunningPlan> runningPlans;
     private View.OnClickListener onClickListener;
 
     public RunningPlanRecyclerView(Context context, List<RunningPlan> runningPlans) {
         this.context = context;
         this.runningPlans = runningPlans;
+        logManager = AppLogManager.getInstance(context);
     }
 
     @NonNull
@@ -54,14 +59,15 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
             // Name und Status (mittels Bild darstellen)
             try {
                 if (runningPlan.isActive()) {
-                    viewHolder.statusImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.active20x20, null));
+                    viewHolder.statusImageView.setImageResource(R.drawable.active20x20);
                 }
                 if (runningPlan.isCompleted()) {
-                    viewHolder.statusImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.completed20x20, null));
+                    viewHolder.statusImageView.setImageResource(R.drawable.completed20x20);
                 }
             } catch (Resources.NotFoundException exception) {
-                //TODO:Logging
-                exception.printStackTrace();
+                if (logManager.isDebugMode()) {
+                    logManager.log(exception,null,TAG);
+                }
             }
             viewHolder.nameTextView.setText(runningPlan.getName());
             // Anmerkungen
@@ -78,8 +84,8 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
                     }
                 } catch (Resources.NotFoundException exception) {
                     viewHolder.remarksTextView.setText(R.string.no_remarks);
-                    if (Global.DEBUG) {
-                        // TODO: Logging
+                    if (logManager.isDebugMode()) {
+                        logManager.log(exception,null,TAG);
                     }
                 }
             } else {

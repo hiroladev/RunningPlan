@@ -74,9 +74,6 @@ public class TrainingServiceConnection implements ServiceConnection {
         try {
             context.unbindService(this);
             context.stopService(new Intent(context, TrainingService.class));
-        } catch (Exception exception) {
-            //TODO: Logging
-            exception.printStackTrace();
         } finally {
             serviceBounded = false;
         }
@@ -110,7 +107,7 @@ public class TrainingServiceConnection implements ServiceConnection {
 
     public void cancelTraining() {
         if (serviceBounded) {
-            trainingService.stopTraining();
+            trainingService.cancelTraining();
         }
     }
 
