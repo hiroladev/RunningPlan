@@ -39,8 +39,7 @@
             </intent-filter>
         </activity>
 
-        <!-- location update service -->
-        <!-- background timer service -->
+        <!-- training service for timer and location -->
         <service
                 android:name=".services.training.TrainingService"
                 android:enabled="true"/>

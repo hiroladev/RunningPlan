@@ -125,7 +125,6 @@
             android:layout_height="48dp"
             android:clickable="false"
             android:focusable="false"
-            android:inputType="time"
             android:ems="10"
             tools:text="00:00:00"
             android:textAlignment="center"
@@ -169,6 +168,15 @@
             android:layout_height="0dp" app:srcCompat="@drawable/baseline_self_improvement_black_24"
             app:layout_constraintEnd_toStartOf="@+id/editTextTrainingUnitInfoLabel" android:layout_marginEnd="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/editTextTrainingUnitInfoLabel"
-            app:layout_constraintTop_toTopOf="@+id/editTextTrainingUnitInfoLabel"/>
+            app:layout_constraintTop_toTopOf="@+id/editTextTrainingUnitInfoLabel"
+            android:contentDescription="@string/unit_state_image_content_description"/>
+    <ImageView
+            android:id="@+id/imageViewRunningPlanState"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp" app:srcCompat="@drawable/active20x20"
+            app:layout_constraintEnd_toStartOf="@+id/editTextRunningPlanNameLabel" android:layout_marginEnd="5dp"
+            app:layout_constraintTop_toTopOf="@+id/editTextRunningPlanNameLabel"
+            app:layout_constraintBottom_toBottomOf="@+id/editTextRunningPlanNameLabel"
+            android:contentDescription="@string/running_plan_state_image_content_description"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

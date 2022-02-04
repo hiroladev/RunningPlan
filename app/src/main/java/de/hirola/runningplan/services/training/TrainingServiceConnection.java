@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import de.hirola.sportslibrary.model.Track;
 
 /**
@@ -64,8 +65,9 @@ public class TrainingServiceConnection implements ServiceConnection {
             // Service is already started and bound.
             return;
         }
-        // start the service
-        context.startService(new Intent(context, TrainingService.class));
+        // needs to create a foreground service while the app is in the background,
+        // use the startForegroundService() method instead of startService().
+        context.startForegroundService(new Intent(context, TrainingService.class));
         // bind service to the connection
         serviceBounded = context.bindService(new Intent(context, TrainingService.class), this, 0);
     }

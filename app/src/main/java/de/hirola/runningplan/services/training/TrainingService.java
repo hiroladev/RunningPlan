@@ -1,6 +1,6 @@
 package de.hirola.runningplan.services.training;
 
-import android.app.Service;
+import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -9,7 +9,6 @@ import android.location.LocationManager;
 import android.os.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import de.hirola.runningplan.MainActivity;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.runningplan.util.TrainingNotificationManager;
@@ -88,10 +87,16 @@ public class TrainingService extends Service implements LocationListener {
         trackManager = new TrackManager(this);
         notificationManager = new TrainingNotificationManager(this);
         handler = new Handler(Looper.getMainLooper());
+        if (logManager.isDebugMode()) {
+            logManager.log(null,"The training service was created.",TAG);
+        }
     }
 
     @Override
     public void onDestroy() {
+        if (logManager.isDebugMode()) {
+            logManager.log(null,"The training service will be destroyed",TAG);
+        }
         handler.removeCallbacks(secondsInTraining);
         handler = null;
         notificationManager = null;
@@ -101,6 +106,10 @@ public class TrainingService extends Service implements LocationListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        // created a foreground service with user notification
+        // start service and send notification, if the app hidden
+        // the drawable will be display in top
+        startForeground(TrainingNotificationManager.SERVICE_NOTIFICATION_ID, notificationManager.getServiceNotification());
         return START_STICKY;
     }
 
@@ -150,7 +159,7 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingActive = true;
         handler.postDelayed(secondsInTraining, TIME_INTERVAL_IN_MILLI);
         if (logManager.isDebugMode()) {
-            logManager.log(null,"The Training with track id " + trackId + " was started.",TAG);
+            logManager.log(null,"The training with track id " + trackId + " was started.",TAG);
         }
         // track of current training
         return trackId;
@@ -162,7 +171,7 @@ public class TrainingService extends Service implements LocationListener {
         // stop location tracking
         stopLocationUpdates();
         if (logManager.isDebugMode()) {
-            logManager.log(null,"The Training with track id " + trackId + " was paused.",TAG);
+            logManager.log(null,"The training with track id " + trackId + " was paused.",TAG);
         }
     }
 
@@ -183,7 +192,7 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingPaused = false;
         handler.postDelayed(secondsInTraining, TIME_INTERVAL_IN_MILLI);
         if (logManager.isDebugMode()) {
-            logManager.log(null,"The Training with track id " + trackId + " was resumed.",TAG);
+            logManager.log(null,"The training with track id " + trackId + " was resumed.",TAG);
         }
     }
 
@@ -195,7 +204,7 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingPaused = false;
         isTrainingActive = false;
         if (logManager.isDebugMode()) {
-            logManager.log(null,"The Training with track id " + trackId + " was stopped.",TAG);
+            logManager.log(null,"The training with track id " + trackId + " was stopped.",TAG);
         }
         // completed the recorded track
         // in further versions we qualify the location updates

@@ -74,6 +74,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     private TextView timerLabel; // countdown label
 
     // training info label
+    private ImageView runningPlanStateImageView;
     private ImageView trainingInfoImageView;
 
     // training data
@@ -335,6 +336,10 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         updateTimerLabel();
         // training state image view
         // first state info ist paused
+        runningPlanStateImageView = trainingView.findViewById(R.id.imageViewRunningPlanState);
+        runningPlanStateImageView.setImageResource(R.drawable.active20x20);
+        // training state image view
+        // first state info ist paused
         trainingInfoImageView = trainingView.findViewById(R.id.imageViewTrainingInfo);
         trainingInfoImageView.setImageResource(R.drawable.baseline_self_improvement_black_24);
         // initialize the training days spinner
@@ -374,9 +379,13 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     private void showRunningPlanInView() {
         if (runningPlan != null) {
-            // show the name of active running plan in view
+            // display the name of active running plan in view
             runningPlanNameLabel.setText(runningPlan.getName());
-            // show the training days (running plan entries) of running plan in spinner
+            // display the plan state
+            if (runningPlan.isCompleted()) {
+                runningPlanStateImageView.setImageResource(R.drawable.completed20x20);
+            }
+            // display the training days (running plan entries) of running plan in spinner
             // add data to spinner
             // addAll(java.lang.Object[]), insert, remove, clear, sort(java.util.Comparator))
             // automatically call notifyDataSetChanged.
@@ -535,9 +544,15 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             timeToRun = 0L;
             // refresh timer label
             updateTimerLabel();
-            // info to user
-            notificationManager.sendNotification(getString(R.string.training_completed));
-            trainingInfolabel.setText(R.string.training_completed);
+            // display infos
+            if (runningPlan.isCompleted()) {
+                notificationManager.sendNotification(getString(R.string.running_plan_completed));
+                trainingInfolabel.setText(R.string.running_plan_completed);
+                runningPlanStateImageView.setImageResource(R.drawable.completed20x20);
+            } else {
+                notificationManager.sendNotification(getString(R.string.training_completed));
+                trainingInfolabel.setText(R.string.training_completed);
+            }
             trainingInfoImageView.setImageResource(R.drawable.baseline_done_black_24);
             if (locationServicesAllowed) {
                 // get the recorded data

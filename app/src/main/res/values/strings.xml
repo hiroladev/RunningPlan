@@ -80,6 +80,10 @@
     <string name="import_succeed">Import erfolgreich</string>
 
     <!-- Infos -->
+    <string name="unit_state_image_content_description">Status des Laufabschnittes</string>
+    <string name="running_plan_state_image_content_description">Status des Laufplanes</string>
+    <string name="start_training_service">Unterstützung wurde gestartet (siehe FAQ).</string>
+    <string name="training_service_ticker_text">Laufplan Unterstützungsdienst.</string>
     <string name="start_training">Start des Trainings</string>
     <string name="pause_training">Trainingspause</string>
     <string name="continue_training">Training wird fortgesetzt</string>

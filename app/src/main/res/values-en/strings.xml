@@ -132,4 +132,8 @@
     <string name="running_plan_start_test_remarks">A template for testing the app.</string>
     <string name="no_file_selected">No file was selected</string>
     <string name="no_valid_file_format">The selected file is not in the correct format (json).</string>
+    <string name="start_training_service">Support has started (see FAQ)</string>
+    <string name="training_service_ticker_text">Running plan support service</string>
+    <string name="unit_state_image_content_description">State of unit</string>
+    <string name="running_plan_state_image_content_description">State of running plan</string>
 </resources>
