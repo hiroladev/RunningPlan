@@ -19,14 +19,15 @@ Die App war prinzipiell fertig.
 Allerdings bin ich in der Zwischenzeit aus verschiedenen Gründen dann komplett von Apple weg und nutze nur noch 
 Linux (Mint). Als SmartPhone-Plattform nutze ich nun [CalyxOS](https://calyxos.org/). Damit musste ich auch meine App 
 neu programmieren. Da kam mir entgegen, dass ich mit Java immer mal wieder zu tun hatte.
-[Kotlin](https://kotlinlang.org/) habe ich mir angeschaut und finde es, genau wie Swift, sehr gut. Allerdings hätte 
-ich zur Einarbeitung in eine neue IDE, die Android-Programmierung auch noch eine neue Programmiersprache lernen müssen. 
+[Kotlin](https://kotlinlang.org/) habe ich mir angeschaut und finde es, genau wie Swift, sehr gut. 
+Allerdings hätte ich zur Einarbeitung in eine neue IDE, die Android-Programmierung auch noch eine neue Programmiersprache lernen müssen. 
 Da war mir dann doch zu viel.
 
 Tja, also hat es nun über ein Jahr von der Idee zur ersten Beta-Version der App gedauert. Ja, und auch Android hält 
-genau wie Swift viele kleine "Nettigkeiten" :confused: für  einen unerfahrenen Entwickler wie mich bereit. Für aus Sicht 
-des Nutzers verständliche Dinge und Einstellungen, z.B. zum Thema Sicherheit, sorgen für Entwickler immer wieder für
+genau wie Swift viele kleine "Nettigkeiten" :confused: für  einen unerfahrenen Entwickler wie mich bereit. 
+Für aus Sicht des Nutzers verständliche Dinge und Einstellungen, z.B. zum Thema Sicherheit, sorgen für Entwickler immer wieder für
 Herausforderungen :wink:.
+
 Ein Beispiel gefällig: Wenn man läuft, bleibt die App ja nicht ständig sichtbar und aktiv, man schaut ja nicht ständig 
 auf das Smartphone. Die Trainingszeit allerdings soll natürlich weiterlaufen. Was der Nutzer nicht weiß und auch nicht 
 wissen muss: Sobald eine App im Hintergrund (nicht sichtbar) ist, "macht" sie auch nichts mehr :astonished:! 
@@ -95,4 +96,4 @@ müssten mir einfach vertrauen.
 
 [Weitere Informationen zur App](https://www.hirola.de/s/laufplan-runningplan/)
 
-[Mein XING-Profil](https://www.xing.com/profile/Michael_Schmidt2350/cv)
+[Mein XING-Profil](https://www.xing.com/profile/Michael_Schmidt2350/cv) <image src="https://user-images.githubusercontent.com/48058062/152635585-d82a0f6d-1c4b-42c5-831f-eaf3caba1bd8.png" width="30" height="30">
