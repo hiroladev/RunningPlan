@@ -20,7 +20,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
  * This software us licensed under the AGPL-3.0 or later.

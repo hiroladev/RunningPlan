@@ -1,11 +1,7 @@
 package de.hirola.runningplan;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import de.hirola.sportslibrary.Global;
-import de.hirola.sportslibrary.SportsLibrary;
-
 import android.app.Application;
+import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.SportsLibraryApplication;
 import de.hirola.sportslibrary.SportsLibraryException;
 
@@ -32,7 +28,7 @@ public class RunningPlanApplication extends Application implements SportsLibrary
         try {
             // initialize the SportsLibrary, e.g. local datastore and logging,
             // import the templates on first start
-            sportsLibrary = SportsLibrary.getInstance(getPackageName(), this);
+            sportsLibrary = new SportsLibrary(getPackageName(), this);
         } catch (SportsLibraryException exception) {
             throw new RuntimeException("An exception occurred while initialize the app: "
                     + exception);

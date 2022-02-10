@@ -1,6 +1,6 @@
 package de.hirola.runningplan.model;
 
-import de.hirola.sportslibrary.PersistentObject;
+import de.hirola.sportslibrary.database.PersistentObject;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.model.User;
@@ -8,8 +8,6 @@ import de.hirola.sportslibrary.model.User;
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -54,24 +52,17 @@ public class RunningPlanViewModel extends AndroidViewModel {
         return repository.getRunningPlans();
     }
 
-    public void add(PersistentObject persistentObject) throws SportsLibraryException {
+    public void save(PersistentObject persistentObject) throws SportsLibraryException {
         // add object to datastore
-        repository.add(persistentObject);
+        repository.save(persistentObject);
         if (persistentObject instanceof RunningPlan) {
             runningPlans.addItem((RunningPlan) persistentObject);
         }
     }
 
-    public void update(PersistentObject persistentObject) throws SportsLibraryException {
-        repository.update(persistentObject);
-        if (persistentObject instanceof RunningPlan) {
-            runningPlans.updateItem((RunningPlan) persistentObject);
-        }
-    }
-
-    public void remove(PersistentObject persistentObject) throws SportsLibraryException {
+    public void delete(PersistentObject persistentObject) throws SportsLibraryException {
         // remove object from datastore
-        repository.remove(persistentObject);
+        repository.delete(persistentObject);
         if (persistentObject instanceof RunningPlan) {
             runningPlans.removeItem((RunningPlan) persistentObject);
         }

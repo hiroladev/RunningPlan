@@ -2,13 +2,16 @@ package de.hirola.runningplan.model;
 
 import de.hirola.runningplan.RunningPlanApplication;
 
-import de.hirola.sportslibrary.DataRepository;
-import de.hirola.sportslibrary.PersistentObject;
+import de.hirola.sportslibrary.database.DataRepository;
+import de.hirola.sportslibrary.database.PersistentObject;
 import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.*;
 import android.app.Application;
+import de.hirola.sportslibrary.util.Logger;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -24,8 +27,10 @@ import java.util.List;
  */
 public class RunningPlanRepository {
 
-    // the datastore layer
-    private final DataRepository dataRepository;
+    private final static String TAG = RunningPlanRepository.class.getSimpleName();
+
+    private final Logger logger = Logger.getInstance(null);
+    private final DataRepository dataRepository; // the datastore layer
     private final User appUser;
 
     public RunningPlanRepository(Application application) throws RuntimeException {
@@ -40,26 +45,30 @@ public class RunningPlanRepository {
     }
 
     public List<RunningPlan> getRunningPlans() {
-        try {
-            // load all running plans from datastore
-            // noinspection unchecked
-            return (List<RunningPlan>) dataRepository.findAll(RunningPlan.class);
-        } catch (SportsLibraryException exception) {
-            // serious problems in data model
-            throw new RuntimeException("Error occurred while searching for data: "
-                    + exception);
+        List<RunningPlan> runningPlans = new ArrayList<>();
+        List<? extends PersistentObject> persistentObjects = dataRepository.findAll(RunningPlan.class);
+        if (persistentObjects.isEmpty()) {
+            return runningPlans; // return an empty list
         }
+        for (PersistentObject object : persistentObjects) {
+            try {
+                runningPlans.add((RunningPlan) object);
+            } catch (ClassCastException exception) {
+                // we do not add thi sto list and make a  log entry
+                String errorMessage = "List of running plans contains an object from type "
+                        + object.getClass().getSimpleName();
+                logger.log(Logger.DEBUG, TAG, errorMessage, exception);
+            }
+        }
+
+        return runningPlans;
     }
 
-    public void add(PersistentObject persistentObject) throws SportsLibraryException {
-        dataRepository.add(persistentObject);
+    public void save(PersistentObject persistentObject) throws SportsLibraryException {
+        dataRepository.save(persistentObject);
     }
 
-    public void update(PersistentObject persistentObject) throws SportsLibraryException {
-        dataRepository.update(persistentObject);
-    }
-
-    public void remove(PersistentObject persistentObject) throws SportsLibraryException {
-        dataRepository.remove(persistentObject);
+    public void delete(PersistentObject persistentObject) throws SportsLibraryException {
+        dataRepository.delete(persistentObject);
     }
 }

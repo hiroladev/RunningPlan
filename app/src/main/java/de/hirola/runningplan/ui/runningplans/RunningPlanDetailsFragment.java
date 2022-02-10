@@ -20,7 +20,7 @@ import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.model.User;
-import de.hirola.sportslibrary.ui.ModalOptionDialog;
+import de.hirola.runningplan.util.ModalOptionDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.DayOfWeek;
@@ -153,8 +153,8 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                 }
                 // save the user and the running plan
                 try {
-                    viewModel.update(appUser);
-                    viewModel.update(runningPlan);
+                    viewModel.save(appUser);
+                    viewModel.save(runningPlan);
                 } catch (SportsLibraryException exception) {
                     ModalOptionDialog.showMessageDialog(
                             ModalOptionDialog.DialogStyle.CRITICAL,

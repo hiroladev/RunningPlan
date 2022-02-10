@@ -1,2 +1,5 @@
 rootProject.name = "RunningPlan"
 include ':app'
+startParameter.offline=false
+
+

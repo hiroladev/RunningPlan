@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import de.hirola.runningplan.MainActivity;
 import de.hirola.runningplan.R;
 
 import android.os.Bundle;
@@ -23,8 +22,7 @@ import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
-import de.hirola.sportslibrary.ui.ModalOptionDialog;
-import de.hirola.sportslibrary.ui.ModalOptionDialogListener;
+import de.hirola.runningplan.util.ModalOptionDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -125,7 +123,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
                                                 RunningPlan runningPlan1 = runningPlans.get(position1);
                                                 // remove running plan
                                                 try {
-                                                    viewModel.remove(runningPlan1);
+                                                    viewModel.delete(runningPlan1);
                                                     listAdapter.notifyItemRemoved(position1);
                                                 } catch (SportsLibraryException exception) {
                                                     ModalOptionDialog.showMessageDialog(

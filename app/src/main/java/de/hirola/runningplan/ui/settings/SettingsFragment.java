@@ -14,12 +14,14 @@ import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.User;
-import de.hirola.sportslibrary.ui.ModalOptionDialog;
+import de.hirola.runningplan.util.ModalOptionDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -204,7 +206,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         }
         try {
             // save the data
-            viewModel.update(appUser);
+            viewModel.save(appUser);
         } catch (SportsLibraryException exception) {
             // data could not saved
             // alert dialog to user
@@ -407,7 +409,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         try {
             // save the data
             appUser.setMaxPulse(maxPulse);
-            viewModel.update(appUser);
+            viewModel.save(appUser);
         } catch (SportsLibraryException exception) {
             // data could not saved
             // alert dialog to user

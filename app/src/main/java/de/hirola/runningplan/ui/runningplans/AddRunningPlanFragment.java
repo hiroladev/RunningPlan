@@ -19,10 +19,10 @@ import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.RunningPlanApplication;
 import de.hirola.runningplan.model.RunningPlanViewModel;
-import de.hirola.sportslibrary.DataRepository;
+import de.hirola.sportslibrary.database.DataRepository;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
-import de.hirola.sportslibrary.ui.ModalOptionDialog;
+import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.sportslibrary.util.RunningPlanTemplate;
 import de.hirola.sportslibrary.util.TemplateLoader;
 
@@ -62,14 +62,11 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
         // add ActivityResultLauncher for file dialog
         someActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            // There are no request codes
-                            Intent data = result.getData();
-                            loadTemplateFromFile(data);
-                        }
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent data = result.getData();
+                        loadTemplateFromFile(data);
                     }
                 });
         viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
@@ -173,7 +170,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
                             runningPlanTemplate.getTrainingUnits());
                     RunningPlan runningPlan = templateLoader.importRunningPlanFromTemplate(runningPlanTemplateToImport);
                     if (runningPlan != null) {
-                        viewModel.add(runningPlan);
+                        viewModel.save(runningPlan);
                         // info to user
                         ModalOptionDialog.showMessageDialog(
                                 ModalOptionDialog.DialogStyle.INFORMATION,

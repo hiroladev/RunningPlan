@@ -4,13 +4,19 @@ import android.Manifest;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import de.hirola.runningplan.R;
 import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.runningplan.services.training.TrainingServiceCallback;
@@ -21,15 +27,7 @@ import de.hirola.runningplan.util.TrainingNotificationManager;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.*;
-
-import de.hirola.runningplan.R;
-
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import androidx.fragment.app.Fragment;
-import de.hirola.sportslibrary.ui.ModalOptionDialog;
+import de.hirola.runningplan.util.ModalOptionDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -105,7 +103,10 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         super.onCreate(savedInstanceState);
         // restore saved data
         if (savedInstanceState != null) {
-            trackId = savedInstanceState.getParcelable("trackId");
+            long id = savedInstanceState.getLong("trackId", -1);
+            if (id > -1) {
+                trackId = new Track.Id(id);
+            }
             isTrainingRunning = savedInstanceState.getBoolean("isTrainingRunning", false);
             isTrainingPaused = savedInstanceState.getBoolean("isTrainingPaused", false);
         }
@@ -159,7 +160,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     public void onSaveInstanceState(@NotNull Bundle savedInstanceState) {
         // save the track id
         if (trackId != null) {
-            savedInstanceState.putParcelable("trackId", trackId);
+            savedInstanceState.putLong("trackId", trackId.getId());
         }
         // save training state
         savedInstanceState.putBoolean("isTrainingRunning", isTrainingRunning);
@@ -303,7 +304,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             List<RunningPlanEntry> entries = runningPlan.getEntries();
             Optional<RunningPlanEntry> entry = entries
                     .stream()
-                    .filter(r -> !r.completed())
+                    .filter(r -> !r.isCompleted())
                     .findFirst();
             entry.ifPresent(planEntry -> runningPlanEntry = planEntry);
             if (runningPlanEntry != null) {
@@ -414,7 +415,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             String durationString = getString(R.string.total_time)+ ": " + buildStringForDuration(duration);
             trainingInfolabel.setText(durationString);
             // display state by image
-            if (runningPlanEntry.completed()) {
+            if (runningPlanEntry.isCompleted()) {
                 trainingInfoImageView.setImageResource(R.drawable.baseline_done_black_24);
             } else {
                 trainingInfoImageView.setImageResource(R.drawable.baseline_self_improvement_black_24);
@@ -508,7 +509,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 // unit completed, save the state
                 try {
                     runningUnit.setCompleted(true);
-                    viewModel.update(runningUnit);
+                    viewModel.save(runningUnit);
                 } catch (SportsLibraryException exception) {
                     // error occurred
                     didCompleteUpdateError = true;
@@ -581,7 +582,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                     }
                     trainingTrackInfoString += "\n";
                     //  Geschwindigkeit in m/s
-                    double averageSpeed = recorderdTrack.getAvg();
+                    double averageSpeed = recorderdTrack.getAverageSpeed();
                     //  Geschwindigkeit in km/h
                     averageSpeed = averageSpeed * 3.6;
                     trainingTrackInfoString += getString(R.string.speed);
@@ -845,7 +846,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                             if (appUser != null) {
                                 appUser.setActiveRunningPlan(runningPlan);
                                 try {
-                                    viewModel.update(appUser);
+                                    viewModel.save(appUser);
                                     // recall the method to set active running plan
                                     setActiveRunningPlan();
                                 } catch (SportsLibraryException exception) {
@@ -870,7 +871,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                     unit.setCompleted(false);
                     // update in datastore
                     try {
-                        viewModel.update(unit);
+                        viewModel.save(unit);
                     } catch (SportsLibraryException exception) {
                         if (logManager.isDebugMode()) {
                             //TODO: info to user
