@@ -4,7 +4,7 @@
 
 Manche kennen dies vielleicht. Man nimmt sich vor, mehr für seine Gesundheit zu tun. So geht es mir auch immer wieder. :grinning:
 Dafür suchte ich mal wieder in den unendlichen Weiten des Netzes nach Anregungen und fand dabei eine wunderbare Seite 
-zum Thema Laufen. Die Seite von Christian Zangl: https://lauftipps.ch.
+zum Thema Laufen.  Die Seite von Christian Zangl: https://lauftipps.ch.
 
 Neben den vielen nützlichen Informationen stellt Herr Zangl auch Trainingspläne bereit. Mithilfe dieser Pläne können 
 auch Amateure wie ich in das Laufen einteigen.
@@ -24,7 +24,7 @@ Allerdings hätte ich zur Einarbeitung in eine neue IDE, die Android-Programmier
 Da war mir dann doch zu viel.
 
 Tja, also hat es nun über ein Jahr von der Idee zur ersten Beta-Version der App gedauert. Ja, und auch Android hält 
-genau wie Swift viele kleine "Nettigkeiten" :confused: für einen unerfahrenen Entwickler wie mich bereit. 
+genau wie Swift viele kleine "Nettigkeiten" :confused: für  einen unerfahrenen Entwickler wie mich bereit. 
 Für aus Sicht des Nutzers verständliche Dinge und Einstellungen, z.B. zum Thema Sicherheit, sorgen für Entwickler immer wieder für
 Herausforderungen :wink:.
 
@@ -64,19 +64,23 @@ z.B. am Wochenende nicht laufen. Also würde sich der Plan "nach hinten verschie
 
 Die Pläne stehen als Vorlagen auf meiner Webseite (s.u.) bereit, weitere Vorlagen werden folgen. 
 Parallel wird es App auf Basis von Java für Windows, macOS und Linux geben, mit der man die Laufpläne verändern oder 
-komplett eigene anlegen kann. Die App gab es bereits für Swift und muss jetzt "nur" noch umprogrammiert werden.
+komplett eigene anlegen kann.  Die App gab es bereits für Swift und muss jetzt "nur" noch umprogrammiert werden.
 
 
-## Funktionen der App
+## Was kann die App „Laufplan“?
 
-**Version 1.1.1** (ein Beta-Release):
-- Dashboard
-- 2 Laufplan-Vorlagen: [FlexStart](https://lauftipps.ch/trainingsplaene/flexstart-einsteigertrainingsplan/) und [Flex60](https://lauftipps.ch/trainingsplaene/flex60-von-30-auf-60-minuten-joggen/)
-- freie Wahl des Laufplans oder Training nach Reihenfolge nach Empfehlung von Herrn Zangl
-- Start eines Laufplanes wählbar (beginnt immer an einem Montag)
-- freies Training, jeder Einheit ist frei trainierbar
-- Benachrichtigung per "PopUp", Ton und Vibration
-- Aufzeichnung der Laufstrecken
+Auf Grundlage der von Herrn Christian Zangl entwickelten [Laufplänen](https://lauftipps.ch/trainingsplaene/alle-trainingsplaene-auf-einen-blick/) können Laufanfänger und Hobby-Läufer ihre Lauftrainings mit Unterstützung eines Smartphones durchführen.
+Die von Herrn Zangl angebotenen Laufpläne wurden von mir in ein zur Nutzung in der App erforderliches Format gebracht und können dort genutzt werden. 
+Die Vorlagen können angepasst oder eigene Pläne angelegt werden.
+
+
+## Was kann die App „Laufplan“ nicht?
+
+Die App kann und soll nicht die Ansprüche von professionellen Läufern erfüllen. Es gibt keine Funktionen für „Social Media“, wie z.B. das Teilen von Läufen. 
+Dafür gibt es genug Apps. Ich bin auch kein Laufprofi und die App bietet dementsprechend auch keine professionelle Unterstützung oder erhebt auch nicht den Anspruch „lauftechnisch“ korrekt zu sein.
+
+Unbesehen davon würde ich gern Tipps zum Laufen in der App anbieten. Wenn jemand mir eigenes Material zur Verfügung stellen möchte, sehr gern.  
+
 
 ## Installation der App
 
@@ -85,7 +89,7 @@ wie ein ZIP-Archiv vorstellen. Alles, was die App benötigt, ist im Archiv, der 
 Sie können das gerne nachprüfen, in dem Sie die Datei mit einem Entpacker-Programm, wie z.B. 7zip, einfach mal auspacken.
 
 Die App ist also eine Datei, welche Sie wie unter Windows z.B. einfach direkt auf Ihrem SmartPhone installieren könnten.
-Da so eine Datei jedoch auch Schadprogramme enthalten kann, sollten Sie dies nur tun, wenn Sie dem Programmierer und 
+Da so eine Datei jedoch auch  Schadprogramme enthalten kann, sollten Sie dies nur tun, wenn Sie dem Programmierer und 
 der Quelle (Download) der Datei vertrauen! 
 Mich z.B. kennen Sie ja auch nicht persönlich und meine App könnte ja "böse" Absichten hegen :imp:.
 
