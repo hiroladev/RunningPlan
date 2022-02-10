@@ -69,7 +69,7 @@ komplett eigene anlegen kann.  Die App gab es bereits für Swift und muss jetzt 
 
 ## Was kann die App „Laufplan“?
 
-Auf Grundlage der von Herrn Christian Zangl entwickelten Laufplänen (https://lauftipps.ch/trainingsplaene/alle-trainingsplaene-auf-einen-blick/) können Laufanfänger und Hobby-Läufer ihre Lauftrainings mit Unterstützung eines Smartphones durchführen.
+Auf Grundlage der von Herrn Christian Zangl entwickelten [Laufplänen](https://lauftipps.ch/trainingsplaene/alle-trainingsplaene-auf-einen-blick/) können Laufanfänger und Hobby-Läufer ihre Lauftrainings mit Unterstützung eines Smartphones durchführen.
 Die von Herrn Zangl angebotenen Laufpläne wurden von mir in ein zur Nutzung in der App erforderliches Format gebracht und können dort genutzt werden. 
 Die Vorlagen können angepasst oder eigene Pläne angelegt werden.
 
