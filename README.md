@@ -67,6 +67,21 @@ Parallel wird es App auf Basis von Java für Windows, macOS und Linux geben, mit
 komplett eigene anlegen kann.  Die App gab es bereits für Swift und muss jetzt "nur" noch umprogrammiert werden.
 
 
+## Was kann die App „Laufplan“?
+
+Auf Grundlage der von Herrn Christian Zangl entwickelten Laufplänen (https://lauftipps.ch/trainingsplaene/alle-trainingsplaene-auf-einen-blick/) können Laufanfänger und Hobby-Läufer ihre Lauftrainings mit Unterstützung eines Smartphones durchführen.
+Die von Herrn Zangl angebotenen Laufpläne wurden von mir in ein zur Nutzung in der App erforderliches Format gebracht und können dort genutzt werden. 
+Die Vorlagen können angepasst oder eigene Pläne angelegt werden.
+
+
+## Was kann die App „Laufplan“ nicht?
+
+Die App kann und soll nicht die Ansprüche von professionellen Läufern erfüllen. Es gibt keine Funktionen für „Social Media“, wie z.B. das Teilen von Läufen. 
+Dafür gibt es genug Apps. Ich bin auch kein Laufprofi und die App bietet dementsprechend auch keine professionelle Unterstützung oder erhebt auch nicht den Anspruch „lauftechnisch“ korrekt zu sein.
+
+Unbesehen davon würde ich gern Tipps zum Laufen in der App anbieten. Wenn jemand mir eigenes Material zur Verfügung stellen möchte, sehr gern.  
+
+
 ## Installation der App
 
 Eine App unter Android nutzen zu können, ist zum Glück einfacher als bei Apple. Im Prinzip können Sie sich die App 
