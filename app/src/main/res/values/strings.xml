@@ -36,6 +36,7 @@
     <string name="information">Information</string>
     <string name="warning">Warnung</string>
     <string name="error">Fehler</string>
+    <string name="database_initialize_error">Die Daten konnten nicht geladen werden.</string>
     <string name="preferences_not_set">Die Einstellungen konnten nicht gespeichert werden.</string>
     <string name="save_data_error">Die Daten konnten nicht gespeichert werden.</string>
     <string name="name_must_be_not_null">Der Name darf nicht leer sein.</string>
@@ -90,6 +91,7 @@
     <string name="cancel_training">Abbruch des Trainings</string>
     <string name="training_is_planned">Training ist in Planung</string>
     <string name="training_is_running">Training läuft</string>
+    <string name="training_unit_track">Track zur Trainingseinheit</string>
     <string name="running_unit_started_at">Laufeinheit gestartet um</string>
     <string name="new_training_unit_starts">Neue Laufeinheit beginnt</string>
     <string name="training_unit_finished">Laufeinheit abgeschlossen</string>

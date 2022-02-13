@@ -11,7 +11,7 @@ import android.app.Application;
 import de.hirola.sportslibrary.util.Logger;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,12 +29,13 @@ public class RunningPlanRepository {
 
     private final static String TAG = RunningPlanRepository.class.getSimpleName();
 
-    private final Logger logger = Logger.getInstance(null);
+    private final Logger logger;
     private final DataRepository dataRepository; // the datastore layer
     private final User appUser;
 
     public RunningPlanRepository(Application application) throws RuntimeException {
         // initialize attributes
+        logger = Logger.getInstance(application.getPackageName());
         SportsLibrary sportsLibrary = ((RunningPlanApplication) application).getSportsLibrary();
         dataRepository = sportsLibrary.getDataRepository();
         appUser = sportsLibrary.getAppUser();
@@ -54,13 +55,14 @@ public class RunningPlanRepository {
             try {
                 runningPlans.add((RunningPlan) object);
             } catch (ClassCastException exception) {
-                // we do not add thi sto list and make a  log entry
+                // we do not add this to the list and make a  log entry
                 String errorMessage = "List of running plans contains an object from type "
                         + object.getClass().getSimpleName();
                 logger.log(Logger.DEBUG, TAG, errorMessage, exception);
             }
         }
-
+        // sort the plans
+        Collections.sort(runningPlans);
         return runningPlans;
     }
 

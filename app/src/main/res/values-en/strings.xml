@@ -136,4 +136,6 @@
     <string name="training_service_ticker_text">Running plan support service</string>
     <string name="unit_state_image_content_description">State of unit</string>
     <string name="running_plan_state_image_content_description">State of running plan</string>
+    <string name="training_unit_track">Track of running unit</string>
+    <string name="database_initialize_error">The data could not be loaded.</string>
 </resources>

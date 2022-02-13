@@ -273,9 +273,11 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     private void handleBackgroundTimerService() {
         // bind and start service on application context
         // on fragment the service is destroyed when switching to another fragment
-        trainingServiceConnection.bindAndStartService(requireActivity().getApplicationContext());
-        if (logManager.isDebugMode()) {
-            logManager.log(null,"Service bind and start.",TAG);
+        if (runningPlan != null) {
+            trainingServiceConnection.bindAndStartService(requireActivity().getApplicationContext());
+            if (logManager.isDebugMode()) {
+                logManager.log(null, "Service bind and start.", TAG);
+            }
         }
     }
 
@@ -298,23 +300,23 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                         handleRunningPlan();
                         return;
                     }
+                    // set the next uncompleted training day
+                    List<RunningPlanEntry> entries = runningPlan.getEntries();
+                    Optional<RunningPlanEntry> entry = entries
+                            .stream()
+                            .filter(r -> !r.isCompleted())
+                            .findFirst();
+                    entry.ifPresent(planEntry -> runningPlanEntry = planEntry);
+                    if (runningPlanEntry != null) {
+                        List<RunningUnit> units = runningPlanEntry.getRunningUnits();
+                        // TODO: Liste sortiert?
+                        Optional<RunningUnit> unit = units
+                                .stream()
+                                .filter(runningUnit -> !runningUnit.isCompleted())
+                                .findFirst();
+                        unit.ifPresent(value -> runningUnit = value);
+                    }
                 }
-            }
-            // set the next uncompleted training day
-            List<RunningPlanEntry> entries = runningPlan.getEntries();
-            Optional<RunningPlanEntry> entry = entries
-                    .stream()
-                    .filter(r -> !r.isCompleted())
-                    .findFirst();
-            entry.ifPresent(planEntry -> runningPlanEntry = planEntry);
-            if (runningPlanEntry != null) {
-                List<RunningUnit> units = runningPlanEntry.getRunningUnits();
-                // TODO: Liste sortiert?
-                Optional<RunningUnit> unit = units
-                        .stream()
-                        .filter(runningUnit -> !runningUnit.isCompleted())
-                        .findFirst();
-                unit.ifPresent(value -> runningUnit = value);
             }
         } else {
             // info to user
@@ -323,11 +325,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                     getString(R.string.information),
                     getString(R.string.no_running_plans_available),
                     getString(R.string.ok));
-            // no training possible
-            // disable the button
-            startButton.setEnabled(false);
-            pauseButton.setEnabled(false);
-            stopButton.setEnabled(false);
         }
     }
 
@@ -398,6 +395,12 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 trainingDaysSpinner.setSelection(index);
             }
             showRunningPlanEntryInView();
+        } else {
+            // no training possible
+            // disable the button
+            startButton.setEnabled(false);
+            pauseButton.setEnabled(false);
+            stopButton.setEnabled(false);
         }
     }
 

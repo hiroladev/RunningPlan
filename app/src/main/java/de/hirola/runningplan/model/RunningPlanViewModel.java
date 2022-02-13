@@ -36,10 +36,6 @@ public class RunningPlanViewModel extends AndroidViewModel {
         runningPlans.setValue(repository.getRunningPlans());
     }
 
-    public RunningPlanRepository getRepository() {
-        return repository;
-    }
-
     public User getAppUser() {
         return repository.getAppUser();
     }

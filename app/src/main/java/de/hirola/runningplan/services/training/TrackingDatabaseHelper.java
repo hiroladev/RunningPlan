@@ -87,7 +87,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         // track description
         values.put(TrackColumns.DESCRIPTION, track.getDescription());
         // start time
-        values.put(TrackColumns.STARTTIME, track.getStartTime());
+        values.put(TrackColumns.STARTTIME, track.getStartTimeInMilli());
         // insert the new track (row), returning the primary key value of the new row
         long primaryKey = sqLiteDatabase.insert(TrackColumns.TABLE_NAME, null, values);
         sqLiteDatabase.close();

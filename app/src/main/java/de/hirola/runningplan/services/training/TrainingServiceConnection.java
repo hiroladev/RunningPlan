@@ -72,11 +72,13 @@ public class TrainingServiceConnection implements ServiceConnection {
     }
 
     public void stopAndUnbindService(@NonNull Context context) {
-        try {
-            context.unbindService(this);
-            context.stopService(new Intent(context, TrainingService.class));
-        } finally {
-            serviceBounded = false;
+        if (trainingService != null) {
+            try {
+                context.unbindService(this);
+                context.stopService(new Intent(context, TrainingService.class));
+            } finally {
+                serviceBounded = false;
+            }
         }
     }
 

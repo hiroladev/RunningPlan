@@ -44,10 +44,11 @@ public class TrackManager {
         // we needed name, description, start time
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+        String name = context.getString(R.string.training_unit_track);
         String description = context.getString(R.string.running_unit_started_at) + " " + formatter.format(now);
         long startTime = now.toInstant(ZoneOffset.UTC).toEpochMilli();
         // build a track with a start time
-        Track track = new Track("Running unit", description, startTime);
+        Track track = new Track(name, description, startTime);
         long primaryKey = databaseHelper.insertTrack(track);
         if (primaryKey > -1) {
             Track.Id trackId = new Track.Id(primaryKey);

@@ -111,4 +111,4 @@ müssten mir einfach vertrauen.
 
 [Weitere Informationen zur App](https://www.hirola.de/s/laufplan-runningplan/)
 
-[Mein XING-Profil](https://www.xing.com/profile/Michael_Schmidt2350/cv) <image src="https://user-images.githubusercontent.com/48058062/152635585-d82a0f6d-1c4b-42c5-831f-eaf3caba1bd8.png" width="30" height="30">
+[Mein XING-Profil](https://www.xing.com/profile/Michael_Schmidt2350/cv) <image src="https://user-images.githubusercontent.com/48058062/152635585-d82a0f6d-1c4b-42c5-831f-eaf3caba1bd8.png" width="20" height="20">

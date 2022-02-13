@@ -23,6 +23,7 @@ import de.hirola.sportslibrary.database.DataRepository;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.runningplan.util.ModalOptionDialog;
+import de.hirola.sportslibrary.util.Logger;
 import de.hirola.sportslibrary.util.RunningPlanTemplate;
 import de.hirola.sportslibrary.util.TemplateLoader;
 
@@ -40,8 +41,10 @@ import java.io.InputStream;
  */
 public class AddRunningPlanFragment extends Fragment implements View.OnClickListener {
 
-    // view model
-    private RunningPlanViewModel viewModel;
+    private final static String TAG = AddRunningPlanFragment.class.getSimpleName();
+
+    private Logger logger;
+    private RunningPlanViewModel viewModel; // view model
     // cached list of running plans
     private RunningPlanTemplate runningPlanTemplate;
     private ActivityResultLauncher<Intent> someActivityResultLauncher;
@@ -59,6 +62,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        logger = Logger.getInstance(requireActivity().getPackageName());
         // add ActivityResultLauncher for file dialog
         someActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -125,7 +129,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
                 InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
                 RunningPlanApplication runningPlanApplication = ((RunningPlanApplication) requireActivity().getApplication());
                 DataRepository dataRepository = runningPlanApplication.getSportsLibrary().getDataRepository();
-                TemplateLoader templateLoader = new TemplateLoader(dataRepository);
+                TemplateLoader templateLoader = new TemplateLoader(dataRepository, logger);
                 importFileNameLabel.setText(getString(R.string.loading_file_succeed));
                 // load the template from json
                 runningPlanTemplate = templateLoader.loadRunningPlanTemplateFromJSON(inputStream);
@@ -162,7 +166,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
                 try {
                     RunningPlanApplication runningPlanApplication = ((RunningPlanApplication) requireActivity().getApplication());
                     DataRepository dataRepository = runningPlanApplication.getSportsLibrary().getDataRepository();
-                    TemplateLoader templateLoader = new TemplateLoader(dataRepository);
+                    TemplateLoader templateLoader = new TemplateLoader(dataRepository, logger);
                     // create an updated template from import
                     RunningPlanTemplate runningPlanTemplateToImport = new RunningPlanTemplate(title, remarks,
                             runningPlanTemplate.getOrderNumber(),
@@ -189,7 +193,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
                                 null);
                     }
                 } catch (SportsLibraryException exception) {
-                    exception.printStackTrace();
+                    logger.log(Logger.ERROR, TAG, "Import of running plan template failed.", exception);
                 }
             }
         }
