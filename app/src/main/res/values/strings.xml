@@ -5,6 +5,8 @@
 
     <!-- Titles -->
     <!-- Navigation -->
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_actual_running_units">Trainingsabschnitte</string>
     <string name="title_start">Start</string>
     <string name="title_training">Training</string>
     <string name="title_running_plans">Laufpläne</string>
@@ -92,8 +94,8 @@
     <string name="training_is_planned">Training ist in Planung</string>
     <string name="training_is_running">Training läuft</string>
     <string name="training_unit_track">Track zur Trainingseinheit</string>
-    <string name="running_unit_started_at">Laufeinheit gestartet um</string>
     <string name="new_training_unit_starts">Neue Laufeinheit beginnt</string>
+    <string name="running_unit_started_at">Laufeinheit gestartet um</string>
     <string name="training_unit_finished">Laufeinheit abgeschlossen</string>
     <string name="training_completed">Training abgeschlossen</string>
     <string name="running_plan_completed">Dieser Laufplan wurde bereits vollständig abgeschlossen.</string>
@@ -125,15 +127,15 @@
 
     <!-- Movement Data -->
     <string name="movement_type_not_found">Unbekannt</string>
-    <string name="movement_type_pause">Pause</string>
-    <string name="movement_type_slowing_going">Langsames Gehen</string>
-    <string name="movement_type_speedy_going">Zügiges Gehen</string>
-    <string name="movement_type_slowing_running">Langsames Laufen</string>
-    <string name="movement_type_fast_running">Flottes Laufen</string>
-    <string name="movement_type_speedy_running">Schnelles Laufen</string>
-    <string name="movement_type_more_speedy_running">Sehr schnelles Laufen</string>
-    <string name="movement_type_running">Laufen</string>
-    <string name="movement_type_sprint">Rennen</string>
+    <string name="P">Pause</string>
+    <string name="LG">Langsames Gehen</string>
+    <string name="ZG">Zügiges Gehen</string>
+    <string name="LL">Langsames Laufen</string>
+    <string name="FL">Flottes Laufen</string>
+    <string name="SL">Schnelles Laufen</string>
+    <string name="SSL">Sehr schnelles Laufen</string>
+    <string name="L">Laufen</string>
+    <string name="R">Rennen</string>
     <string name="movement_type_summary">Arten der Bewegung während des Lauftrainings</string>
 
     <!-- Location Data -->

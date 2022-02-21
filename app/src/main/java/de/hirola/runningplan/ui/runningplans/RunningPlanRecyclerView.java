@@ -2,7 +2,6 @@ package de.hirola.runningplan.ui.runningplans;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import de.hirola.runningplan.MainActivity;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.model.RunningPlan;
@@ -45,7 +44,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
     @NotNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.runningplan_row, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.running_plan_row, parent, false);
         v.setOnClickListener(onClickListener);
         return new RunningPlanRecyclerViewHolder(v);
     }

@@ -181,7 +181,7 @@ public class TrainingService extends Service implements LocationListener {
             return;
         }
         if (this.trackId == null || trackId == null) {
-            withLocationTracking = true;
+            withLocationTracking = false;
         } else {
             withLocationTracking = this.trackId.equals(trackId);
         }

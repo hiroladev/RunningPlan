@@ -161,6 +161,8 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                             requireContext(),
                             getString(R.string.error), getString(R.string.save_data_error),
                             getString(R.string.ok));
+                    // disable switch again
+                    activeRunningPlanSwitch.setChecked(false);
                     if (logManager.isDebugMode()) {
                         logManager.log(exception,null,TAG);
                     }

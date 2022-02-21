@@ -6,12 +6,45 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import de.hirola.runningplan.R;
+import de.hirola.runningplan.model.RunningPlanViewModel;
+import de.hirola.runningplan.ui.runningplans.RunningPlanListFragment;
+import de.hirola.runningplan.ui.runningplans.RunningPlanRecyclerView;
+import de.hirola.runningplan.util.AppLogManager;
+import de.hirola.sportslibrary.model.RunningPlan;
+import de.hirola.sportslibrary.model.User;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class StartFragment extends Fragment {
 
+    private final static String TAG = StartFragment.class.getSimpleName();
+
+    private AppLogManager logManager; // app logger
+    // recycler view list adapter
+    private RecyclerView recyclerView;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View startView = inflater.inflate(R.layout.fragment_start, container, false);
+        // app logger
+        logManager = AppLogManager.getInstance(requireContext());
+        // get the app user
+        RunningPlanViewModel viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
+        User appUser = viewModel.getAppUser();
+        RunningPlan runningPlan = appUser.getActiveRunningPlan();
+        if (runningPlan != null) {
+            RunningEntryRecyclerView listAdapter = new RunningEntryRecyclerView(requireContext(), runningPlan);
+            recyclerView = startView.findViewById(R.id.recyclerView_trainings);
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+            recyclerView.setAdapter(listAdapter);
+        }
+        return startView;
     }
 
     @Override

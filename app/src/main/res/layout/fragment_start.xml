@@ -6,10 +6,57 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.start.StartFragment">
+    <EditText
+            android:id="@+id/label_dashboard_fragment_start"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:inputType="none"
+            android:text="@string/title_dashboard"
+            android:importantForAutofill="no"
+            android:ems="10"
+            android:clickable="false"
+            android:focusable="false"
+            android:minHeight="48dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="15dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp" android:textAlignment="center" tools:ignore="LabelFor"/>
+    <EditText
+            android:id="@+id/label_running_units_fragment_start"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:inputType="none"
+            android:text="@string/title_actual_running_units"
+            android:importantForAutofill="no"
+            android:ems="10"
+            android:clickable="false"
+            android:focusable="false"
+            android:minHeight="48dp"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp" android:textAlignment="center" tools:ignore="LabelFor"
+            app:layout_constraintTop_toBottomOf="@+id/label_dashboard_fragment_start" android:layout_marginTop="5dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_trainings"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="5dp"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="5dp" android:layout_marginEnd="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/banner_fragment_start"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintTop_toBottomOf="@+id/label_running_units_fragment_start"
+            android:layout_marginTop="5dp"/>
     <ImageView
-            android:src="@drawable/background"
+            android:src="@drawable/banner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" android:id="@+id/imageView2" android:contentDescription="TODO"/>
+            android:layout_height="300dp" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:id="@+id/banner_fragment_start"
+            android:scaleType="center" app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="5dp" android:layout_marginStart="5dp" android:layout_marginEnd="5dp"
+            android:layout_marginTop="5dp" app:layout_constraintTop_toBottomOf="@+id/recyclerView_trainings"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

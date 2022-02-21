@@ -1,63 +1,63 @@
 [
     {
         "key": "P",
-        "stringForKey": "movement_type_pause",
+        "stringForKey": "P",
         "speed": 0.0,
         "pace": 0.0,
         "colorKeyString": "green"
     },
     {
         "key": "LG",
-        "stringForKey": "movement_type_slowing_going",
+        "stringForKey": "LG",
         "speed": 3.0,
         "pace": 20.0,
         "colorKeyString": "green"
     },
     {
         "key": "ZG",
-        "stringForKey": "movement_type_speedy_going",
+        "stringForKey": "ZG",
         "speed": 5.0,
         "pace": 12.0,
         "colorKeyString": "green"
     },
     {
         "key": "LL",
-        "stringForKey": "movement_type_slowing_running",
+        "stringForKey": "LL",
         "speed": 9.23,
         "pace": 6.3,
         "colorKeyString": "green"
     },
     {
         "key": "L",
-        "stringForKey": "movement_type_running",
+        "stringForKey": "L",
         "speed": 10.00,
         "pace": 6.0,
         "colorKeyString": "green"
     },
     {
         "key": "FL",
-        "stringForKey": "movement_type_fast_running",
+        "stringForKey": "FL",
         "speed": 10.91,
         "pace": 5.3,
         "colorKeyString": "green"
     },
     {
         "key": "SL",
-        "stringForKey": "movement_type_speedy_running",
+        "stringForKey": "SL",
         "speed": 12.00,
         "pace": 5.0,
         "colorKeyString": "green"
     },
     {
         "key": "SSL",
-        "stringForKey": "movement_type_more_speedy_running",
+        "stringForKey": "SSL",
         "speed": 13.33,
         "pace": 4.3,
         "colorKeyString": "green"
     },
     {
         "key": "SP",
-        "stringForKey": "movement_type_sprint",
+        "stringForKey": "SP",
         "speed": 15.00,
         "pace": 4.0,
         "colorKeyString": "green"

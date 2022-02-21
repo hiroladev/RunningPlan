@@ -4,7 +4,7 @@ import android.Manifest;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.os.Bundle;
+import android.os.*;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +58,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     // spinner
     private Spinner trainingDaysSpinner;
     private ArrayAdapter<String> trainingDaysSpinnerArrayAdapter;
-    Spinner trainingUnitsSpinner;
+    private Spinner trainingUnitsSpinner;
     private ArrayAdapter<String>  trainingUnitsSpinnerArrayAdapter;
 
     // training action button
@@ -132,10 +132,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // register receiver for timer
         requireActivity().registerReceiver(backgroundTimeReceiver,
                 new IntentFilter(TrainingServiceCallback.SERVICE_RECEIVER_ACTION));
-        // initialize the location tracking service
-        checkLocationPermissions();
-        // initialize background timer service
-        handleBackgroundTimerService();
         // load running plans
         viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
         // training data
@@ -145,7 +141,10 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         runningPlans = mutableRunningPlans.getValue();
         // set user activated running plan
         setActiveRunningPlan();
-        //TODO: check if a training can continued
+        // initialize the location tracking service
+        checkLocationPermissions();
+        // initialize background timer service
+        handleBackgroundTimerService();
     }
 
     public View onCreateView(@NotNull LayoutInflater inflater,
@@ -288,7 +287,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         if (!runningPlans.isEmpty()) {
             User appUser = viewModel.getAppUser();
             if (appUser != null) {
-                RunningPlan runningPlan = appUser.getActiveRunningPlan();
+                runningPlan = appUser.getActiveRunningPlan();
                 if (runningPlan != null) {
                     int index = runningPlans.indexOf(runningPlan);
                     if (index > -1) {
@@ -415,7 +414,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             trainingUnitsSpinnerArrayAdapter.addAll(getTrainingUnitsAsStrings());
             // show the complete training time
             long duration = runningPlanEntry.getDuration();
-            String durationString = getString(R.string.total_time)+ ": " + buildStringForDuration(duration);
+            String durationString = buildStringForDuration(duration);
             trainingInfolabel.setText(durationString);
             // display state by image
             if (runningPlanEntry.isCompleted()) {
@@ -526,6 +525,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 // TODO: next unit
                 if (nextUnit()) {
                     // send notification
+                    showNotificationForNextUnit();
                     trainingInfolabel.setText(R.string.new_training_unit_starts);
                     // resume training with another unit
                     startTraining();
@@ -689,7 +689,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     @NotNull
     private List<String> getTrainingDaysAsStrings() {
         List<String> trainingDaysStringList = new ArrayList<>();
-        if (runningPlan != null && runningPlanEntry != null) {
+        if (runningPlan != null) {
             // monday, day 1 and week 1
             LocalDate startDate = runningPlan.getStartDate();
             Iterator<RunningPlanEntry> iterator= runningPlan
@@ -926,6 +926,49 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         long mm = (timeToRun % 3600) / 60;
         long ss = timeToRun % 60;
         timerLabel.setText(String.format(Locale.ENGLISH, "%02d:%02d:%02d", hh, mm, ss));
+    }
+
+    // send notification for next unit
+    private void showNotificationForNextUnit() {
+        // build the message
+        int resID = 0;
+        long duration = 0;
+        if (runningUnit != null) {
+            resID = getResources().getIdentifier(
+                    runningUnit.getMovementType().getStringForKey(),
+                    "string",
+                    requireActivity().getPackageName());
+            duration = runningUnit.getDuration();
+        }
+        if (resID == 0) {
+            // movement type not found
+            resID = R.string.movement_type_not_found;
+        }
+        String notificationMessage = getString(R.string.new_training_unit_starts)
+                + ": "
+                + getString(resID) + " (" + duration + " min)";
+        notificationManager.sendNotification(notificationMessage);
+        Vibrator vibrator;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+
+            VibratorManager vibratorManager =
+                    (VibratorManager) requireContext().getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+
+            vibrator = vibratorManager.getDefaultVibrator();
+
+        } else {
+            // backward compatibility for Android API < 31,
+            // VibratorManager was only added on API level 31 release.
+            // noinspection deprecation
+            vibrator = (Vibrator) requireContext().getSystemService(Context.VIBRATOR_SERVICE);
+
+        }
+
+        final int DELAY = 0, VIBRATE = 1000, SLEEP = 1000, START = 3;
+        long[] vibratePattern = {DELAY, VIBRATE, SLEEP};
+
+        vibrator.vibrate(VibrationEffect.createWaveform(vibratePattern, START));
+
     }
 
 }

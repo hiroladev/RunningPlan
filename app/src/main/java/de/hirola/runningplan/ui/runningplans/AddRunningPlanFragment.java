@@ -166,7 +166,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
                 try {
                     RunningPlanApplication runningPlanApplication = ((RunningPlanApplication) requireActivity().getApplication());
                     DataRepository dataRepository = runningPlanApplication.getSportsLibrary().getDataRepository();
-                    TemplateLoader templateLoader = new TemplateLoader(dataRepository, logger);
+                    TemplateLoader templateLoader = new TemplateLoader(dataRepository, runningPlanApplication, logger);
                     // create an updated template from import
                     RunningPlanTemplate runningPlanTemplateToImport = new RunningPlanTemplate(title, remarks,
                             runningPlanTemplate.getOrderNumber(),

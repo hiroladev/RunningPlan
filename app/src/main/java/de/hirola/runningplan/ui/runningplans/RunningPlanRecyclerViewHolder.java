@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.format.DateTimeFormatter;
-
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
  * This software us licensed under the AGPL-3.0 or later.
@@ -30,9 +28,9 @@ public class RunningPlanRecyclerViewHolder extends RecyclerView.ViewHolder {
 
     public RunningPlanRecyclerViewHolder(@NonNull @NotNull View itemView) {
         super(itemView);
-        statusImageView = itemView.findViewById(R.id.runningplan_row_state_imageview);
-        nameTextView = itemView.findViewById(R.id.runningplan_row_name_textview);
-        remarksTextView = itemView.findViewById(R.id.runningplan_row_remarks_textview);
+        statusImageView = itemView.findViewById(R.id.running_entry_row_state_imageview);
+        nameTextView = itemView.findViewById(R.id.running_entry_date_textview);
+        remarksTextView = itemView.findViewById(R.id.running_entry_units_textview);
         startDateTextView = itemView.findViewById(R.id.runningplan_row_startdate_textview);
         durationTextView = itemView.findViewById(R.id.runningplan_row_duration_textView);
         percentCompletedTextView = itemView.findViewById(R.id.runningplan_row_percentcompleted_textview);
