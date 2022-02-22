@@ -246,7 +246,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     public void onServiceErrorOccurred(String errorMessage) {
         //TODO: alert to user
         if (logManager.isDebugMode()) {
-            logManager.log(null,errorMessage,TAG);
+            logManager.log(TAG, errorMessage, null);
         }
     }
 
@@ -264,7 +264,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             }
         }
         if (logManager.isDebugMode()) {
-            logManager.log(null,"Location updates are allowed: " + locationServicesAllowed,TAG);
+            logManager.log(TAG, "Location updates are allowed: " + locationServicesAllowed, null);
         }
     }
 
@@ -275,7 +275,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         if (runningPlan != null) {
             trainingServiceConnection.bindAndStartService(requireActivity().getApplicationContext());
             if (logManager.isDebugMode()) {
-                logManager.log(null, "Service bind and start.", TAG);
+                logManager.log(TAG, "Service bind and start.", null);
             }
         }
     }
@@ -517,7 +517,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                     didCompleteUpdateError = true;
                     // TODO: alert to user
                     if (logManager.isDebugMode()) {
-                        logManager.log(exception,"A running unit couldn't set as completed.",TAG);
+                        logManager.log(TAG, "A running unit couldn't set as completed.", exception);
                     }
                 }
                 // more units of the training section available
@@ -740,7 +740,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                     } catch (Resources.NotFoundException exception) {
                         trainingUnitsSpinnerElementString += R.string.movement_type_not_found;
                         if (logManager.isDebugMode()) {
-                            logManager.log(exception,null,TAG);
+                            logManager.log(TAG, null, exception);
                         }
                     }
                     // running unit duration
@@ -854,7 +854,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                                     setActiveRunningPlan();
                                 } catch (SportsLibraryException exception) {
                                     if (logManager.isDebugMode()) {
-                                        logManager.log(exception,null,TAG);
+                                        logManager.log(TAG, null, exception);
                                     }
                                 }
                             }

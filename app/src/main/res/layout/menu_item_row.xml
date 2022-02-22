@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--copyright>
+Copyright 2021 by Michael Schmidt, Hirola Consulting
+This software us licensed under the AGPL-3.0 or later.
+
+A row view to show running plan details in list.
+
+@author Michael Schmidt (Hirola)
+@since 1.1.1
+</copyright-->
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <ImageView
+            android:id="@+id/menu_item_imageview"
+            app:srcCompat="@drawable/unused20x20"
+            android:contentDescription="@string/menu_image_alt_text"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_weight="1" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="15dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="10dp"/>
+    <TextView
+            android:id="@+id/menu_item_textview"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:ems="10"
+            android:clickable="false"
+            android:focusable="false"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintStart_toEndOf="@+id/menu_item_imageview" android:layout_marginStart="5dp"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="15dp"
+            app:layout_constraintHorizontal_bias="1.0" android:textAlignment="textStart" android:textSize="20sp"/>
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/black"
+            android:layout_marginTop="5dp"
+            app:layout_constraintTop_toBottomOf="@+id/menu_item_textview"
+            app:layout_constraintStart_toStartOf="@+id/menu_item_imageview"
+            app:layout_constraintEnd_toEndOf="@+id/menu_item_textview"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

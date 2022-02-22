@@ -71,7 +71,7 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
                 }
             } catch (Resources.NotFoundException exception) {
                 if (logManager.isDebugMode()) {
-                    logManager.log(exception,null,TAG);
+                    logManager.log(TAG, null, exception);
                 }
             }
             // training date

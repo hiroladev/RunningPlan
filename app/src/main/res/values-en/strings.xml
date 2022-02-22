@@ -140,4 +140,10 @@
     <string name="database_initialize_error">The data could not be loaded.</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_actual_running_units">Running units</string>
+    <string name="menu_image_alt_text">Menu</string>
+    <string name="menu_item_info">Info</string>
+    <string name="menu_item_license">Licenses</string>
+    <string name="menu_item_help">Help</string>
+    <string name="no_content">The content could not be loaded.</string>
+    <string name="hello_blank_fragment">PLACEHOLDER</string>
 </resources>

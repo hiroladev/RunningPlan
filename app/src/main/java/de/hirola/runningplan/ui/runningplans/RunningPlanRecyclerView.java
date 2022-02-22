@@ -65,7 +65,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
                 }
             } catch (Resources.NotFoundException exception) {
                 if (logManager.isDebugMode()) {
-                    logManager.log(exception,null,TAG);
+                    logManager.log(TAG, null, exception);
                 }
             }
             viewHolder.nameTextView.setText(runningPlan.getName());
@@ -84,7 +84,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
                 } catch (Resources.NotFoundException exception) {
                     viewHolder.remarksTextView.setText(R.string.no_remarks);
                     if (logManager.isDebugMode()) {
-                        logManager.log(exception,null,TAG);
+                        logManager.log(TAG, null, exception);
                     }
                 }
             } else {

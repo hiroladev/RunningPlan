@@ -19,9 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -247,7 +245,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     } catch (ClassCastException exception) {
                         ((SwitchPreferenceCompat) preference).setChecked(false);
                         if (logManager.isDebugMode()) {
-                            logManager.log(exception,null,TAG);
+                            logManager.log(TAG, null, exception);
                         }
                     }
                 } else if (preference instanceof ListPreference) {
@@ -271,7 +269,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 } catch (Resources.NotFoundException exception) {
                                     entry = getString(R.string.preference_not_found);
                                     if (logManager.isDebugMode()) {
-                                        logManager.log(exception,null,TAG);
+                                        logManager.log(TAG, null, exception);
                                     }
                                 }
                             }
@@ -307,7 +305,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 } catch (Resources.NotFoundException exception) {
                                     entry = getString(R.string.preference_not_found);
                                     if (logManager.isDebugMode()) {
-                                        logManager.log(exception,null,TAG);
+                                        logManager.log(TAG, null, exception);
                                     }
                                 }
                             }
@@ -354,7 +352,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     } catch (ClassCastException exception) {
                         ((EditTextPreference) preference).setText("");
                         if (logManager.isDebugMode()) {
-                            logManager.log(exception,null,TAG);
+                            logManager.log(TAG, null, exception);
                         }
                     }
                 }

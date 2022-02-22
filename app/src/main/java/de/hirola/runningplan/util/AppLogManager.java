@@ -8,7 +8,6 @@ import de.hirola.runningplan.R;
 import de.hirola.sportslibrary.Global;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
@@ -35,7 +34,7 @@ public class AppLogManager {
         return instance;
     }
 
-    public void log(@Nullable Exception exception, @Nullable String logMessage, @NonNull String source) {
+    public void log(@NonNull String source, @Nullable String logMessage, @Nullable Exception exception) {
         //TODO: logging to file use SportsLibrary
         if (exception != null) {
             exception.printStackTrace();

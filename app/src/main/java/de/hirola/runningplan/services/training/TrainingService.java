@@ -88,14 +88,14 @@ public class TrainingService extends Service implements LocationListener {
         notificationManager = new TrainingNotificationManager(this);
         handler = new Handler(Looper.getMainLooper());
         if (logManager.isDebugMode()) {
-            logManager.log(null,"The training service was created.",TAG);
+            logManager.log(TAG, "The training service was created.", null);
         }
     }
 
     @Override
     public void onDestroy() {
         if (logManager.isDebugMode()) {
-            logManager.log(null,"The training service will be destroyed",TAG);
+            logManager.log(TAG, "The training service will be destroyed", null);
         }
         handler.removeCallbacks(secondsInTraining);
         handler = null;
@@ -159,7 +159,7 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingActive = true;
         handler.postDelayed(secondsInTraining, TIME_INTERVAL_IN_MILLI);
         if (logManager.isDebugMode()) {
-            logManager.log(null,"The training with track id " + trackId + " was started.",TAG);
+            logManager.log(TAG, "The training with track id " + trackId + " was started.", null);
         }
         // track of current training
         return trackId;
@@ -171,7 +171,7 @@ public class TrainingService extends Service implements LocationListener {
         // stop location tracking
         stopLocationUpdates();
         if (logManager.isDebugMode()) {
-            logManager.log(null,"The training with track id " + trackId + " was paused.",TAG);
+            logManager.log(TAG, "The training with track id " + trackId + " was paused.", null);
         }
     }
 
@@ -192,7 +192,7 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingPaused = false;
         handler.postDelayed(secondsInTraining, TIME_INTERVAL_IN_MILLI);
         if (logManager.isDebugMode()) {
-            logManager.log(null,"The training with track id " + trackId + " was resumed.",TAG);
+            logManager.log(TAG, "The training with track id " + trackId + " was resumed.", null);
         }
     }
 
@@ -204,14 +204,14 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingPaused = false;
         isTrainingActive = false;
         if (logManager.isDebugMode()) {
-            logManager.log(null,"The training with track id " + trackId + " was stopped.",TAG);
+            logManager.log(TAG, "The training with track id " + trackId + " was stopped.", null);
         }
         // completed the recorded track
         // in further versions we qualify the location updates
         if (!trackManager.completeTrack(trackId)) {
             if (logManager.isDebugMode()) {
                 if (withLocationTracking) {
-                    logManager.log(null, "The track with id " + trackId + " couldn't completed.", TAG);
+                    logManager.log(TAG, "The track with id " + trackId + " couldn't completed.", null);
                 }
             }
         }
@@ -225,12 +225,12 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingPaused = false;
         isTrainingActive = false;
         if (logManager.isDebugMode()) {
-            logManager.log(null,"The Training with track id " + trackId + " was canceled.",TAG);
+            logManager.log(TAG, "The Training with track id " + trackId + " was canceled.", null);
         }
         if (!trackManager.removeTrack(trackId)) {
             if (logManager.isDebugMode()) {
                 if (withLocationTracking) {
-                    logManager.log(null, "The track with id " + trackId + " couldn't removed.", TAG);
+                    logManager.log(TAG, "The track with id " + trackId + " couldn't removed.", null);
                 }
             }
         }
@@ -296,7 +296,7 @@ public class TrainingService extends Service implements LocationListener {
             } catch (SecurityException exception) {
                 gpsAvailable = false;
                 if (logManager.isDebugMode()) {
-                    logManager.log(exception,null,TAG);
+                    logManager.log(TAG, null, exception);
                 }
             }
         }

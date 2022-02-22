@@ -132,7 +132,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
                                                             null, getString(R.string.remove_active_running_plan),
                                                             null);
                                                     if (logManager.isDebugMode()) {
-                                                        logManager.log(exception,null,TAG);
+                                                        logManager.log(TAG, null, exception);
                                                     }
                                                 }
                                             }

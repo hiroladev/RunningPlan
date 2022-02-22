@@ -1,6 +1,10 @@
 <resources>
     <!-- App Data -->
     <string name="app_name">Laufplan</string>
+    <string name="app_version" translatable="false">v1.1.1</string>
+    <string name="app_copyright" translatable="false">(c) Michael Schmidt 2021 - 2022\nFree Software License: AGPL
+        Version 3
+    </string>
     <string name="preference_file" translatable="false">de.hirola.runningplan_preferences</string>
 
     <!-- Titles -->
@@ -28,6 +32,12 @@
     <string name="select_running_plan_option_2">aus Liste</string>
     <string name="select_running_plan_option_3">Nächster</string>
 
+    <!-- Menu -->
+    <string name="menu_image_alt_text">Menu</string>
+    <string name="menu_item_info">Info</string>
+    <string name="menu_item_license">Lizenzen</string>
+    <string name="menu_item_help">Hilfe</string>
+
     <!-- Alerts -->
     <string name="ok" translatable="false">OK</string>
     <string name="cancel">Abbrechen</string>
@@ -52,6 +62,7 @@
     <string name="recorded_track_not_found">Die Aufzeichnung des Trainings wurde nicht gefunden.</string>
 
     <!-- Common -->
+    <string name="no_content">Die Inhalte konnten nicht geladen werden.</string>
     <string name="name">Name</string>
     <string name="remarks">Anmerkungen</string>
     <string name="color">Farbe</string>
@@ -151,10 +162,12 @@
     <!-- Running Plans -->
     <string name="running_plan">Laufplan</string>
     <string name="running_plan_name">Laufplan-Name</string>
-    <string name="running_plan_start_remarks">Eine Vorlage zum Einstieg in das Laufen. Mit freundlicher Unterstützung von
+    <string name="running_plan_start_remarks">Eine Vorlage zum Einstieg in das Laufen. Mit freundlicher Unterstützung
+        von
         https://lauftipps.ch. Ohne Haftung und Gewährleistung.
     </string>
-    <string name="running_plan_start_60_remarks">Die 2. Stufe beim Einstieg in das Laufen. Mit freundlicher Unterstützung von https://lauftipps.ch. Ohne Haftung und Gewährleistung.
+    <string name="running_plan_start_60_remarks">Die 2. Stufe beim Einstieg in das Laufen. Mit freundlicher
+        Unterstützung von https://lauftipps.ch. Ohne Haftung und Gewährleistung.
     </string>
     <string name="running_plan_start_test_remarks">Eine Vorlage zum Testen der App.</string>
     <string name="no_remarks">Keine Anmerkungen vorhanden.</string>
@@ -183,5 +196,5 @@
     <string name="notifications">Benachrichtigungen</string>
     <string name="todo_data_summary_on" translatable="false">Summary when on</string>
     <string name="todo_data_summary_off" translatable="false">Summary when off</string>
-
+    <string name="hello_blank_fragment">PLACEHOLDER</string>
 </resources>

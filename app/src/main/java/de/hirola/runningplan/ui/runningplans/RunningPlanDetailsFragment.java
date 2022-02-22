@@ -164,7 +164,7 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                     // disable switch again
                     activeRunningPlanSwitch.setChecked(false);
                     if (logManager.isDebugMode()) {
-                        logManager.log(exception,null,TAG);
+                        logManager.log(TAG, null, exception);
                     }
                 }
 
@@ -217,7 +217,7 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                 } catch (Resources.NotFoundException exception) {
                     runningPlanRemarksTextView.setText(R.string.no_remarks);
                     if (logManager.isDebugMode()) {
-                        logManager.log(exception,null,TAG);
+                        logManager.log(TAG, null, exception);
                     }
                 }
             } else {
