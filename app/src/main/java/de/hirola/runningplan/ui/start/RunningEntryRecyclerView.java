@@ -79,19 +79,19 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
                 viewHolder.dateTextView.setText(trainingDaysAsString.get(position));
             }
             // show the units
-            String unitsAsString = "";
+            StringBuilder unitsAsString = new StringBuilder();
             List<RunningUnit> runningUnits = runningPlanEntry.getRunningUnits();
             int loop = 1;
             for (RunningUnit runningUnit: runningUnits) {
                 MovementType movementType = runningUnit.getMovementType();
                 if (loop < runningUnits.size()) {
-                    unitsAsString = unitsAsString + movementType.getKey() + ": ";
+                    unitsAsString.append(movementType.getKey()).append(": ");
                 } else {
-                    unitsAsString = unitsAsString + movementType.getKey();
+                    unitsAsString.append(movementType.getKey());
                 }
                 loop++;
             }
-            viewHolder.unitsTextView.setText(unitsAsString);
+            viewHolder.unitsTextView.setText(unitsAsString.toString());
 
         }
     }

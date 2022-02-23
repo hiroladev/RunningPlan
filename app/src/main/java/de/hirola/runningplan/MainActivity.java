@@ -1,6 +1,5 @@
 package de.hirola.runningplan;
 
-import android.content.Context;
 import de.hirola.runningplan.databinding.ActivityMainBinding;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 
@@ -11,7 +10,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import de.hirola.sportslibrary.Global;
 
 
 public class MainActivity extends AppCompatActivity {

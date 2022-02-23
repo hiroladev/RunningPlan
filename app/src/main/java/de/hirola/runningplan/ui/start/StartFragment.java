@@ -11,15 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.model.RunningPlanViewModel;
-import de.hirola.runningplan.ui.runningplans.RunningPlanListFragment;
-import de.hirola.runningplan.ui.runningplans.RunningPlanRecyclerView;
 import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.model.User;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class StartFragment extends Fragment {
 

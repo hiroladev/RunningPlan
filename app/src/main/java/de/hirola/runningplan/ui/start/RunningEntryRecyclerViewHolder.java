@@ -19,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class RunningEntryRecyclerViewHolder extends RecyclerView.ViewHolder {
 
-    ImageView statusImageView;
-    TextView dateTextView;
-    TextView unitsTextView;
+    final ImageView statusImageView;
+    final TextView dateTextView;
+    final TextView unitsTextView;
 
     public RunningEntryRecyclerViewHolder(@NonNull @NotNull View itemView) {
         super(itemView);

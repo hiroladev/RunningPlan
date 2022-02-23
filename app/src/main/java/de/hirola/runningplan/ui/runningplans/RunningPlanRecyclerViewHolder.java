@@ -19,12 +19,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public class RunningPlanRecyclerViewHolder extends RecyclerView.ViewHolder {
 
-    TextView nameTextView;
-    TextView remarksTextView;
-    TextView startDateTextView;
-    TextView durationTextView;
-    TextView percentCompletedTextView;
-    ImageView statusImageView;
+    final TextView nameTextView;
+    final TextView remarksTextView;
+    final TextView startDateTextView;
+    final TextView durationTextView;
+    final TextView percentCompletedTextView;
+    final ImageView statusImageView;
 
     public RunningPlanRecyclerViewHolder(@NonNull @NotNull View itemView) {
         super(itemView);

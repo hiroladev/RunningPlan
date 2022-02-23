@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.util.AppLogManager;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
 
 /**
@@ -39,9 +40,9 @@ public class LicenseFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View aboutView = inflater.inflate(R.layout.fragment_info_licenses, container, false);
-        TextView aboutTextView = aboutView.findViewById(R.id.about_textView);
+        TextView aboutTextView = aboutView.findViewById(R.id.licences_textView);
         // load content from text file
-        // TODO: english about
+        // TODO: english licenses
         String licenseString = "";
         try {
             InputStream is = getResources().openRawResource(R.raw.licenses);

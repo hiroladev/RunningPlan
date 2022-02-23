@@ -18,8 +18,8 @@ public final class ModalOptionDialog {
 
     public static final class DialogStyle {
         public static int INFORMATION = 0;
-        public static int WARNING = 1;
-        public static int CRITICAL = 2;
+        public static final int WARNING = 1;
+        public static final int CRITICAL = 2;
 
     }
 
