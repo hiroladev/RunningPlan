@@ -59,7 +59,6 @@ A row view to show running plan details in list.
 
         <!--- Startdatum-->
         <ImageView
-                android:id="@+id/runningplan_row_startdate_imageview"
                 app:srcCompat="@drawable/baseline_calendar_today_black_24"
                 android:contentDescription="@string/start_date"
                 android:layout_width="24dp"
@@ -73,7 +72,6 @@ A row view to show running plan details in list.
 
         <!--- Dauer des gesamten Plans-->
         <ImageView
-                android:id="@+id/runningplan_row_duration_imageView"
                 app:srcCompat="@drawable/baseline_schedule_black_24"
                 android:contentDescription="@string/duration"
                 android:layout_width="24dp"
@@ -87,7 +85,6 @@ A row view to show running plan details in list.
 
         <!--- bereits durchgeführter Anteil in Prozent-->
         <ImageView
-                android:id="@+id/runningplan_row_completed_imageview"
                 app:srcCompat="@drawable/baseline_percent_black_24"
                 android:contentDescription="@string/percent"
                 android:layout_width="24dp"

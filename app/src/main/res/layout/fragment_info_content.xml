@@ -23,7 +23,7 @@ The running plan view, contains different fragments.
             android:layout_height="wrap_content" app:srcCompat="@drawable/runningplan40x40"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="20dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="20dp" app:layout_constraintEnd_toStartOf="@+id/textView"
+            android:layout_marginStart="20dp" app:layout_constraintEnd_toStartOf="@+id/app_name_textView"
             android:layout_marginEnd="10dp"/>
     <TextView
             android:id="@+id/app_name_textView"
@@ -37,7 +37,6 @@ The running plan view, contains different fragments.
             android:textSize="20sp"
             android:textStyle="bold" app:layout_constraintBottom_toBottomOf="@+id/app_logo_imageView"/>
     <TextView
-            android:id="@+id/app_version_textView"
             android:inputType="none"
             android:text="@string/app_version"
             android:importantForAutofill="no"

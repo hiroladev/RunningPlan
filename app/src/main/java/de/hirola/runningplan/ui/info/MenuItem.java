@@ -1,6 +1,5 @@
 package de.hirola.runningplan.ui.info;
 
-import android.media.Image;
 import androidx.fragment.app.Fragment;
 
 /**

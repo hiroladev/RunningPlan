@@ -19,8 +19,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class InfoMenuItemRecyclerViewHolder extends RecyclerView.ViewHolder {
 
-    ImageView menuItemImageView;
-    TextView menuItemTextView;
+    final ImageView menuItemImageView;
+    final TextView menuItemTextView;
 
     public InfoMenuItemRecyclerViewHolder(@NonNull @NotNull View itemView) {
         super(itemView);

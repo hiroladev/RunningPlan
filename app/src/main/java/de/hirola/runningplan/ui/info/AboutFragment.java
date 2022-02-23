@@ -1,7 +1,7 @@
 package de.hirola.runningplan.ui.info;
 
-import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.util.AppLogManager;
+import org.apache.commons.io.IOUtils;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -40,13 +42,14 @@ public class AboutFragment extends Fragment {
         // Inflate the layout for this fragment
         View aboutView = inflater.inflate(R.layout.fragment_info_about, container, false);
         TextView aboutTextView = aboutView.findViewById(R.id.about_textView);
+        aboutTextView.setMovementMethod(new ScrollingMovementMethod());
         // load content from text file
         // TODO: english about
         String aboutString = "";
         try {
             InputStream is = getResources().openRawResource(R.raw.about);
-            aboutString = is.toString();
-        } catch (Resources.NotFoundException exception) {
+            aboutString = IOUtils.toString(is, StandardCharsets.UTF_8);
+        } catch (Exception exception) {
             if (logManager.isDebugMode()) {
                 logManager.log(TAG, null, exception);
             }

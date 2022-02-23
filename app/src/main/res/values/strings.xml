@@ -14,16 +14,12 @@
     <string name="title_start">Start</string>
     <string name="title_training">Training</string>
     <string name="title_running_plans">Laufpläne</string>
-    <string name="title_movement_type">Bewegungsarten</string>
     <string name="title_settings">Profil</string>
     <string name="title_information">Info</string>
-    <string name="title_select_new_running_plan">Einen neuen Laufplan auswählen</string>
 
     <!-- Dialoge -->
-    <string name="title_user">Nutzer</string>
     <string name="title_user_settings">Nutzer</string>
     <string name="title_training_settings">Trainingsdaten</string>
-    <string name="title_other_settings">Sonstige Einstellungen</string>
     <string name="title_location">Standort</string>
     <string name="title_select_new_running_plan_options">Sie können den Plan zurücksetzen oder einen neuen Plan
         wählen.
@@ -41,14 +37,11 @@
     <!-- Alerts -->
     <string name="ok" translatable="false">OK</string>
     <string name="cancel">Abbrechen</string>
-    <string name="yes">Ja</string>
-    <string name="no">Nein</string>
     <string name="question">Frage</string>
     <string name="hint">Hinweis</string>
     <string name="information">Information</string>
     <string name="warning">Warnung</string>
     <string name="error">Fehler</string>
-    <string name="database_initialize_error">Die Daten konnten nicht geladen werden.</string>
     <string name="preferences_not_set">Die Einstellungen konnten nicht gespeichert werden.</string>
     <string name="save_data_error">Die Daten konnten nicht gespeichert werden.</string>
     <string name="name_must_be_not_null">Der Name darf nicht leer sein.</string>
@@ -56,24 +49,16 @@
     <string name="remove_active_running_plan">Soll mit diesem Laufplan wirklich nicht mehr trainiert werden?</string>
     <string name="ask_for_cancel_training">Soll das Training wirklich abgebrochen werden?</string>
     <string name="no_file_selected">Es wurde keine Datei ausgewählt.</string>
-    <string name="no_valid_file_format">Die gewählte Datei besitzt nicht das richtige Format (json).</string>
     <string name="ask_before_remove_running_plan">Soll der Laufplan wirklich gelöscht werden?</string>
-    <string name="remove_running_plan_failed">Der Laufplan konnte nicht gelöscht werden.</string>
     <string name="recorded_track_not_found">Die Aufzeichnung des Trainings wurde nicht gefunden.</string>
 
     <!-- Common -->
     <string name="no_content">Die Inhalte konnten nicht geladen werden.</string>
-    <string name="name">Name</string>
     <string name="remarks">Anmerkungen</string>
-    <string name="color">Farbe</string>
-    <string name="pace">Geschwindigkeit (Pace)</string>
     <string name="start_date">Start-Datum</string>
-    <string name="select">Auswahl</string>
     <string name="state">Status</string>
     <string name="percent">Prozent</string>
     <string name="duration">Dauer</string>
-    <string name="completed">abgeschlossen</string>
-    <string name="null_timer" translatable="false">00:00:00</string>
     <string name="duration_null_hours_minutes" translatable="false">00h:00min</string>
 
     <!-- Location data -->
@@ -102,7 +87,6 @@
     <string name="pause_training">Trainingspause</string>
     <string name="continue_training">Training wird fortgesetzt</string>
     <string name="cancel_training">Abbruch des Trainings</string>
-    <string name="training_is_planned">Training ist in Planung</string>
     <string name="training_is_running">Training läuft</string>
     <string name="training_unit_track">Track zur Trainingseinheit</string>
     <string name="new_training_unit_starts">Neue Laufeinheit beginnt</string>
@@ -117,10 +101,6 @@
     <!-- User Data -->
     <string name="email_address">E-Mail-Adresse</string>
     <string name="gender">Geschlecht</string>
-    <string name="gender_undefined">unbestimmt</string>
-    <string name="gender_diverse">divers</string>
-    <string name="gender_male">männlich</string>
-    <string name="gender_female">weiblich</string>
     <string name="birthday">Geburtstag</string>
     <string name="max_pulse">Maximale Herzfrequenz</string>
     <string name="pulse_summary">Der Maximal-Puls wird nach der Formel 220 (Männer) bzw. 226 (Frauen) - Alter
@@ -128,57 +108,22 @@
     </string>
 
     <!-- Training Data -->
-    <string name="training_level">Stufe</string>
-    <string name="training_beginner">Starter</string>
-    <string name="training_amateur">Hobby-Sportler</string>
-    <string name="training_profi">Laufprofi</string>
-    <string name="training_units">Trainingsabschnitte</string>
     <string name="training_day">Trainingstag</string>
-    <string name="training_infos">Training-Infos</string>
 
     <!-- Movement Data -->
     <string name="movement_type_not_found">Unbekannt</string>
-    <string name="P">Pause</string>
-    <string name="LG">Langsames Gehen</string>
-    <string name="ZG">Zügiges Gehen</string>
-    <string name="LL">Langsames Laufen</string>
-    <string name="FL">Flottes Laufen</string>
-    <string name="SL">Schnelles Laufen</string>
-    <string name="SSL">Sehr schnelles Laufen</string>
-    <string name="L">Laufen</string>
-    <string name="R">Rennen</string>
-    <string name="movement_type_summary">Arten der Bewegung während des Lauftrainings</string>
 
     <!-- Location Data -->
     <string name="use_location_data">Standort-Daten nutzen</string>
-    <string name="use_fine_location_data">Hohe Genauigkeit</string>
-    <string name="fine_location_data_summary_on">Genauere Standortdaten werden genutzt. Die Akku-Nutzung kann erhöht
-        sein.
-    </string>
-    <string name="fine_location_data_summary_off">Wenig genauere Standortdaten werden genutzt. Die Akku-Nutzung ist
-        geringer.
-    </string>
 
     <!-- Running Plans -->
     <string name="running_plan">Laufplan</string>
     <string name="running_plan_name">Laufplan-Name</string>
-    <string name="running_plan_start_remarks">Eine Vorlage zum Einstieg in das Laufen. Mit freundlicher Unterstützung
-        von
-        https://lauftipps.ch. Ohne Haftung und Gewährleistung.
-    </string>
-    <string name="running_plan_start_60_remarks">Die 2. Stufe beim Einstieg in das Laufen. Mit freundlicher
-        Unterstützung von https://lauftipps.ch. Ohne Haftung und Gewährleistung.
-    </string>
-    <string name="running_plan_start_test_remarks">Eine Vorlage zum Testen der App.</string>
     <string name="no_remarks">Keine Anmerkungen vorhanden.</string>
-    <string name="title_running_plan_details">Laufplan-Details</string>
     <string name="select_training_date">Trainingstag wählen</string>
-    <string name="all_running_plans_completed">Alle Laufpläne abgeschlossen.</string>
     <string name="total_time">Gesamtdauer</string>
     <string name="unit_time">Dauer Laufeinheit</string>
-    <string name="running_plan_entry">Laufplan-Einheit</string>
     <string name="running_unit">Laufabschnitt</string>
-    <string name="running_unit_infos">Infos zum Laufabschnitt</string>
     <string name="show_training_details">Trainingdetails anzeigen …</string>
     <string name="select_as_active_running_plan">Als aktiven Plan auswählen</string>
     <string name="select_week_of_start">Startwoche festlegen</string>

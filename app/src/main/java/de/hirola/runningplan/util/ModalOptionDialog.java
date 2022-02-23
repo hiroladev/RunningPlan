@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public final class ModalOptionDialog {
 
     public static final class DialogStyle {
-        public static int INFORMATION = 0;
+        public static final int INFORMATION = 0;
         public static final int WARNING = 1;
         public static final int CRITICAL = 2;
 

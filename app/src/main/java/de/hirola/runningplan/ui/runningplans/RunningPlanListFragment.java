@@ -149,7 +149,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
         itemTouchHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(listAdapter);
         // button to add (import) new templates
-        FloatingActionButton addRunningPlanButton = view.findViewById(R.id.button_add_runningplan);
+        FloatingActionButton addRunningPlanButton = view.findViewById(R.id.button_add_running_plan);
         addRunningPlanButton.setOnClickListener(v -> {
             AddRunningPlanFragment addRunningPlanFragment = null;
             List<Fragment> fragments = getParentFragmentManager().getFragments();

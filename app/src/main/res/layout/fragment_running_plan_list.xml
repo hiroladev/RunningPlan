@@ -27,7 +27,7 @@ The running plan view, contains different fragments.
             app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/button_add_runningplan"
+            android:id="@+id/button_add_running_plan"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="wrap_content"
