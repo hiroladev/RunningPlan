@@ -26,8 +26,8 @@ allprojects {
                 includeGroup("de.hirola")
             }
             credentials {
-                username = 'hiroladev'
-                password = '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'
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
             }
         }
     }
