@@ -95,16 +95,45 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Insert a new track in the local track datastore.
+     *
+     * @param trackId of the track to be updated
+     * @param trackPoint with updates for the track
+     * @return 0 if no track is updated, 1 if the track updated or -1 if an error occurred
+     */
+    public void updateTrack(Track.Id trackId, TrackPoint trackPoint) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        // map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        // start time
+        values.put(TrackColumns.STARTTIME, trackPoint.getStartTime());
+        // distance
+        values.put(TrackColumns.DISTANCE, trackPoint.getActualDistance());
+        // update the track, returning the primary key value of the new row
+        long updatedRows = sqLiteDatabase.update(TrackColumns.TABLE_NAME,
+                values,
+                "rowid = ?",
+                new String[]{String.valueOf(trackId.getId())});
+        sqLiteDatabase.close();
+        if (updatedRows > 1) {
+            if (logManager.isDebugMode()) {
+                logManager.log(TAG, "More as one rows are updated.", null);
+            }
+        }
+    }
+
+    /**
      * Add a location (update) to an existing track.
      *
      * @param trackId id for the track, where the location to be added
-     * @param location the location to be added
+     * @param trackPoint the point of track to be added
      * @return 0 if the location is added or -1 if an error occurred or the track does not exist
      */
-    public boolean insertLocationForTrack(Track.Id trackId, @NonNull Location location) {
+    public boolean insertLocationForTrack(Track.Id trackId, @NonNull TrackPoint trackPoint) {
         if (trackExist(trackId)) {
             SQLiteDatabase sqLiteDatabase = getWritableDatabase();
             // insert the location
+            Location location = trackPoint.getLocation();
             // map of values, where column names are the keys
             ContentValues values = new ContentValues();
             // track id
@@ -119,7 +148,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             values.put(TrackLocationColumns.SPEED, location.getSpeed());
             // altitude
             values.put(TrackLocationColumns.ALTITUDE, location.getAltitude());
-            // insert the new track (row), returning the primary key value of the new
+            // insert the new location (row), returning the primary key value of the new location
             long numberOfInsertedRows = sqLiteDatabase.insert(TrackLocationColumns.TABLE_NAME, null, values);
             sqLiteDatabase.close();
             return numberOfInsertedRows > 0;
@@ -127,24 +156,17 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    public boolean completeTrack(@NonNull Track.Id trackId) {
-        if (trackExist(trackId)) {
-            return true;
+    public boolean completeTrack(@NonNull Track.Id trackId, @NonNull TrackPoint trackPoint) {
+        if (!trackExist(trackId)) {
+            return false;
         }
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        // calculate the values
-        // set stop time
-        long stopTime = LocalDateTime.now()
-                .atZone(ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli();
-        // avg, speed
-        double speed = calculateAvgForTrack(trackId);
-        double distance = calculateDistanceForTrack(trackId);
+        // last timestamp = stop time
+        long stopTime = trackPoint.getLocation().getTime();
+        double distance = trackPoint.getActualDistance();
         // update the track
         ContentValues values = new ContentValues();
         values.put(TrackColumns.STOPTIME, stopTime);
-        values.put(TrackColumns.AVGSPEED, speed);
         values.put(TrackColumns.DISTANCE, distance);
         // Which row to update, based on the title
         String selection = TrackColumns.ID + " LIKE ?";
@@ -187,10 +209,9 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                     String description = cursor.getString(cursor.getColumnIndexOrThrow(TrackColumns.DESCRIPTION));
                     long startTime = cursor.getLong(cursor.getColumnIndexOrThrow(TrackColumns.STARTTIME));
                     long stopTime = cursor.getLong(cursor.getColumnIndexOrThrow(TrackColumns.STOPTIME));
-                    float speed = cursor.getFloat(cursor.getColumnIndexOrThrow(TrackColumns.AVGSPEED));
-                    float distance = cursor.getFloat(cursor.getColumnIndexOrThrow(TrackColumns.DISTANCE));
+                    double distance = cursor.getDouble(cursor.getColumnIndexOrThrow(TrackColumns.DISTANCE));
                     // create a new track object
-                    return new Track(name, description, startTime, stopTime, locations);
+                    return new Track(name, description, startTime, stopTime, distance, locations);
                 }
                 return null;
             } catch (IllegalArgumentException exception) {
@@ -376,16 +397,6 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             }
         }
         return null;
-    }
-
-    private double calculateAvgForTrack(Track.Id trackId) {
-
-        return 0L;
-    }
-
-    private double calculateDistanceForTrack(Track.Id trackId) {
-
-        return 0L;
     }
 
 }

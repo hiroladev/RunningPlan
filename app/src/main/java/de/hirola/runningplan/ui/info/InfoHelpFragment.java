@@ -2,11 +2,11 @@ package de.hirola.runningplan.ui.info;
 
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.widget.TextView;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import androidx.fragment.app.Fragment;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.util.AppLogManager;
 import org.apache.commons.io.IOUtils;
@@ -23,9 +23,9 @@ import java.nio.charset.StandardCharsets;
  * @author Michael Schmidt (Hirola)
  * @since 1.1.1
  */
-public class AboutFragment extends Fragment {
+public class InfoHelpFragment extends Fragment {
 
-    private final static String TAG = AboutFragment.class.getSimpleName();
+    private final static String TAG = InfoHelpFragment.class.getSimpleName();
 
     private AppLogManager logManager; // app logger
 
@@ -40,21 +40,21 @@ public class AboutFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View aboutView = inflater.inflate(R.layout.fragment_info_about, container, false);
-        TextView aboutTextView = aboutView.findViewById(R.id.about_textView);
-        aboutTextView.setMovementMethod(new ScrollingMovementMethod());
+        View helpView = inflater.inflate(R.layout.fragment_info_help, container, false);
+        TextView licenseTextView = helpView.findViewById(R.id.licences_textView);
+        licenseTextView.setMovementMethod(new ScrollingMovementMethod());
         // load content from text file
-        // TODO: english about
-        String aboutString = "";
+        // TODO: english licenses
+        String helpString = "";
         try {
-            InputStream is = getResources().openRawResource(R.raw.about);
-            aboutString = IOUtils.toString(is, StandardCharsets.UTF_8);
+            InputStream is = getResources().openRawResource(R.raw.help);
+            helpString = IOUtils.toString(is, StandardCharsets.UTF_8);
         } catch (Exception exception) {
             if (logManager.isDebugMode()) {
                 logManager.log(TAG, null, exception);
             }
         }
-        aboutTextView.setText(aboutString);
-        return aboutView;
+        licenseTextView.setText(helpString);
+        return helpView;
     }
 }

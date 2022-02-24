@@ -1,58 +1,35 @@
-Was kann die App "Laufplan"?
+﻿Was kann die App "Laufplan"?
 
-Auf Grundlage der von Herrn Christian Zangl entwickelten Laufplänen 
-können Laufanfänger und Hobby-Läufer ihre Lauftrainings mit 
-Unterstützung eines Smartphones durchführen. 
-ie von Herrn Zangl angebotenen Laufpläne wurden von mir in 
-ein zur Nutzung in der App erforderliches Format gebracht und 
-können dort genutzt werden. Die Vorlagen können angepasst oder 
-eigene Pläne angelegt werden.
+Auf Grundlage der von Herrn Christian Zangl entwickelten Laufplänen können Lauf-Anfänger und Hobby-Läufer ihre Lauftrainings mit Unterstützung eines Smartphones durchführen. 
+Die von Herrn Zangl angebotenen Laufpläne wurden von mir in ein zur Nutzung in der App erforderliches Format gebracht und können dort genutzt werden. 
+Die Vorlagen können angepasst oder eigene Pläne angelegt werden.
 
 Was kann die App "Laufplan" nicht?
 
-Die App kann und soll nicht die Ansprüche von 
-professionellen Läufern erfüllen. 
-Es gibt keine Funktionen für „Social Media“, 
-wie z.B. das Teilen von Läufen. Dafür gibt es genug Apps. 
-Ich bin auch kein Laufprofi und die App bietet 
-dementsprechend auch keine professionelle Unterstützung 
-oder erhebt auch nicht den Anspruch „lauftechnisch“ korrekt zu sein.
-
+Die App kann und soll nicht die Ansprüche von professionellen Läufern erfüllen. 
+Es gibt keine Funktionen für „Social Media“, wie z.B. das Teilen von Läufen. Dafür gibt es genug Apps. 
+Ich bin auch kein Laufprofi und die App bietet dementsprechend auch keine professionelle Unterstützung erhebt auch nicht den Anspruch „lauftechnisch“ korrekt zu sein.
 
 Welche Berechtigungen benötigt die App?
 
 Für die Ermittlung der Laufzeit (Stopp-Uhr) ist ein Dienst zuständig. 
-Dieser läuft auch, wenn dei App nicht sichtbar ist. 
-Was ja während des Sports vorkommen soll. Hierfür benötigt die App, 
-das Recht im Hintergrund weiter die Zeit zu messen.
-Bei Abschluss eines Laufabschnittes oder eines Trainings können Sie 
-sich per Hinweisfenster und Vibration benachrichtig lassen. 
-Das ist sinnvoll, wenn Sie nicht die  ganze Zeit auf das eingeschaltete 
-Display  schauen möchten. Hierfür benötigt die App ebenso die entsprechenden 
-Berechtigungen. Möchten Sie die Lauftsrecke und damit z.B. die 
-aufgeschwindigkeit wissen, so benötigt die App die Berechtigung zum Nutzen 
-von GPS, auch im Hintergrund.
-
+Dieser läuft auch, wenn die App nicht sichtbar ist. Was ja während des Sports vorkommen soll. 
+Hierfür benötigt die App, das Recht im Hintergrund weiter die Zeit zu messen.
+Bei Abschluss eines Laufabschnittes oder eines Trainings können Sie sich per Hinweisfenster und Vibration benachrichtig lassen. 
+Das ist sinnvoll, wenn Sie nicht die  ganze Zeit auf das eingeschaltete Display schauen möchten. 
+Hierfür benötigt die App ebenso die entsprechenden Berechtigungen. Möchten Sie die Lauftsrecke und damit z.B. die Laufgeschwindigkeit wissen, so benötigt die App die Berechtigung zum Nutzen von GPS, auch im Hintergrund.
 
 Welche persönlichen Informationen werden erfasst und verarbeitet?
 
-In der App können persönliche Daten eingetragen werden. 
-Diese werden nur in der App genutzt und nicht übermittelt. 
-Alle Angaben sind freiwillig.
-Werden Standortdaten während des Trainings augezeichnet, so bleiben diese auf 
-ausschliesslich auf dem Gerät gespeichert und können jederzeit gelöscht werden.
-Die App verwendet keine Tracking- oder Telemtriefunktionen. Für genutzte
-Biblitheken Dritter kann keine Zusicherung übernommen werden.
-Bitte informiren Sie sich hier bei den zuständigen Entwicklern (siehe
-Lizenzen / Bibliotehken).
-
+In der App können persönliche Daten eingetragen werden. Diese werden nur in der App genutzt und nicht übermittelt. Alle Angaben sind freiwillig.
+Werden Standortdaten während des Trainings augezeichnet, so bleiben diese auf ausschliesslich auf dem Gerät gespeichert und können jederzeit gelöscht werden.
+Die App verwendet keine Tracking- oder Telemtriefunktionen. Für genutzte Biblitheken Dritter kann keine Zusicherung übernommen werden.
+Bitte informieren Sie sich hier bei den zuständigen Entwicklern (siehe Lizenzen / Bibliotehken).
 
 Ausschluß jeglicher Gewährleistung
 
-Es wird keine Gewährleistung für Schäden jeglicher Art
-übernommen, welche durch die Nutzung ensthen können.
-Besonders für evtl. gesundheitliche Schäden aufgrund der
-Nutzung bei sportlichen Aktivitäten.
+Es wird keine Gewährleistung für Schäden jeglicher Art übernommen, welche durch die Nutzung ensthen können.
+Besonders für evtl. gesundheitliche Schäden aufgrund der Nutzung bei sportlichen Aktivitäten.
 
 
 Wo finde ich weitere Informationen?

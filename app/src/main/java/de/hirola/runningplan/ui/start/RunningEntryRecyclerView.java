@@ -36,13 +36,11 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
     private final static String TAG = RunningEntryRecyclerView.class.getSimpleName();
 
     private final AppLogManager logManager;
-    private final Context context;
     private final RunningPlan runningPlan;
     private final List<RunningPlanEntry> runningPlanEntries;
     private final List<String> trainingDaysAsString;
 
     public RunningEntryRecyclerView(Context context, @NonNull RunningPlan runningPlan) {
-        this.context = context;
         this.runningPlan = runningPlan;
         this.runningPlanEntries = runningPlan.getEntries();
         trainingDaysAsString = getTrainingDaysAsStrings();

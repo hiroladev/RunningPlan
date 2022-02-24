@@ -7,6 +7,9 @@
     </string>
     <string name="preference_file" translatable="false">de.hirola.runningplan_preferences</string>
 
+
+    <string name="hello_blank_fragment">PLACEHOLDER</string>
+
     <!-- Titles -->
     <!-- Navigation -->
     <string name="title_dashboard">Dashboard</string>
@@ -31,7 +34,7 @@
     <!-- Menu -->
     <string name="menu_image_alt_text">Menu</string>
     <string name="menu_item_info">Info</string>
-    <string name="menu_item_license">Lizenzen</string>
+    <string name="menu_item_license">Lizenzen / Bibliotheken</string>
     <string name="menu_item_help">Hilfe</string>
 
     <!-- Alerts -->
@@ -112,6 +115,17 @@
 
     <!-- Movement Data -->
     <string name="movement_type_not_found">Unbekannt</string>
+    <string name="P">Pause</string>
+    <string name="LG">Langsames Gehen</string>
+    <string name="ZG">Zügiges Gehen</string>
+    <string name="LL">Langsames Laufen</string>
+    <string name="FL">Flottes Laufen</string>
+    <string name="SL">Schnelles Laufen</string>
+    <string name="SSL">Sehr schnelles Laufen</string>
+    <string name="L">Laufen</string>
+    <string name="R">Rennen</string>
+    <string name="movement_type_summary">Arten der Bewegung während des Lauftrainings</string>
+
 
     <!-- Location Data -->
     <string name="use_location_data">Standort-Daten nutzen</string>
@@ -141,5 +155,4 @@
     <string name="notifications">Benachrichtigungen</string>
     <string name="todo_data_summary_on" translatable="false">Summary when on</string>
     <string name="todo_data_summary_off" translatable="false">Summary when off</string>
-    <string name="hello_blank_fragment">PLACEHOLDER</string>
 </resources>

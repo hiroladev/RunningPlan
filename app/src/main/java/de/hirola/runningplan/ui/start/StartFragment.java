@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.model.RunningPlanViewModel;
-import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.model.User;
 
@@ -19,15 +18,12 @@ public class StartFragment extends Fragment {
 
     private final static String TAG = StartFragment.class.getSimpleName();
 
-    private AppLogManager logManager; // app logger
     // recycler view list adapter
     private RecyclerView recyclerView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View startView = inflater.inflate(R.layout.fragment_start, container, false);
-        // app logger
-        logManager = AppLogManager.getInstance(requireContext());
         // get the app user
         RunningPlanViewModel viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
         User appUser = viewModel.getAppUser();

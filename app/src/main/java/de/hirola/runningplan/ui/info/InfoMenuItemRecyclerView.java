@@ -25,12 +25,10 @@ public class InfoMenuItemRecyclerView extends RecyclerView.Adapter<RecyclerView.
     private final static String TAG = InfoMenuItemRecyclerView.class.getSimpleName();
 
     private final AppLogManager logManager;
-    private final Context context;
     private View.OnClickListener onClickListener;
     private final Map<Integer, MenuItem> menuItemMap;
 
     public InfoMenuItemRecyclerView(Context context, @NonNull Map<Integer, MenuItem> menuItemMap) {
-        this.context = context;
         this.menuItemMap = menuItemMap;
         logManager = AppLogManager.getInstance(context);
     }

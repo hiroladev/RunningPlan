@@ -41,6 +41,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     private AppLogManager logManager; // app logging
     private SharedPreferences sharedPreferences; // user and app preferences
+    private boolean useNotifications;
     private TrainingNotificationManager notificationManager; // sends notification to user
 
     // app data
@@ -117,6 +118,10 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // app preferences
         sharedPreferences = requireContext().getSharedPreferences(
                 getString(R.string.preference_file), Context.MODE_PRIVATE);
+        // set the flag - can we send notifications?
+        SharedPreferences sharedPreferences =
+                requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
+        useNotifications = sharedPreferences.getBoolean(Global.PreferencesKeys.useNotifications, true);
         // checking location permissions
         useLocationData = sharedPreferences.getBoolean(Global.PreferencesKeys.useLocationData, false);
         locationPermissionRequest =
@@ -259,7 +264,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 locationServicesAllowed = true;
             } else {
                 locationPermissionRequest.launch(new String[] {
-                        Manifest.permission.ACCESS_COARSE_LOCATION
+                        Manifest.permission.ACCESS_FINE_LOCATION
                 });
             }
         }
@@ -504,7 +509,6 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         if (isTrainingServiceConnected) {
             // show info
             trainingInfolabel.setText(R.string.training_is_running);
-            // TODO: Status-Bild trainingactive30x30
             if (timeToRun == 0) {
                 // paused the training, maybe there is another one unit
                 pauseTraining();
@@ -584,10 +588,8 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                         trainingTrackInfoString += " km, ";
                     }
                     trainingTrackInfoString += "\n";
-                    //  Geschwindigkeit in m/s
-                    double averageSpeed = recorderdTrack.getAverageSpeed();
                     //  Geschwindigkeit in km/h
-                    averageSpeed = averageSpeed * 3.6;
+                    double averageSpeed = recorderdTrack.getAverageSpeed();
                     trainingTrackInfoString += getString(R.string.speed);
                     trainingTrackInfoString += ": ";
                     // TODO: Formatierung Komma
@@ -661,7 +663,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                             trainingInfolabel.setTextColor(Color.BLACK);
                         }
                         //  zu "schnell"
-                        if (runningSpeed - Global.Defaults.movementTolerancee > referenceSpeed) {
+                        if (runningSpeed - Global.Defaults.movementTolerance > referenceSpeed) {
                             // TODO: Hinweis an Nutzer - Vibration / Ton?
                             // TODO: Farbe
                             trainingInfolabel.setBackgroundColor(Color.RED);
@@ -900,6 +902,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         return true;
     }
 
+    @NotNull
     private String buildStringForDuration(long duration) {
         // show the complete training time
         String durationString = getString(R.string.total_time)+ " ";
@@ -930,45 +933,47 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     // send notification for next unit
     private void showNotificationForNextUnit() {
-        // build the message
-        int resID = 0;
-        long duration = 0;
-        if (runningUnit != null) {
-            resID = getResources().getIdentifier(
-                    runningUnit.getMovementType().getStringForKey(),
-                    "string",
-                    requireActivity().getPackageName());
-            duration = runningUnit.getDuration();
+        if (useNotifications) {
+            // build the message
+            int resID = 0;
+            long duration = 0;
+            if (runningUnit != null) {
+                resID = getResources().getIdentifier(
+                        runningUnit.getMovementType().getStringForKey(),
+                        "string",
+                        requireActivity().getPackageName());
+                duration = runningUnit.getDuration();
+            }
+            if (resID == 0) {
+                // movement type not found
+                resID = R.string.movement_type_not_found;
+            }
+            String notificationMessage = getString(R.string.new_training_unit_starts)
+                    + ": "
+                    + getString(resID) + " (" + duration + " min)";
+            notificationManager.sendNotification(notificationMessage);
+            Vibrator vibrator;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+
+                VibratorManager vibratorManager =
+                        (VibratorManager) requireContext().getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+
+                vibrator = vibratorManager.getDefaultVibrator();
+
+            } else {
+                // backward compatibility for Android API < 31,
+                // VibratorManager was only added on API level 31 release.
+                // noinspection deprecation
+                vibrator = (Vibrator) requireContext().getSystemService(Context.VIBRATOR_SERVICE);
+
+            }
+
+            final int DELAY = 0, VIBRATE = 1000, SLEEP = 1000, START = 3;
+            long[] vibratePattern = {DELAY, VIBRATE, SLEEP};
+
+            vibrator.vibrate(VibrationEffect.createWaveform(vibratePattern, START));
+
         }
-        if (resID == 0) {
-            // movement type not found
-            resID = R.string.movement_type_not_found;
-        }
-        String notificationMessage = getString(R.string.new_training_unit_starts)
-                + ": "
-                + getString(resID) + " (" + duration + " min)";
-        notificationManager.sendNotification(notificationMessage);
-        Vibrator vibrator;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-
-            VibratorManager vibratorManager =
-                    (VibratorManager) requireContext().getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
-
-            vibrator = vibratorManager.getDefaultVibrator();
-
-        } else {
-            // backward compatibility for Android API < 31,
-            // VibratorManager was only added on API level 31 release.
-            // noinspection deprecation
-            vibrator = (Vibrator) requireContext().getSystemService(Context.VIBRATOR_SERVICE);
-
-        }
-
-        final int DELAY = 0, VIBRATE = 1000, SLEEP = 1000, START = 3;
-        long[] vibratePattern = {DELAY, VIBRATE, SLEEP};
-
-        vibrator.vibrate(VibrationEffect.createWaveform(vibratePattern, START));
-
     }
 
 }

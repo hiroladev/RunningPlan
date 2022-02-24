@@ -134,7 +134,6 @@ public class TrainingService extends Service implements LocationListener {
         // insert location to local tracking database
         // TODO: callback, if location not added
         if (!trackManager.insertLocationForTrack(trackId, location)) {
-            //Todo: Broadcast
             System.out.println("Location not added!");
         }
     }
@@ -210,9 +209,7 @@ public class TrainingService extends Service implements LocationListener {
         // in further versions we qualify the location updates
         if (!trackManager.completeTrack(trackId)) {
             if (logManager.isDebugMode()) {
-                if (withLocationTracking) {
-                    logManager.log(TAG, "The track with id " + trackId + " couldn't completed.", null);
-                }
+                logManager.log(TAG, "The track with id " + trackId + " couldn't completed.", null);
             }
         }
     }

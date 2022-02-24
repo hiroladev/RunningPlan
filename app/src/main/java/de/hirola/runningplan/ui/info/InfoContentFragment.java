@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.util.AppLogManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +19,6 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
 
     private final static String TAG = InfoContentFragment.class.getSimpleName();
 
-    private AppLogManager logManager; // app logger
     // recycler view list adapter
     private RecyclerView recyclerView;
     // menu items
@@ -32,8 +30,6 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // app logger
-        logManager = AppLogManager.getInstance(requireContext());
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -41,9 +37,9 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
         View infoView = inflater.inflate(R.layout.fragment_info_content, container, false);
         // build the menu item map
         menuItemMap = new HashMap<>(3);
-        menuItemMap.putIfAbsent(0, new MenuItem(R.drawable.baseline_info_black_36, R.string.menu_item_info, new AboutFragment()));
-        menuItemMap.putIfAbsent(1, new MenuItem(R.drawable.baseline_list_black_36, R.string.menu_item_license, new LicenseFragment()));
-        menuItemMap.putIfAbsent(2, new MenuItem(R.drawable.baseline_help_black_36, R.string.menu_item_help, new Fragment()));
+        menuItemMap.putIfAbsent(0, new MenuItem(R.drawable.baseline_info_black_36, R.string.menu_item_info, new InfoAboutFragment()));
+        menuItemMap.putIfAbsent(1, new MenuItem(R.drawable.baseline_list_black_36, R.string.menu_item_license, new InfoLicenseFragment()));
+        menuItemMap.putIfAbsent(2, new MenuItem(R.drawable.baseline_help_black_36, R.string.menu_item_help, new InfoHelpFragment()));
         InfoMenuItemRecyclerView listAdapter = new InfoMenuItemRecyclerView(requireContext(), menuItemMap);
         // menu fragments on click
         listAdapter.setOnClickListener(this);

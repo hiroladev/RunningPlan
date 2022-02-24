@@ -46,6 +46,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
         // load the preferences
         sharedPreferences = requireContext()
                 .getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE);
+        // set default app values if not set
+        setAppDefaults();
         // get all preferences from screen
         ArrayList<Preference> preferenceList = getPreferenceList(getPreferenceScreen(), new ArrayList<>());
         // set saved values in ui
@@ -78,7 +80,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
             }
             // use notifications
             if (key.equalsIgnoreCase(Global.PreferencesKeys.useNotifications)) {
-                // TODO: request for..
                 editor.putBoolean(key, (Boolean) newValue);
             }
             // use sync
@@ -227,6 +228,16 @@ public class SettingsFragment extends PreferenceFragmentCompat
     public void onBindEditText(@NotNull EditText editText) {
         // only numbers in some preferences
         editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+    }
+
+    private void setAppDefaults() {
+        // use notification by default
+        // do not look at your phone all the time while running
+        boolean useNotifications =
+                sharedPreferences.getBoolean(Global.PreferencesKeys.useNotifications, true);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Global.PreferencesKeys.useNotifications, useNotifications);
+        editor.apply();
     }
 
     private void setPreferenceValues(@NotNull ArrayList<Preference> preferenceList) {

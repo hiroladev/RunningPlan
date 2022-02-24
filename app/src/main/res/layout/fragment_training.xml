@@ -136,7 +136,7 @@
 
     <ImageButton
             android:id="@+id/imageButtonPause"
-            android:src="@drawable/pausebutton_gray"
+            android:src="@drawable/pause_button_gray"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="fitCenter"
@@ -145,7 +145,7 @@
             app:layout_constraintStart_toEndOf="@+id/imageButtonStart" android:layout_marginStart="60dp"/>
     <ImageButton
             android:id="@+id/imageButtonStart"
-            android:src="@drawable/playbutton_gray"
+            android:src="@drawable/play_button_gray"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:scaleType="fitCenter"
@@ -155,7 +155,7 @@
             app:layout_constraintTop_toBottomOf="@+id/timer"/>
     <ImageButton
             android:id="@+id/imageButtonStop"
-            android:src="@drawable/stopbutton_gray"
+            android:src="@drawable/stop_button_gray"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="fitCenter"

@@ -28,6 +28,7 @@ public class TrackManager {
     private List<Track.Id> tracks; // query the list to avoid get from sqlite
     private final Context context;
     private final TrackingDatabaseHelper databaseHelper;
+    private TrackPoint trackPoint;
 
     public TrackManager(@NonNull Context context) {
         this.context = context;
@@ -61,14 +62,22 @@ public class TrackManager {
 
     public boolean insertLocationForTrack(@NonNull Track.Id trackId, @NonNull Location location) {
         if (tracks.contains(trackId)) {
-            return databaseHelper.insertLocationForTrack(trackId, location);
+            // create the first point of the track with the start time of track
+            if (trackPoint == null) {
+                trackPoint = new TrackPoint(location);
+            } else {
+                // update the point of the track with the start time of track
+                trackPoint.setActualLocation(location);
+                databaseHelper.updateTrack(trackId, trackPoint);
+            }
+            return databaseHelper.insertLocationForTrack(trackId, trackPoint);
         }
         return false;
     }
 
     public boolean completeTrack(Track.Id trackId) {
         if (tracks.contains(trackId)) {
-            return databaseHelper.completeTrack(trackId);
+            return databaseHelper.completeTrack(trackId, trackPoint);
         }
         return false;
     }

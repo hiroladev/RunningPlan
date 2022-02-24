@@ -93,8 +93,18 @@
     <string name="title_actual_running_units">Running units</string>
     <string name="menu_image_alt_text">Menu</string>
     <string name="menu_item_info">Info</string>
-    <string name="menu_item_license">Licenses</string>
+    <string name="menu_item_license">Licenses / Libraries</string>
     <string name="menu_item_help">Help</string>
     <string name="no_content">The content could not be loaded.</string>
+    <string name="P">Pause</string>
+    <string name="LG">Slow Going</string>
+    <string name="ZG">Speedy Going</string>
+    <string name="L">Running</string>
+    <string name="LL">Slow Running</string>
+    <string name="FL">Fast Running</string>
+    <string name="SL">Speedy Running</string>
+    <string name="SSL">More speedy Running</string>
     <string name="hello_blank_fragment">PLACEHOLDER</string>
+    <string name="movement_type_summary">Types of movement during running training</string>
+    <string name="R">Race</string>
 </resources>

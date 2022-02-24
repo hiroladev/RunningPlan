@@ -65,7 +65,7 @@ A row view to show running plan details in list.
                 android:layout_height="24dp"
                 android:layout_weight="1"/>
         <TextView
-                android:id="@+id/runningplan_row_startdate_textview"
+                android:id="@+id/running_plan_row_startdate_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
@@ -78,7 +78,7 @@ A row view to show running plan details in list.
                 android:layout_height="24dp"
                 android:layout_weight="1"/>
         <TextView
-                android:id="@+id/runningplan_row_duration_textView"
+                android:id="@+id/running_plan_row_duration_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
@@ -91,7 +91,7 @@ A row view to show running plan details in list.
                 android:layout_height="24dp"
                 android:layout_weight="1"/>
         <TextView
-                android:id="@+id/runningplan_row_percentcompleted_textview"
+                android:id="@+id/running_plan_row_percent_completed_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
