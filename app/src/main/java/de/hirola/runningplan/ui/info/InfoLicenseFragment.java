@@ -41,7 +41,7 @@ public class InfoLicenseFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View aboutView = inflater.inflate(R.layout.fragment_info_licenses, container, false);
-        TextView licenseTextView = aboutView.findViewById(R.id.fgmt_info_licenses_text_view);
+        TextView licenseTextView = aboutView.findViewById(R.id.fgmt_info_licenses_textview);
         licenseTextView.setMovementMethod(new ScrollingMovementMethod());
         // load content from text file
         // TODO: english licenses

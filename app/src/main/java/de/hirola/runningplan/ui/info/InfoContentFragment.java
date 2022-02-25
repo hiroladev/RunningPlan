@@ -45,7 +45,7 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
         InfoMenuItemRecyclerView listAdapter = new InfoMenuItemRecyclerView(requireContext(), menuItemMap);
         // menu fragments on click
         listAdapter.setOnClickListener(this);
-        recyclerView = infoView.findViewById(R.id.recyclerView_info_menu_items);
+        recyclerView = infoView.findViewById(R.id.fgmt_info_content_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(listAdapter);
         return infoView;

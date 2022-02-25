@@ -17,7 +17,7 @@ The running plan view, contains different fragments.
         tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/fgmt_running_plans_recycler_view"
+            android:id="@+id/fgmt_running_plans_recyclerview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="5dp"

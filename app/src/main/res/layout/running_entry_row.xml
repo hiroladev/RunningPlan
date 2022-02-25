@@ -15,16 +15,19 @@ A row view to show running plan details in list.
         android:layout_height="wrap_content">
 
     <ImageView
-            android:id="@+id/menu_item_imageview"
+            android:id="@+id/running_plan_row_menu_item_imageview"
             app:srcCompat="@drawable/unused20x20"
             android:contentDescription="@string/state"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_weight="1" app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="15dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_weight="1"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="15dp"
+            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="10dp"/>
+
     <TextView
-            android:id="@+id/menu_item_textview"
+            android:id="@+id/running_plan_row_menu_item_textview"
             android:layout_width="0dp"
             android:layout_height="24dp"
             android:ems="10"
@@ -34,17 +37,20 @@ A row view to show running plan details in list.
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="10dp"
-            app:layout_constraintStart_toEndOf="@+id/menu_item_imageview" android:layout_marginStart="5dp"
-            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="15dp"
+            app:layout_constraintStart_toEndOf="@+id/running_plan_row_menu_item_imageview"
+            android:layout_marginStart="5dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="15dp"
             app:layout_constraintHorizontal_bias="1.0"/>
+
     <TextView
-            android:id="@+id/running_entry_units_textview"
+            android:id="@+id/running_plan_row_running_entry_units_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintEnd_toEndOf="@+id/menu_item_textview"
-            app:layout_constraintStart_toStartOf="@+id/menu_item_imageview"
-            app:layout_constraintTop_toBottomOf="@+id/menu_item_textview"
+            app:layout_constraintEnd_toEndOf="@+id/running_plan_row_menu_item_textview"
+            app:layout_constraintStart_toStartOf="@+id/running_plan_row_menu_item_imageview"
+            app:layout_constraintTop_toBottomOf="@+id/running_plan_row_menu_item_textview"
             android:layout_marginTop="5dp"
             app:layout_constraintHorizontal_bias="0.0"/>
 

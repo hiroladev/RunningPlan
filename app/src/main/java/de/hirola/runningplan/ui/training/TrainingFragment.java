@@ -366,7 +366,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // attaching data adapter to spinner with empty list
         trainingUnitsSpinner.setAdapter(trainingUnitsSpinnerArrayAdapter);
         // Label für den Zugriff initialisieren
-        runningPlanNameLabel = trainingView.findViewById(R.id.fgmt_training_name_edit_text);
+        runningPlanNameLabel = trainingView.findViewById(R.id.fgmt_training_name_edittext);
         trainingInfolabel = trainingView.findViewById(R.id.fgmt_training_infos_edit_text);
         // Button listener
         startButton = trainingView.findViewById(R.id.fgmt_training_start_button);

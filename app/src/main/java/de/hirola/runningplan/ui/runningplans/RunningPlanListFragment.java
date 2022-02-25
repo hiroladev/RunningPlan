@@ -89,7 +89,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
         }
         // details on click
         listAdapter.setOnClickListener(this);
-        recyclerView = view.findViewById(R.id.fgmt_running_plans_recycler_view);
+        recyclerView = view.findViewById(R.id.fgmt_running_plans_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         // remove running plan on swipe to left
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(

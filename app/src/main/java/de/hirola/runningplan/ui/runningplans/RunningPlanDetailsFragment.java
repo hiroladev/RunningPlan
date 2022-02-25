@@ -178,8 +178,8 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
 
     private void setViewElements(View view) {
         // initialize the text views
-        runningPlanNameTextView = view.findViewById(R.id.fgmt_add_running_plan_name_edit_text);
-        runningPlanRemarksTextView = view.findViewById(R.id.fgmt_running_plan_details_remarks_edit_text);
+        runningPlanNameTextView = view.findViewById(R.id.fgmt_add_running_plan_name_edittext);
+        runningPlanRemarksTextView = view.findViewById(R.id.fgmt_running_plan_details_remarks_edittext);
         // initialize the button
         showTrainingDetailsButton = view.findViewById(R.id.fgmt_running_plan_details_show_details_button);
         showTrainingDetailsButton.setOnClickListener(this);

@@ -24,7 +24,7 @@ public class InfoMenuItemRecyclerViewHolder extends RecyclerView.ViewHolder {
 
     public InfoMenuItemRecyclerViewHolder(@NonNull @NotNull View itemView) {
         super(itemView);
-        menuItemImageView = itemView.findViewById(R.id.menu_item_imageview);
-        menuItemTextView = itemView.findViewById(R.id.menu_item_textview);
+        menuItemImageView = itemView.findViewById(R.id.running_plan_row_menu_item_imageview);
+        menuItemTextView = itemView.findViewById(R.id.running_plan_row_menu_item_textview);
     }
 }

@@ -41,7 +41,7 @@ public class InfoAboutFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View aboutView = inflater.inflate(R.layout.fragment_info_about, container, false);
-        TextView aboutTextView = aboutView.findViewById(R.id.fgmt_info_about_text_view);
+        TextView aboutTextView = aboutView.findViewById(R.id.fgmt_info_about_textview);
         aboutTextView.setMovementMethod(new ScrollingMovementMethod());
         // load content from text file
         // TODO: english about

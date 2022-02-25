@@ -8,7 +8,7 @@
         tools:context=".MainActivity">
 
     <TextView
-            android:id="@+id/fgmt_info_about_text_view"
+            android:id="@+id/fgmt_info_about_textview"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:importantForAutofill="no"

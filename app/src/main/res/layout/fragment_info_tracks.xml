@@ -8,7 +8,7 @@
         tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/fgmt_info_tracks_recyclerView"
+            android:id="@+id/fgmt_info_tracks_recyclerview"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:padding="5dp"
