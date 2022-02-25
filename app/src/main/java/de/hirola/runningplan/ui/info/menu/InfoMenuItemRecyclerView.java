@@ -1,4 +1,4 @@
-package de.hirola.runningplan.ui.info;
+package de.hirola.runningplan.ui.info.menu;
 
 import android.content.Context;
 import android.view.LayoutInflater;

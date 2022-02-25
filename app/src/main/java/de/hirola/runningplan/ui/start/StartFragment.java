@@ -30,7 +30,7 @@ public class StartFragment extends Fragment {
         RunningPlan runningPlan = appUser.getActiveRunningPlan();
         if (runningPlan != null) {
             RunningEntryRecyclerView listAdapter = new RunningEntryRecyclerView(requireContext(), runningPlan);
-            recyclerView = startView.findViewById(R.id.recyclerView_trainings);
+            recyclerView = startView.findViewById(R.id.fgmt_start_trainings_recycler_view);
             recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
             recyclerView.setAdapter(listAdapter);
         }

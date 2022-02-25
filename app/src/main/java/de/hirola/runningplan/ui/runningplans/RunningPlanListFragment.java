@@ -72,7 +72,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_running_plan_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_running_plans, container, false);
         // app logger
         logManager = AppLogManager.getInstance(requireContext());
         // should I hide templates?
@@ -89,7 +89,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
         }
         // details on click
         listAdapter.setOnClickListener(this);
-        recyclerView = view.findViewById(R.id.recyclerView_running_plans);
+        recyclerView = view.findViewById(R.id.fgmt_running_plans_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         // remove running plan on swipe to left
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
@@ -149,7 +149,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
         itemTouchHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(listAdapter);
         // button to add (import) new templates
-        FloatingActionButton addRunningPlanButton = view.findViewById(R.id.button_add_running_plan);
+        FloatingActionButton addRunningPlanButton = view.findViewById(R.id.fgmt_running_plans_add_running_plan_button);
         addRunningPlanButton.setOnClickListener(v -> {
             AddRunningPlanFragment addRunningPlanFragment = null;
             List<Fragment> fragments = getParentFragmentManager().getFragments();

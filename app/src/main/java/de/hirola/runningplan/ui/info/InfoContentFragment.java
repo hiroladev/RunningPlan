@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
+import de.hirola.runningplan.ui.info.menu.InfoMenuItemRecyclerView;
+import de.hirola.runningplan.ui.info.menu.MenuItem;
 
 import java.util.HashMap;
 import java.util.List;

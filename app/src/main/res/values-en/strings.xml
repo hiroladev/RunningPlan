@@ -107,4 +107,5 @@
     <string name="hello_blank_fragment">PLACEHOLDER</string>
     <string name="movement_type_summary">Types of movement during running training</string>
     <string name="R">Race</string>
+    <string name="clear_all_tracks">Clear all tracks</string>
 </resources>

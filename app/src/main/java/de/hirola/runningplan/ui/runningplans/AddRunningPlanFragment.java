@@ -98,16 +98,16 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
 
     private void setViewElements(View view) {
         // initialize the text views
-        runningPlanNameTextView = view.findViewById(R.id.edittext_running_plan_name_fragment_add_running_plan);
-        runningPlanRemarksTextView = view.findViewById(R.id.edittext_running_plan_remarks_fragment_add_running_plan);
-        importFileNameLabel = view.findViewById(R.id.label_file_name_fragment_add_running_plan);
+        runningPlanNameTextView = view.findViewById(R.id.fgmt_add_running_plan_name_edit_text);
+        runningPlanRemarksTextView = view.findViewById(R.id.fgmt_add_running_plan_remarks_edit_text);
+        importFileNameLabel = view.findViewById(R.id.fgmt_add_running_plan_file_name_label);
         // initialize the button
-        selectImportFileButton = view.findViewById(R.id.button_select_import_fragment_add_running_plan);
+        selectImportFileButton = view.findViewById(R.id.fgmt_add_running_plan_select_import_button);
         selectImportFileButton.setOnClickListener(this);
-        importRunningPlanButton = view.findViewById(R.id.button_import_fragment_add_running_plan);
+        importRunningPlanButton = view.findViewById(R.id.fgmt_add_running_plan_import_button);
         importRunningPlanButton.setOnClickListener(this);
         // initialize the switch
-        importAsTemplateSwitch = view.findViewById(R.id.switch_compat_fragment_add_running_plan);
+        importAsTemplateSwitch = view.findViewById(R.id.fgmt_add_running_plan_template_switch);
     }
 
     private void selectTemplateFile() {

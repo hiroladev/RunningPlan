@@ -17,7 +17,7 @@ The running plan view, contains different fragments.
         tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_running_plans"
+            android:id="@+id/fgmt_running_plans_recycler_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="5dp"
@@ -27,7 +27,7 @@ The running plan view, contains different fragments.
             app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/button_add_running_plan"
+            android:id="@+id/fgmt_running_plans_add_running_plan_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="wrap_content"

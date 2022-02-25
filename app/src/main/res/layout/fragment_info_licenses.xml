@@ -8,7 +8,7 @@
         tools:context=".MainActivity">
 
     <TextView
-            android:id="@+id/licences_textView"
+            android:id="@+id/fgmt_info_licenses_text_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:importantForAutofill="no"

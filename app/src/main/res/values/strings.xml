@@ -80,6 +80,7 @@
     <string name="mark_as_template">als Vorlage markieren</string>
     <string name="import_failed">Der Import ist fehlgeschlagen.</string>
     <string name="import_succeed">Import erfolgreich</string>
+    <string name="clear_all_tracks">Alle Tracks löschen</string>
 
     <!-- Infos -->
     <string name="unit_state_image_content_description">Status des Laufabschnittes</string>

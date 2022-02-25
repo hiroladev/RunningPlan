@@ -206,7 +206,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (parent.getId() == R.id.spinnerTrainingDay) {
+        if (parent.getId() == R.id.fgmt_training_day_spinner) {
             // user select another training day (running plan entry)
             // change the selected item in training unit spinner
             if (runningPlan != null) {
@@ -334,19 +334,19 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     private void setViewElements(@NotNull View trainingView) {
         // timer label starts with 00:00:00
-        timerLabel = trainingView.findViewById(R.id.timer);
+        timerLabel = trainingView.findViewById(R.id.fgmt_training_timer_label);
         updateTimerLabel();
         // training state image view
         // first state info ist paused
-        runningPlanStateImageView = trainingView.findViewById(R.id.imageViewRunningPlanState);
+        runningPlanStateImageView = trainingView.findViewById(R.id.fgmt_training_plan_state_image_view);
         runningPlanStateImageView.setImageResource(R.drawable.active20x20);
         // training state image view
         // first state info ist paused
-        trainingInfoImageView = trainingView.findViewById(R.id.imageViewTrainingInfo);
+        trainingInfoImageView = trainingView.findViewById(R.id.fgmt_training_info_image_view);
         trainingInfoImageView.setImageResource(R.drawable.baseline_self_improvement_black_24);
         // initialize the training days spinner
         // if user select another day, the spinner for unit changed too
-        trainingDaysSpinner = trainingView.findViewById(R.id.spinnerTrainingDay);
+        trainingDaysSpinner = trainingView.findViewById(R.id.fgmt_training_day_spinner);
         trainingDaysSpinner.setOnItemSelectedListener(this);
         // creating adapter for spinner with empty list
         trainingDaysSpinnerArrayAdapter = new ArrayAdapter<>(
@@ -356,7 +356,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // attaching data adapter to spinner with empty list
         trainingDaysSpinner.setAdapter(trainingDaysSpinnerArrayAdapter);
         // initialize the training units spinner
-        trainingUnitsSpinner = trainingView.findViewById(R.id.spinnerTrainingUnit);
+        trainingUnitsSpinner = trainingView.findViewById(R.id.fgmt_training_running_unit_spinner);
         trainingUnitsSpinner.setOnItemSelectedListener(this);
         // creating adapter for spinner with empty list
         trainingUnitsSpinnerArrayAdapter = new ArrayAdapter<>(
@@ -366,14 +366,14 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         // attaching data adapter to spinner with empty list
         trainingUnitsSpinner.setAdapter(trainingUnitsSpinnerArrayAdapter);
         // Label für den Zugriff initialisieren
-        runningPlanNameLabel = trainingView.findViewById(R.id.editTextRunningPlanName);
-        trainingInfolabel = trainingView.findViewById(R.id.editTextTrainingInfos);
+        runningPlanNameLabel = trainingView.findViewById(R.id.fgmt_training_name_edit_text);
+        trainingInfolabel = trainingView.findViewById(R.id.fgmt_training_infos_edit_text);
         // Button listener
-        startButton = trainingView.findViewById(R.id.imageButtonStart);
+        startButton = trainingView.findViewById(R.id.fgmt_training_start_button);
         startButton.setOnClickListener(this::startButtonClicked);
-        stopButton = trainingView.findViewById(R.id.imageButtonStop);
+        stopButton = trainingView.findViewById(R.id.fgmt_training_stop_button);
         stopButton.setOnClickListener(this::stopButtonClicked);
-        pauseButton = trainingView.findViewById(R.id.imageButtonPause);
+        pauseButton = trainingView.findViewById(R.id.fgmt_training_pause_button);
         pauseButton.setOnClickListener(this::pauseButtonClicked);
         showRunningPlanInView();
         showRunningPlanEntryInView();

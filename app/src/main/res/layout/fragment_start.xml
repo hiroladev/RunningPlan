@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         tools:context=".ui.start.StartFragment">
     <EditText
-            android:id="@+id/label_dashboard_fragment_start"
+            android:id="@+id/fgmt_start_dashboard_label"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:inputType="none"
@@ -24,7 +24,7 @@
             android:layout_marginTop="15dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp" android:textAlignment="center" tools:ignore="LabelFor"/>
     <EditText
-            android:id="@+id/label_running_units_fragment_start"
+            android:id="@+id/fgmt_start_running_units_label"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:inputType="none"
@@ -37,11 +37,15 @@
             android:textStyle="bold"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp" android:textAlignment="center" tools:ignore="LabelFor"
-            app:layout_constraintTop_toBottomOf="@+id/label_dashboard_fragment_start" android:layout_marginTop="5dp"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:textAlignment="center" tools:ignore="LabelFor"
+            app:layout_constraintTop_toBottomOf="@+id/fgmt_start_dashboard_label"
+            android:layout_marginTop="5dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_trainings"
+            android:id="@+id/fgmt_start_trainings_recycler_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:padding="5dp"
@@ -49,14 +53,14 @@
             android:layout_marginStart="5dp" android:layout_marginEnd="5dp"
             app:layout_constraintBottom_toTopOf="@+id/banner_fragment_start"
             android:layout_marginBottom="5dp"
-            app:layout_constraintTop_toBottomOf="@+id/label_running_units_fragment_start"
+            app:layout_constraintTop_toBottomOf="@+id/fgmt_start_running_units_label"
             android:layout_marginTop="5dp"/>
     <ImageView
-            android:src="@drawable/banner"
+            android:src="@drawable/fgmt_start_banner_image_view"
             android:layout_width="wrap_content"
             android:layout_height="300dp" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" android:id="@+id/banner_fragment_start"
             android:scaleType="center" app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="5dp" android:layout_marginStart="5dp" android:layout_marginEnd="5dp"
-            android:layout_marginTop="5dp" app:layout_constraintTop_toBottomOf="@+id/recyclerView_trainings"/>
+            android:layout_marginTop="5dp" app:layout_constraintTop_toBottomOf="@+id/fgmt_start_trainings_recycler_view"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
