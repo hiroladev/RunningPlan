@@ -56,14 +56,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     @Override
     public boolean onPreferenceChange(@NotNull Preference preference, Object newValue) {
-        // save values to local datastore
+        // add values to local datastore
         String key = preference.getKey();
-        // save shared preferences
+        // add shared preferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
         // boolean preferences
         if (preference instanceof SwitchPreferenceCompat) {
             boolean value = ((SwitchPreferenceCompat) preference).isChecked();
-            // save trainings
+            // add trainings
             if (key.equalsIgnoreCase(Global.PreferencesKeys.saveTrainings)) {
                 editor.putBoolean(key, (Boolean) newValue);
             }
@@ -205,7 +205,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         }
         try {
             // save the data
-            viewModel.save(appUser);
+            viewModel.update(appUser);
         } catch (SportsLibraryException exception) {
             // data could not saved
             // alert dialog to user
@@ -219,7 +219,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
             }
             return false;
         }
-        // save the shared preferences
+        // add the shared preferences
         editor.apply();
         return true;
     }
@@ -418,7 +418,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         try {
             // save the data
             appUser.setMaxPulse(maxPulse);
-            viewModel.save(appUser);
+            viewModel.update(appUser);
         } catch (SportsLibraryException exception) {
             // data could not saved
             // alert dialog to user
@@ -432,7 +432,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
             }
             return;
         }
-        // save to preferences
+        // add to preferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Global.PreferencesKeys.userMaxPulse, String.valueOf(maxPulse));
         editor.apply();

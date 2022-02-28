@@ -108,4 +108,6 @@
     <string name="movement_type_summary">Types of movement during running training</string>
     <string name="R">Race</string>
     <string name="clear_all_tracks">Clear all tracks</string>
+    <string name="menu_item_track">Tracks</string>
+    <string name="ask_before_clear_all_tracks">Do you want to delete all tracks?</string>
 </resources>

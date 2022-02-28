@@ -66,8 +66,12 @@ public class RunningPlanRepository {
         return runningPlans;
     }
 
-    public void save(PersistentObject persistentObject) throws SportsLibraryException {
-        dataRepository.save(persistentObject);
+    public void add(PersistentObject persistentObject) throws SportsLibraryException {
+        dataRepository.add(persistentObject);
+    }
+
+    public void update(PersistentObject persistentObject) throws SportsLibraryException {
+        dataRepository.update(persistentObject);
     }
 
     public void delete(PersistentObject persistentObject) throws SportsLibraryException {

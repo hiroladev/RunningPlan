@@ -15,8 +15,6 @@ import de.hirola.sportslibrary.model.Track;
 import de.hirola.sportslibrary.tables.TrackColumns;
 import de.hirola.sportslibrary.tables.TrackLocationColumns;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,10 +35,10 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Tracks.sqlite";
 
-    private static final String SQL_DELETE_LOCATION_DATA =
+    private static final String SQL_DROP_LOCATION_DATA_TABLE =
             "DROP TABLE IF EXISTS " + TrackLocationColumns.TABLE_NAME;
 
-    private static final String SQL_DELETE_TRACKS =
+    private static final String SQL_DROP_TRACK_TABLE =
             "DROP TABLE IF EXISTS " + TrackLocationColumns.TABLE_NAME;
 
     private final AppLogManager logManager; // app logging
@@ -67,8 +65,8 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         // actual there are no upgrades possible
-        sqLiteDatabase.execSQL(SQL_DELETE_LOCATION_DATA);
-        sqLiteDatabase.execSQL(SQL_DELETE_TRACKS);
+        sqLiteDatabase.execSQL(SQL_DROP_LOCATION_DATA_TABLE);
+        sqLiteDatabase.execSQL(SQL_DROP_TRACK_TABLE);
         onCreate(sqLiteDatabase);
     }
 
@@ -265,7 +263,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
      * @return a list of id's of recorded tracks or null if there are no tracks
      */
     @Nullable
-    public List<Track.Id> getRecordedTracks() {
+    public List<Track.Id> getTrackIds() {
         // get all locations for the track
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         // get the data
@@ -301,17 +299,35 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Remove all entries from datastore.
+     * Returns the id's for all recorded (and saved) tracks.
+     *
+     * @return a list of id's of recorded tracks or null if there are no tracks
      */
-    public void clearAll() {
-        try (SQLiteDatabase sqLiteDatabase = getWritableDatabase()) {
-            sqLiteDatabase.execSQL(SQL_DELETE_LOCATION_DATA);
-            sqLiteDatabase.execSQL(SQL_DELETE_TRACKS);
-        } catch (SQLException exception) {
-            if (logManager.isDebugMode()) {
-                logManager.log(TAG, null, exception);
-            }
+    @Nullable
+    public List<Track> getRecordedTracks(@NonNull List<Track.Id> trackIds) {
+        List<Track> tracks = new ArrayList<>();
+        for (Track.Id trackId: trackIds) {
+            tracks.add(getTrack(trackId));
         }
+        return tracks;
+    }
+
+    /**
+     * Remove all entries from datastore.
+     *
+     * @return The number of deleted tracks.
+     */
+    public int clearAll() {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        int deletedLocations = sqLiteDatabase.delete(TrackLocationColumns.TABLE_NAME,"1", null);
+        int deletedTracks = sqLiteDatabase.delete(TrackColumns.TABLE_NAME,"1", null);
+        sqLiteDatabase.close();
+        if (logManager.isDebugMode()) {
+            String message = String.format("%s locations and %s tracks deleted.",
+                    deletedLocations, deletedTracks);
+            logManager.log(TAG, message, null);
+        }
+        return deletedTracks;
     }
 
     // private helper method to determine if a track exists

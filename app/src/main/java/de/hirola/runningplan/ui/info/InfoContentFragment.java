@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.ui.info.menu.InfoMenuItemRecyclerView;
 import de.hirola.runningplan.ui.info.menu.MenuItem;
+import de.hirola.runningplan.ui.info.tracks.InfoTracksFragment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +22,8 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
 
     private final static String TAG = InfoContentFragment.class.getSimpleName();
 
-    // recycler view list adapter
-    private RecyclerView recyclerView;
-    // menu items
-    private Map<Integer, MenuItem> menuItemMap;
+    private RecyclerView recyclerView; // recycler view list adapter
+    private Map<Integer, MenuItem> menuItemMap; // menu items
 
     // Required empty public constructor
     public InfoContentFragment() {}
@@ -38,10 +37,11 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
                              ViewGroup container, Bundle savedInstanceState) {
         View infoView = inflater.inflate(R.layout.fragment_info_content, container, false);
         // build the menu item map
-        menuItemMap = new HashMap<>(3);
+        menuItemMap = new HashMap<>(4);
         menuItemMap.putIfAbsent(0, new MenuItem(R.drawable.baseline_info_black_36, R.string.menu_item_info, new InfoAboutFragment()));
         menuItemMap.putIfAbsent(1, new MenuItem(R.drawable.baseline_list_black_36, R.string.menu_item_license, new InfoLicenseFragment()));
         menuItemMap.putIfAbsent(2, new MenuItem(R.drawable.baseline_help_black_36, R.string.menu_item_help, new InfoHelpFragment()));
+        menuItemMap.putIfAbsent(3, new MenuItem(R.drawable.baseline_route_black_24, R.string.menu_item_track, new InfoTracksFragment()));
         InfoMenuItemRecyclerView listAdapter = new InfoMenuItemRecyclerView(requireContext(), menuItemMap);
         // menu fragments on click
         listAdapter.setOnClickListener(this);

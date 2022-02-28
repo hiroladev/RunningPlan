@@ -172,7 +172,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
                             runningPlanTemplate.getTrainingUnits());
                     RunningPlan runningPlan = templateLoader.importRunningPlanFromTemplate(runningPlanTemplateToImport);
                     if (runningPlan != null) {
-                        viewModel.save(runningPlan);
+                        viewModel.add(runningPlan);
                         // info to user
                         ModalOptionDialog.showMessageDialog(
                                 ModalOptionDialog.DialogStyle.INFORMATION,

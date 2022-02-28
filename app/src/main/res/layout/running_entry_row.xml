@@ -27,7 +27,7 @@ A row view to show running plan details in list.
             android:layout_marginStart="10dp"/>
 
     <TextView
-            android:id="@+id/running_plan_row_menu_item_textview"
+            android:id="@+id/track_row_name_label"
             android:layout_width="0dp"
             android:layout_height="24dp"
             android:ems="10"
@@ -48,9 +48,9 @@ A row view to show running plan details in list.
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintEnd_toEndOf="@+id/running_plan_row_menu_item_textview"
+            app:layout_constraintEnd_toEndOf="@+id/track_row_name_label"
             app:layout_constraintStart_toStartOf="@+id/running_plan_row_menu_item_imageview"
-            app:layout_constraintTop_toBottomOf="@+id/running_plan_row_menu_item_textview"
+            app:layout_constraintTop_toBottomOf="@+id/track_row_name_label"
             android:layout_marginTop="5dp"
             app:layout_constraintHorizontal_bias="0.0"/>
 

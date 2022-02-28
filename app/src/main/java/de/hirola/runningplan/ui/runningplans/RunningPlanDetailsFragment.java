@@ -29,6 +29,15 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Copyright 2021 by Michael Schmidt, Hirola Consulting
+ * This software us licensed under the AGPL-3.0 or later.
+ *
+ * A fragment to edit running plan details.
+ *
+ * @author Michael Schmidt (Hirola)
+ * @since 1.1.1
+ */
 public class RunningPlanDetailsFragment extends Fragment implements View.OnClickListener {
 
     private final static String TAG = RunningPlanDetailsFragment.class.getSimpleName();
@@ -111,7 +120,7 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
     @Override
     public void onClick(View v) {
         if (v == saveRunningPlanButton) {
-            // save running plan and go back
+            // add running plan and go back
             if (runningPlan != null) {
                 // text
                 if (!runningPlan.isTemplate()) {
@@ -151,10 +160,10 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                 } else {
                     appUser.setActiveRunningPlan(runningPlan);
                 }
-                // save the user and the running plan
+                // update the user and the running plan
                 try {
-                    viewModel.save(appUser);
-                    viewModel.save(runningPlan);
+                    viewModel.update(appUser);
+                    viewModel.update(runningPlan);
                 } catch (SportsLibraryException exception) {
                     ModalOptionDialog.showMessageDialog(
                             ModalOptionDialog.DialogStyle.CRITICAL,

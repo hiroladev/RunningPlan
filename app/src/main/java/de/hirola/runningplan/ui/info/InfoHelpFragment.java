@@ -41,8 +41,8 @@ public class InfoHelpFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View helpView = inflater.inflate(R.layout.fragment_info_help, container, false);
-        TextView licenseTextView = helpView.findViewById(R.id.fgmt_info_licenses_textview);
-        licenseTextView.setMovementMethod(new ScrollingMovementMethod());
+        TextView helpTextView = helpView.findViewById(R.id.fgmt_info_help_textview);
+        helpTextView.setMovementMethod(new ScrollingMovementMethod());
         // load content from text file
         // TODO: english licenses
         String helpString = "";
@@ -54,7 +54,7 @@ public class InfoHelpFragment extends Fragment {
                 logManager.log(TAG, null, exception);
             }
         }
-        licenseTextView.setText(helpString);
+        helpTextView.setText(helpString);
         return helpView;
     }
 }

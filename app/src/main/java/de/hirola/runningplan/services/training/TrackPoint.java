@@ -22,7 +22,7 @@ public class TrackPoint {
         this.location = location;
         // the track starts
         actualDistance = 0.0;
-        // save the start time
+        // add the start time
         startTime = location.getTime();
     }
 
@@ -30,7 +30,7 @@ public class TrackPoint {
         // calculate the distance
         double distance = this.location.distanceTo(location);
         actualDistance += distance;
-        // save the last location
+        // add the last location
         this.location = location;
     }
 

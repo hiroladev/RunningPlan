@@ -48,12 +48,17 @@ public class RunningPlanViewModel extends AndroidViewModel {
         return repository.getRunningPlans();
     }
 
-    public void save(PersistentObject persistentObject) throws SportsLibraryException {
+    public void add(PersistentObject persistentObject) throws SportsLibraryException {
         // add object to datastore
-        repository.save(persistentObject);
+        repository.add(persistentObject);
         if (persistentObject instanceof RunningPlan) {
             runningPlans.addItem((RunningPlan) persistentObject);
         }
+    }
+
+    public void update(PersistentObject persistentObject) throws SportsLibraryException {
+        // update an object in datastore
+        repository.update(persistentObject);
     }
 
     public void delete(PersistentObject persistentObject) throws SportsLibraryException {

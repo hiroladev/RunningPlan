@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class TrackManager {
 
-    private List<Track.Id> tracks; // query the list to avoid get from sqlite
+    private List<Track.Id> trackIds; // query the list to avoid get from sqlite
     private final Context context;
     private final TrackingDatabaseHelper databaseHelper;
     private TrackPoint trackPoint;
@@ -33,9 +33,9 @@ public class TrackManager {
     public TrackManager(@NonNull Context context) {
         this.context = context;
         databaseHelper = new TrackingDatabaseHelper(context);
-        tracks = databaseHelper.getRecordedTracks();
-        if (tracks == null) {
-            tracks = new ArrayList<>();
+        trackIds = databaseHelper.getTrackIds();
+        if (trackIds == null) {
+            trackIds = new ArrayList<>();
         }
     }
 
@@ -54,14 +54,14 @@ public class TrackManager {
         if (primaryKey > -1) {
             Track.Id trackId = new Track.Id(primaryKey);
             // remember the new track in local list
-            tracks.add(trackId);
+            trackIds.add(trackId);
             return trackId;
         }
         return null;
     }
 
     public boolean insertLocationForTrack(@NonNull Track.Id trackId, @NonNull Location location) {
-        if (tracks.contains(trackId)) {
+        if (trackIds.contains(trackId)) {
             // create the first point of the track with the start time of track
             if (trackPoint == null) {
                 trackPoint = new TrackPoint(location);
@@ -76,23 +76,37 @@ public class TrackManager {
     }
 
     public boolean completeTrack(Track.Id trackId) {
-        if (tracks.contains(trackId)) {
+        if (trackIds.contains(trackId)) {
             return databaseHelper.completeTrack(trackId, trackPoint);
         }
         return false;
     }
 
     public Track getTrack(Track.Id trackId) {
-        if (tracks.contains(trackId)) {
+        if (trackIds.contains(trackId)) {
             return databaseHelper.getTrack(trackId);
         }
         return null;
     }
 
+    public List<Track> getRecordedTracks() {
+        return databaseHelper.getRecordedTracks(trackIds);
+    }
+
     public boolean removeTrack(Track.Id trackId) {
-        if (tracks.contains(trackId)) {
+        if (trackIds.contains(trackId)) {
             return databaseHelper.removeTrack(trackId);
         }
         return false;
+    }
+
+    /**
+     * Remove all entries from datastore.
+     *
+     * @return The number of deleted tracks.
+     */
+    public int clearAll() {
+        trackIds.clear();
+        return databaseHelper.clearAll();
     }
 }

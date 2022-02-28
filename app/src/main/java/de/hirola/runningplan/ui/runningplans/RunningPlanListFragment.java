@@ -172,7 +172,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
     @Override
     public void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        // save the selected running plan (list index)
+        // add the selected running plan (list index)
         outState.putInt("lastSelectedIndex", lastSelectedIndex);
     }
 

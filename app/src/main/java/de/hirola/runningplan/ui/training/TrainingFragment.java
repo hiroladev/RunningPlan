@@ -1,6 +1,7 @@
 package de.hirola.runningplan.ui.training;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -54,7 +55,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     private RunningUnit runningUnit; // active training unit
     private boolean isTrainingRunning = false;
     private boolean isTrainingPaused = false;
-    private boolean didCompleteUpdateError; // error occurred while save complete state on units
+    private boolean didCompleteUpdateError; // error occurred while add complete state on units
 
     // spinner
     private Spinner trainingDaysSpinner;
@@ -162,11 +163,11 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
 
     @Override
     public void onSaveInstanceState(@NotNull Bundle savedInstanceState) {
-        // save the track id
+        // add the track id
         if (trackId != null) {
             savedInstanceState.putLong("trackId", trackId.getId());
         }
-        // save training state
+        // add training state
         savedInstanceState.putBoolean("isTrainingRunning", isTrainingRunning);
         savedInstanceState.putBoolean("isTrainingPaused", isTrainingPaused);
     }
@@ -181,6 +182,10 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         super.onResume();
         // location permissions can be changed by user
         checkLocationPermissions();
+        if (isTrainingRunning) {
+            // view running image
+            trainingInfoImageView.setImageResource(R.drawable.baseline_directions_run_black_24);
+        }
     }
 
     @Override
@@ -512,10 +517,11 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
             if (timeToRun == 0) {
                 // paused the training, maybe there is another one unit
                 pauseTraining();
-                // unit completed, save the state
+                // unit completed, add the state
                 try {
                     runningUnit.setCompleted(true);
-                    viewModel.save(runningUnit);
+                    runningPlan.completeUnit(runningUnit);
+                    viewModel.update(runningPlan);
                 } catch (SportsLibraryException exception) {
                     // error occurred
                     didCompleteUpdateError = true;
@@ -542,6 +548,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     }
 
     //  all units for entry are completed
+    @SuppressLint("DefaultLocale")
     private void completeTraining() {
         // training entry (day) unit completed
         if (isTrainingServiceConnected) {
@@ -578,28 +585,22 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                     double runningDistance = recorderdTrack.getDistance();
                     if (runningDistance < 999.99) {
                         //  Angabe in m
-                        trainingTrackInfoString += Math.round(runningDistance);
-                        trainingTrackInfoString += " m";
+                        trainingTrackInfoString += String.format("%,.2f%s",runningDistance, " m");
                     } else {
                         //  Angabe in km
-                        runningDistance = runningDistance / 1000;
-                        // TODO: Formatierung Komma
-                        trainingTrackInfoString += Math.round(runningDistance);
-                        trainingTrackInfoString += " km, ";
+                        trainingTrackInfoString += String.format("%,.2f%s",runningDistance / 1000, " km");
                     }
                     trainingTrackInfoString += "\n";
                     //  Geschwindigkeit in km/h
                     double averageSpeed = recorderdTrack.getAverageSpeed();
                     trainingTrackInfoString += getString(R.string.speed);
                     trainingTrackInfoString += ": ";
-                    // TODO: Formatierung Komma
-                    trainingTrackInfoString += averageSpeed;
-                    trainingTrackInfoString += " km/h";
+                    trainingTrackInfoString += String.format("%,.2f%s",averageSpeed, " km/h");
                     trainingInfolabel.setText(trainingTrackInfoString);
                 }
             }
 
-            // save training
+            // add training
             boolean saveTrainings = sharedPreferences.getBoolean(Global.PreferencesKeys.saveTrainings, false);
             if (saveTrainings) {
                 // Nutzer fragen, ob gespeichert werden soll
@@ -615,7 +616,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         }
     }
 
-    // save the training
+    // add the training
     private void saveTraining() {
         //TODO: implementieren
     }
@@ -851,7 +852,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                             if (appUser != null) {
                                 appUser.setActiveRunningPlan(runningPlan);
                                 try {
-                                    viewModel.save(appUser);
+                                    viewModel.update(appUser);
                                     // recall the method to set active running plan
                                     setActiveRunningPlan();
                                 } catch (SportsLibraryException exception) {
@@ -876,7 +877,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                     unit.setCompleted(false);
                     // update in datastore
                     try {
-                        viewModel.save(unit);
+                        viewModel.update(unit);
                     } catch (SportsLibraryException exception) {
                         if (logManager.isDebugMode()) {
                             //TODO: info to user
