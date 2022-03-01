@@ -16,9 +16,7 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.runningplan.services.training.TrainingServiceCallback;
 import de.hirola.runningplan.services.training.TrainingServiceConnection;
@@ -36,7 +34,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 
-public class TrainingFragment extends Fragment implements AdapterView.OnItemSelectedListener, TrainingServiceCallback {
+public class TrainingFragment extends Fragment
+        implements AdapterView.OnItemSelectedListener, TrainingServiceCallback {
 
     private final static String TAG = TrainingFragment.class.getSimpleName();
 
@@ -139,12 +138,10 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
         requireActivity().registerReceiver(backgroundTimeReceiver,
                 new IntentFilter(TrainingServiceCallback.SERVICE_RECEIVER_ACTION));
         // load running plans
-        viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
+        viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
         // training data
         // live data
-        MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
-        mutableRunningPlans.observe(this, this::onListChanged);
-        runningPlans = mutableRunningPlans.getValue();
+        runningPlans = viewModel.getRunningPlans();
         // set user activated running plan
         setActiveRunningPlan();
         // initialize the location tracking service
@@ -521,7 +518,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                 try {
                     runningUnit.setCompleted(true);
                     runningPlan.completeUnit(runningUnit);
-                    viewModel.update(runningPlan);
+                    viewModel.updateObject(runningPlan);
                 } catch (SportsLibraryException exception) {
                     // error occurred
                     didCompleteUpdateError = true;
@@ -852,7 +849,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
                             if (appUser != null) {
                                 appUser.setActiveRunningPlan(runningPlan);
                                 try {
-                                    viewModel.update(appUser);
+                                    viewModel.updateObject(appUser);
                                     // recall the method to set active running plan
                                     setActiveRunningPlan();
                                 } catch (SportsLibraryException exception) {
@@ -869,23 +866,7 @@ public class TrainingFragment extends Fragment implements AdapterView.OnItemSele
     // Reset the running plan. All units are reset as uncompleted.
     private void resetRunningPlan() {
         if (runningPlans != null && runningPlan != null) {
-            List<RunningPlanEntry> entries = runningPlan.getEntries();
-            // reset units
-            for (RunningPlanEntry entry : entries) {
-                List<RunningUnit> units = entry.getRunningUnits();
-                for (RunningUnit unit : units) {
-                    unit.setCompleted(false);
-                    // update in datastore
-                    try {
-                        viewModel.update(unit);
-                    } catch (SportsLibraryException exception) {
-                        if (logManager.isDebugMode()) {
-                            //TODO: info to user
-                            exception.printStackTrace();
-                        }
-                    }
-                }
-            }
+            // runningPlan.setUncompleted();
             // refresh ui
             setActiveRunningPlan();
         }

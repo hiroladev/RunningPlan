@@ -1,7 +1,6 @@
 package de.hirola.runningplan;
 
 import de.hirola.runningplan.databinding.ActivityMainBinding;
-import de.hirola.runningplan.model.RunningPlanViewModel;
 
 import android.os.Bundle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -13,9 +12,6 @@ import androidx.navigation.ui.NavigationUI;
 
 
 public class MainActivity extends AppCompatActivity {
-
-    // holds the data (model) for the app
-    private RunningPlanViewModel runningPlanViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

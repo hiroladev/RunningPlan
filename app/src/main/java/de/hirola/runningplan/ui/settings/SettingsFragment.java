@@ -40,7 +40,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         // set the preference ui elements
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         // get the view model for data handling
-        viewModel = new ViewModelProvider(this).get(RunningPlanViewModel.class);
+        viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
         // load the app user
         appUser = viewModel.getAppUser();
         // load the preferences
@@ -205,7 +205,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         }
         try {
             // save the data
-            viewModel.update(appUser);
+            viewModel.updateObject(appUser);
         } catch (SportsLibraryException exception) {
             // data could not saved
             // alert dialog to user
@@ -418,7 +418,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         try {
             // save the data
             appUser.setMaxPulse(maxPulse);
-            viewModel.update(appUser);
+            viewModel.updateObject(appUser);
         } catch (SportsLibraryException exception) {
             // data could not saved
             // alert dialog to user

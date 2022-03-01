@@ -1,72 +1,92 @@
 package de.hirola.runningplan.model;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import de.hirola.runningplan.RunningPlanApplication;
+
+import de.hirola.sportslibrary.database.DataRepository;
+import de.hirola.sportslibrary.database.DatastoreDelegate;
 import de.hirola.sportslibrary.database.PersistentObject;
+import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.SportsLibraryException;
-import de.hirola.sportslibrary.model.RunningPlan;
-import de.hirola.sportslibrary.model.User;
-
+import de.hirola.sportslibrary.model.*;
 import android.app.Application;
-import androidx.lifecycle.AndroidViewModel;
+import de.hirola.sportslibrary.util.Logger;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
  * This software us licensed under the AGPL-3.0 or later.
  *
- * Model for the app data (running plans).
- * It shares the data between the different fragments.
+ * The repository for the running plan data.
+ * It manages the sync and local data store.
+ *
  *
  * @author Michael Schmidt (Hirola)
  * @since 1.1.1
  */
-public class RunningPlanViewModel extends AndroidViewModel {
+public class RunningPlanViewModel {
 
-    // the repository for the app data
-    private final RunningPlanRepository repository;
-    // the running plans live data
-    private final MutableListLiveData<RunningPlan> runningPlans;
+    private final static String TAG = RunningPlanViewModel.class.getSimpleName();
 
-    public RunningPlanViewModel(Application application) {
-        super(application);
-        // init the repository
-        repository = new RunningPlanRepository(application);
-        // load the running plans from data store
-        runningPlans = new MutableListLiveData<>();
-        runningPlans.setValue(repository.getRunningPlans());
+    private final Logger logger;
+    private final SportsLibrary sportsLibrary;
+    private final DataRepository dataRepository; // the datastore layer
+    private final User appUser;
+
+    public RunningPlanViewModel(@NotNull Application application, @Nullable DatastoreDelegate delegate)  {
+        // initialize attributes
+        logger = Logger.getInstance(application.getPackageName());
+        sportsLibrary = ((RunningPlanApplication) application).getSportsLibrary();
+        if (delegate != null) {
+            sportsLibrary.addDelegate(delegate);
+        }
+        dataRepository = sportsLibrary.getDataRepository();
+        appUser = sportsLibrary.getAppUser();
     }
 
     public User getAppUser() {
-        return repository.getAppUser();
+        return appUser;
     }
 
-    public MutableListLiveData<RunningPlan> getMutableRunningPlans() {
+    public List<RunningPlan> getRunningPlans() {
+        List<RunningPlan> runningPlans = new ArrayList<>();
+        List<? extends PersistentObject> persistentObjects = dataRepository.findAll(RunningPlan.class);
+        if (persistentObjects.isEmpty()) {
+            return runningPlans; // return an empty list
+        }
+        for (PersistentObject object : persistentObjects) {
+            try {
+                runningPlans.add((RunningPlan) object);
+            } catch (ClassCastException exception) {
+                // we do not add this to the list and make a  log entry
+                String errorMessage = "List of running plans contains an object from type "
+                        + object.getClass().getSimpleName();
+                logger.log(Logger.DEBUG, TAG, errorMessage, exception);
+            }
+        }
+        // sort the plans
+        Collections.sort(runningPlans);
         return runningPlans;
     }
 
-    public List<RunningPlan> getRunningPlanes() {
-        return repository.getRunningPlans();
+    public void addObject(PersistentObject persistentObject) throws SportsLibraryException {
+        dataRepository.add(persistentObject);
     }
 
-    public void add(PersistentObject persistentObject) throws SportsLibraryException {
-        // add object to datastore
-        repository.add(persistentObject);
-        if (persistentObject instanceof RunningPlan) {
-            runningPlans.addItem((RunningPlan) persistentObject);
-        }
+    public void updateObject(PersistentObject persistentObject) throws SportsLibraryException {
+        dataRepository.update(persistentObject);
     }
 
-    public void update(PersistentObject persistentObject) throws SportsLibraryException {
-        // update an object in datastore
-        repository.update(persistentObject);
+    public void deleteObject(PersistentObject persistentObject) throws SportsLibraryException {
+        dataRepository.delete(persistentObject);
     }
 
-    public void delete(PersistentObject persistentObject) throws SportsLibraryException {
-        // remove object from datastore
-        repository.delete(persistentObject);
-        if (persistentObject instanceof RunningPlan) {
-            runningPlans.removeItem((RunningPlan) persistentObject);
-        }
+    public void removeDelegate(@NonNull DatastoreDelegate delegate) {
+        sportsLibrary.removeDelegate(delegate);
     }
-
 }

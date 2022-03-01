@@ -16,11 +16,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
+import de.hirola.sportslibrary.database.DatastoreDelegate;
+import de.hirola.sportslibrary.database.PersistentObject;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import org.jetbrains.annotations.NotNull;
@@ -62,10 +63,8 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
         }
         // load the running plans
         // data
-        viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
-        MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
-        mutableRunningPlans.observe(requireActivity(), this::onListChanged);
-        runningPlans = mutableRunningPlans.getValue();
+        viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
+        runningPlans = viewModel.getRunningPlans();
     }
 
     @Override
@@ -123,7 +122,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
                                                 RunningPlan runningPlan1 = runningPlans.get(position1);
                                                 // remove running plan
                                                 try {
-                                                    viewModel.delete(runningPlan1);
+                                                    viewModel.deleteObject(runningPlan1);
                                                     listAdapter.notifyItemRemoved(position1);
                                                 } catch (SportsLibraryException exception) {
                                                     ModalOptionDialog.showMessageDialog(
@@ -214,8 +213,4 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
         fragmentTransaction.commit();
     }
 
-    // refresh the cached list of running plans
-    private void onListChanged(List<RunningPlan> changedList) {
-        runningPlans = changedList;
-    }
 }

@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.model.MutableListLiveData;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
@@ -81,10 +80,9 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
         // app logger
         logManager = AppLogManager.getInstance(requireContext());
         // app data
-        viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
+        viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
         appUser = viewModel.getAppUser();
-        MutableListLiveData<RunningPlan> mutableRunningPlans = viewModel.getMutableRunningPlans();
-        List<RunningPlan> runningPlans = mutableRunningPlans.getValue();
+        List<RunningPlan> runningPlans = viewModel.getRunningPlans();
 
         if (runningPlanUUID != null) {
             // set the selected running plan for details
@@ -162,8 +160,8 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                 }
                 // update the user and the running plan
                 try {
-                    viewModel.update(appUser);
-                    viewModel.update(runningPlan);
+                    viewModel.updateObject(appUser);
+                    viewModel.updateObject(runningPlan);
                 } catch (SportsLibraryException exception) {
                     ModalOptionDialog.showMessageDialog(
                             ModalOptionDialog.DialogStyle.CRITICAL,

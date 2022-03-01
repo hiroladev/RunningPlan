@@ -25,7 +25,7 @@ public class StartFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View startView = inflater.inflate(R.layout.fragment_start, container, false);
         // get the app user
-        RunningPlanViewModel viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
+        RunningPlanViewModel viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
         User appUser = viewModel.getAppUser();
         RunningPlan runningPlan = appUser.getActiveRunningPlan();
         if (runningPlan != null) {

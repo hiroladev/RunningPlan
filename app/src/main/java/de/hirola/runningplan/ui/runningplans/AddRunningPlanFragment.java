@@ -71,7 +71,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
                         loadTemplateFromFile(data);
                     }
                 });
-        viewModel = new ViewModelProvider(requireActivity()).get(RunningPlanViewModel.class);
+        viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
     }
 
     @Override
@@ -172,7 +172,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
                             runningPlanTemplate.getTrainingUnits());
                     RunningPlan runningPlan = templateLoader.importRunningPlanFromTemplate(runningPlanTemplateToImport);
                     if (runningPlan != null) {
-                        viewModel.add(runningPlan);
+                        viewModel.addObject(runningPlan);
                         // info to user
                         ModalOptionDialog.showMessageDialog(
                                 ModalOptionDialog.DialogStyle.INFORMATION,
