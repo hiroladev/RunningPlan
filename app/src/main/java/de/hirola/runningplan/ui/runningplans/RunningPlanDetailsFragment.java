@@ -79,26 +79,19 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
         // we use a class from library for JVM and Android
         // UUID does not implement Parcelable
         if (getArguments() != null) {
-            runningPlanUUID = new UUID(getArguments().getString("uuid"));
+            runningPlanUUID = new UUID(getArguments().getString("runningPlanUUID"));
         } else {
             runningPlanUUID = null;
         }
+
         // app logger
         logManager = AppLogManager.getInstance(requireContext());
+
         // app data
         viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
         appUser = viewModel.getAppUser();
-        List<RunningPlan> runningPlans = viewModel.getRunningPlans();
-
         if (runningPlanUUID != null) {
-            // get the selected running plan for details
-            if (runningPlans != null) {
-                Optional<RunningPlan> optionalRunningPlan = runningPlans
-                        .stream()
-                        .filter(runningPlan1 -> runningPlan.getUUID().equals(runningPlanUUID))
-                        .findFirst();
-                optionalRunningPlan.ifPresent(plan -> runningPlan = plan);
-            }
+            runningPlan = viewModel.getRunningPlanByUUID(runningPlanUUID);
         }
         // active running plan?
         if (runningPlan != null) {

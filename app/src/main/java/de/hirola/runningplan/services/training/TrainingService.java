@@ -207,9 +207,11 @@ public class TrainingService extends Service implements LocationListener {
         }
         // completed the recorded track
         // in further versions we qualify the location updates
-        if (!trackManager.completeTrack(trackId)) {
-            if (logManager.isDebugMode()) {
-                logManager.log(TAG, "The track with id " + trackId + " couldn't completed.", null);
+        if (withLocationTracking) {
+            if (!trackManager.completeTrack(trackId)) {
+                if (logManager.isDebugMode()) {
+                    logManager.log(TAG, "The track with id " + trackId + " couldn't completed.", null);
+                }
             }
         }
     }
@@ -293,7 +295,7 @@ public class TrainingService extends Service implements LocationListener {
             } catch (SecurityException exception) {
                 gpsAvailable = false;
                 if (logManager.isDebugMode()) {
-                    logManager.log(TAG, null, exception);
+                    logManager.log(TAG, "Could not determine the status of gps.", exception);
                 }
             }
         }

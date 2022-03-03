@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.location.LocationManager;
 import android.os.*;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,7 +84,7 @@ public class TrainingFragment extends Fragment
             new TrainingServiceConnection(this); // trainings service for timer and location updates
     private ActivityResultLauncher<String[]> locationPermissionRequest = null; // must be initialized in onCreate
     private boolean useLocationData; // user want to use location services
-    private boolean locationServicesAllowed; // user has using locations allowed and services are available
+    private boolean locationServicesAvailable; // user has using locations allowed and services are available
     private boolean isTrainingServiceConnected = false; //only if connected to service wie can start a training
     private Track.Id trackId = null; // the id of the actual track
     private final BroadcastReceiver backgroundTimeReceiver = new BroadcastReceiver() { // training time from service
@@ -135,7 +136,7 @@ public class TrainingFragment extends Fragment
                                 Manifest.permission.ACCESS_FINE_LOCATION, false);
                 // Precise location access granted.
                 // No location access granted.
-                locationServicesAllowed = fineLocationGranted != null && fineLocationGranted;
+                locationServicesAvailable = fineLocationGranted != null && fineLocationGranted;
                     }
             );
 
@@ -149,8 +150,11 @@ public class TrainingFragment extends Fragment
         // set plan for the training
         setActiveRunningPlan();
 
-        // initialize the location tracking service
+        // check permissions for locations services
         checkLocationPermissions();
+        // check gps
+        checkGPSStatus();
+
         // initialize background timer service
         handleBackgroundTimerService();
     }
@@ -184,6 +188,9 @@ public class TrainingFragment extends Fragment
         super.onResume();
         // location permissions can be changed by user
         checkLocationPermissions();
+        // check gps
+        checkGPSStatus();
+
         if (isTrainingRunning) {
             // view running image
             trainingInfoImageView.setImageResource(R.drawable.baseline_directions_run_black_24);
@@ -268,7 +275,7 @@ public class TrainingFragment extends Fragment
             // check for location permissions
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
-                locationServicesAllowed = true;
+                locationServicesAvailable = true;
             } else {
                 locationPermissionRequest.launch(new String[] {
                         Manifest.permission.ACCESS_FINE_LOCATION
@@ -276,7 +283,17 @@ public class TrainingFragment extends Fragment
             }
         }
         if (logManager.isDebugMode()) {
-            logManager.log(TAG, "Location updates are allowed: " + locationServicesAllowed, null);
+            logManager.log(TAG, "Location updates are allowed: " + locationServicesAvailable, null);
+        }
+    }
+
+    // check the gps status of device
+    private void checkGPSStatus() {
+        LocationManager manager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE );
+        locationServicesAvailable =
+                locationServicesAvailable  && manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (logManager.isDebugMode()) {
+            logManager.log(TAG, "GPS are enabled: " + locationServicesAvailable, null);
         }
     }
 
@@ -412,7 +429,7 @@ public class TrainingFragment extends Fragment
             } else if (isValidTraining()) {
                 // start a new training
                 trainingInfolabel.setText(R.string.start_training);
-                trackId = trainingServiceConnection.startTraining(timeToRun, locationServicesAllowed);
+                trackId = trainingServiceConnection.startTraining(timeToRun, locationServicesAvailable);
                 isTrainingRunning = true;
             }
         }
@@ -524,7 +541,7 @@ public class TrainingFragment extends Fragment
                 trainingInfolabel.setText(R.string.training_completed);
             }
             trainingInfoImageView.setImageResource(R.drawable.baseline_done_black_24);
-            if (locationServicesAllowed) {
+            if (locationServicesAvailable) {
                 // get the recorded data
                 Track recorderdTrack = trainingServiceConnection.getRecordedTrack(trackId);
                 if (recorderdTrack == null) {
@@ -945,7 +962,7 @@ public class TrainingFragment extends Fragment
 
             }
 
-            final int DELAY = 0, VIBRATE = 1000, SLEEP = 1000, START = 3;
+            final int DELAY = 0, VIBRATE = 1000, SLEEP = 1000, START = 0;
             long[] vibratePattern = {DELAY, VIBRATE, SLEEP};
 
             vibrator.vibrate(VibrationEffect.createWaveform(vibratePattern, START));
