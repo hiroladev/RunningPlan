@@ -36,7 +36,6 @@ public class RunningPlanViewModel {
     private final Logger logger;
     private final SportsLibrary sportsLibrary;
     private final DataRepository dataRepository; // the datastore layer
-    private final User appUser;
 
     public RunningPlanViewModel(@NotNull Application application, @Nullable DatastoreDelegate delegate)  {
         // initialize attributes
@@ -46,11 +45,16 @@ public class RunningPlanViewModel {
             sportsLibrary.addDelegate(delegate);
         }
         dataRepository = sportsLibrary.getDataRepository();
-        appUser = sportsLibrary.getAppUser();
     }
 
+    @NonNull
     public User getAppUser() {
-        return appUser;
+        return sportsLibrary.getAppUser();
+    }
+
+    @Nullable
+    public RunningPlan getRunningPlanByUUID(@NonNull UUID uuid) {
+        return (RunningPlan) dataRepository.findByUUID(RunningPlan.class, uuid);
     }
 
     public List<RunningPlan> getRunningPlans() {

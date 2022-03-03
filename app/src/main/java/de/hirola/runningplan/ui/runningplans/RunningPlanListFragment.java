@@ -24,6 +24,7 @@ import de.hirola.sportslibrary.database.DatastoreDelegate;
 import de.hirola.sportslibrary.database.PersistentObject;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.runningplan.util.ModalOptionDialog;
+import de.hirola.sportslibrary.model.UUID;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -185,7 +186,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
         if (runningPlans.size() > index) {
             lastSelectedIndex = index;
             RunningPlan runningPlan = runningPlans.get(index);
-            String uuid = runningPlan.getUUID();
+            UUID runningPlanUUID = runningPlan.getUUID();
             RunningPlanDetailsFragment detailsFragment = null;
             List<Fragment> fragments = getParentFragmentManager().getFragments();
             for (Fragment fragment : fragments) {
@@ -194,9 +195,10 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
                     break;
                 }
             }
-            if (detailsFragment == null || detailsFragment.getUUID().equalsIgnoreCase(uuid)) {
-                // create a new fragment
-                detailsFragment = RunningPlanDetailsFragment.newInstance(uuid);
+            // if fragment null or a fragment for another running plan (uuid)
+            // then create a new fragment
+            if (detailsFragment == null || ! detailsFragment.getUUID().equals(runningPlanUUID)) {
+                detailsFragment = RunningPlanDetailsFragment.newInstance(runningPlanUUID);
             }
             // starts the RunningPlanDetailsFragment
             showFragment(detailsFragment);

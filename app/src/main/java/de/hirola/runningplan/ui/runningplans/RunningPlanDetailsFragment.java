@@ -18,6 +18,7 @@ import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
+import de.hirola.sportslibrary.model.UUID;
 import de.hirola.sportslibrary.model.User;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -44,7 +46,7 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
     private AppLogManager logManager;
     private RunningPlanViewModel viewModel;
     private User appUser;
-    private String runningPlanUUID;
+    private UUID runningPlanUUID;
     private RunningPlan runningPlan;
     private boolean isUsersRunningPlan;
     private TextView runningPlanNameTextView;
@@ -60,10 +62,12 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
         // Required empty public constructor
     }
 
-    public static RunningPlanDetailsFragment newInstance(String uuid) {
+    public static RunningPlanDetailsFragment newInstance(UUID runningPlanUUID) {
         RunningPlanDetailsFragment fragment = new RunningPlanDetailsFragment();
         Bundle args = new Bundle();
-        args.putString("uuid", uuid);
+        // we use a class from library for JVM and Android
+        // UUID does not implement Parcelable
+        args.putString("runningPlanUUID", runningPlanUUID.getString());
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,10 +76,12 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // get the argument - the uuid for the selected running plan
+        // we use a class from library for JVM and Android
+        // UUID does not implement Parcelable
         if (getArguments() != null) {
-            runningPlanUUID = getArguments().getString("uuid");
+            runningPlanUUID = new UUID(getArguments().getString("uuid"));
         } else {
-            runningPlanUUID = "";
+            runningPlanUUID = null;
         }
         // app logger
         logManager = AppLogManager.getInstance(requireContext());
@@ -85,20 +91,20 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
         List<RunningPlan> runningPlans = viewModel.getRunningPlans();
 
         if (runningPlanUUID != null) {
-            // set the selected running plan for details
+            // get the selected running plan for details
             if (runningPlans != null) {
-                for (RunningPlan plan : runningPlans) {
-                    if (plan.getUUID().equalsIgnoreCase(runningPlanUUID)) {
-                        runningPlan = plan;
-                    }
-                }
+                Optional<RunningPlan> optionalRunningPlan = runningPlans
+                        .stream()
+                        .filter(runningPlan1 -> runningPlan.getUUID().equals(runningPlanUUID))
+                        .findFirst();
+                optionalRunningPlan.ifPresent(plan -> runningPlan = plan);
             }
         }
         // active running plan?
-        if (appUser != null && runningPlan != null) {
-            RunningPlan activeRunningPlan = appUser.getActiveRunningPlan();
-            if (activeRunningPlan != null) {
-                isUsersRunningPlan = activeRunningPlan.getUUID().equalsIgnoreCase(runningPlan.getUUID());
+        if (runningPlan != null) {
+            UUID activeRunningPlanUUID = appUser.getActiveRunningPlanUUID();
+            if (activeRunningPlanUUID != null) {
+                isUsersRunningPlan = runningPlan.getUUID().equals(activeRunningPlanUUID);
             }
         }
     }
@@ -150,13 +156,13 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                             button -> {
                                 if (button == ModalOptionDialog.Button.OK) {
                                     // set the active running plan to null
-                                    appUser.setActiveRunningPlan(null);
+                                    appUser.setActiveRunningPlanUUID(null);
                                 } else {
                                     activeRunningPlanSwitch.setChecked(true);
                                 }
                             });
                 } else {
-                    appUser.setActiveRunningPlan(runningPlan);
+                    appUser.setActiveRunningPlanUUID(runningPlan.getUUID());
                 }
                 // update the user and the running plan
                 try {
@@ -179,7 +185,7 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
         }
     }
 
-    public String getUUID() {
+    public UUID getUUID() {
         return runningPlanUUID;
     }
 
