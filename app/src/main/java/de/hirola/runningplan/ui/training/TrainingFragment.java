@@ -27,6 +27,7 @@ import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.*;
 import de.hirola.runningplan.util.ModalOptionDialog;
+import de.hirola.sportslibrary.model.UUID;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -46,7 +47,6 @@ public class TrainingFragment extends Fragment
 
     // app data
     private RunningPlanViewModel viewModel;
-    private List<RunningPlan> runningPlans; // cached list of running plans
     private RunningPlan runningPlan; // the actual running plan, selected by the user
                                      // if no running plan selected, the plan with the lowest order number
                                      // will be selected
@@ -139,9 +139,6 @@ public class TrainingFragment extends Fragment
                 new IntentFilter(TrainingServiceCallback.SERVICE_RECEIVER_ACTION));
         // load running plans
         viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
-        // training data
-        // live data
-        runningPlans = viewModel.getRunningPlans();
         // set user activated running plan
         setActiveRunningPlan();
         // initialize the location tracking service
@@ -291,45 +288,40 @@ public class TrainingFragment extends Fragment
     // is no running plan available, no training is possible
     private void setActiveRunningPlan() {
         // set the active running plan from user
-        if (!runningPlans.isEmpty()) {
-            User appUser = viewModel.getAppUser();
-            if (appUser != null) {
-                runningPlan = appUser.getActiveRunningPlan();
-                if (runningPlan != null) {
-                    int index = runningPlans.indexOf(runningPlan);
-                    if (index > -1) {
-                        this.runningPlan = runningPlans.get(index);
-                    }
-                    // check if the users running plan completed
-                    if (runningPlan.isCompleted()) {
-                        // ask user how we proceed further
-                        handleRunningPlan();
-                        return;
-                    }
-                    // set the next uncompleted training day
-                    List<RunningPlanEntry> entries = runningPlan.getEntries();
-                    Optional<RunningPlanEntry> entry = entries
-                            .stream()
-                            .filter(r -> !r.isCompleted())
-                            .findFirst();
-                    entry.ifPresent(planEntry -> runningPlanEntry = planEntry);
-                    if (runningPlanEntry != null) {
-                        List<RunningUnit> units = runningPlanEntry.getRunningUnits();
-                        // TODO: Liste sortiert?
-                        Optional<RunningUnit> unit = units
-                                .stream()
-                                .filter(runningUnit -> !runningUnit.isCompleted())
-                                .findFirst();
-                        unit.ifPresent(value -> runningUnit = value);
-                    }
-                }
+        User appUser = viewModel.getAppUser();
+        UUID runningPlanUUID = appUser.getActiveRunningPlanUUID();
+        if (runningPlanUUID != null) {
+            runningPlan = viewModel.getRunningPlanByUUID(runningPlanUUID);
+        }
+        if (runningPlan != null) {
+            // check if the users running plan completed
+            if (runningPlan.isCompleted()) {
+                // ask user how we proceed further
+                handleRunningPlan();
+                return;
+            }
+            // set the next uncompleted training day
+            List<RunningPlanEntry> entries = runningPlan.getEntries();
+            Optional<RunningPlanEntry> entry = entries
+                    .stream()
+                    .filter(r -> !r.isCompleted())
+                    .findFirst();
+            entry.ifPresent(planEntry -> runningPlanEntry = planEntry);
+            if (runningPlanEntry != null) {
+                List<RunningUnit> units = runningPlanEntry.getRunningUnits();
+                // TODO: Liste sortiert?
+                Optional<RunningUnit> unit = units
+                        .stream()
+                        .filter(runningUnit -> !runningUnit.isCompleted())
+                        .findFirst();
+                unit.ifPresent(value -> runningUnit = value);
             }
         } else {
             // info to user
             ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
                     requireContext(),
                     getString(R.string.information),
-                    getString(R.string.no_running_plans_available),
+                    getString(R.string.no_active_running_plan),
                     getString(R.string.ok));
         }
     }
@@ -758,11 +750,6 @@ public class TrainingFragment extends Fragment
         return trainingUnitsStringList;
     }
 
-    // refresh the cached list of running plans
-    private void onListChanged(List<RunningPlan> changedList) {
-        runningPlans = changedList;
-    }
-
     // set the next unit of current running plan entry
     private boolean nextUnit() {
         // welche Trainingseinheit wurde vom Nutzer ausgewählt?
@@ -808,9 +795,10 @@ public class TrainingFragment extends Fragment
     private void handleRunningPlan() {
         // active running plan is completed
         // ask user for action
-        if (runningPlans != null && runningPlan != null) {
+        if (runningPlan != null) {
             // deactivate option 3 (argument is null) if all running plans completed
             String optionThreeButtonText = null;
+            List<RunningPlan> runningPlans = viewModel.getRunningPlans();
             if (runningPlans.stream().allMatch(RunningPlan::isCompleted)) {
                 optionThreeButtonText = getString(R.string.select_running_plan_option_3);
             }
@@ -846,16 +834,14 @@ public class TrainingFragment extends Fragment
                             nextRunningPlan.ifPresent(plan -> runningPlan = plan);
                             // set the new plan as active
                             User appUser = viewModel.getAppUser();
-                            if (appUser != null) {
-                                appUser.setActiveRunningPlan(runningPlan);
-                                try {
-                                    viewModel.updateObject(appUser);
-                                    // recall the method to set active running plan
-                                    setActiveRunningPlan();
-                                } catch (SportsLibraryException exception) {
-                                    if (logManager.isDebugMode()) {
-                                        logManager.log(TAG, null, exception);
-                                    }
+                            appUser.setActiveRunningPlanUUID(runningPlan.getUUID());
+                            try {
+                                viewModel.updateObject(appUser);
+                                // recall the method to set active running plan
+                                setActiveRunningPlan();
+                            } catch (SportsLibraryException exception) {
+                                if (logManager.isDebugMode()) {
+                                    logManager.log(TAG, null, exception);
                                 }
                             }
                         }
@@ -865,8 +851,8 @@ public class TrainingFragment extends Fragment
 
     // Reset the running plan. All units are reset as uncompleted.
     private void resetRunningPlan() {
-        if (runningPlans != null && runningPlan != null) {
-            // runningPlan.setUncompleted();
+        if (runningPlan != null) {
+            runningPlan.setUncompleted();
             // refresh ui
             setActiveRunningPlan();
         }
