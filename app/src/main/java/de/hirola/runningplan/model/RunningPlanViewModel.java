@@ -12,7 +12,6 @@ import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.*;
 import android.app.Application;
 import de.hirola.sportslibrary.util.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +36,7 @@ public class RunningPlanViewModel {
     private final SportsLibrary sportsLibrary;
     private final DataRepository dataRepository; // the datastore layer
 
-    public RunningPlanViewModel(@NotNull Application application, @Nullable DatastoreDelegate delegate)  {
+    public RunningPlanViewModel(@NonNull Application application, @Nullable DatastoreDelegate delegate)  {
         // initialize attributes
         logger = Logger.getInstance(application.getPackageName());
         sportsLibrary = ((RunningPlanApplication) application).getSportsLibrary();
