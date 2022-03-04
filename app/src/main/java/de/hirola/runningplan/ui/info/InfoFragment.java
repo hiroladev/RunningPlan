@@ -7,7 +7,15 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import de.hirola.runningplan.R;
 
-
+/**
+ * Copyright 2021 by Michael Schmidt, Hirola Consulting
+ * This software us licensed under the AGPL-3.0 or later.
+ *
+ * The main fragment for infos.
+ *
+ * @author Michael Schmidt (Hirola)
+ * @since 0.1
+ */
 public class InfoFragment extends Fragment {
 
     // Required empty public constructor

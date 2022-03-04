@@ -29,7 +29,7 @@ import java.util.Locale;
  * Custom adapter for entries of a running plan to view in list.
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

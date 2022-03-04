@@ -6,7 +6,7 @@ This software us licensed under the AGPL-3.0 or later.
 The running plan view, contains different fragments.
 
 @author Michael Schmidt (Hirola)
-@since 1.1.1
+@since 0.1
 </copyright-->
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

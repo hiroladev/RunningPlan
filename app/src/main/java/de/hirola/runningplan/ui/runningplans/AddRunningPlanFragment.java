@@ -35,7 +35,7 @@ import java.io.InputStream;
  * A fragment to add or import new running plans.
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public class AddRunningPlanFragment extends Fragment implements View.OnClickListener {
 

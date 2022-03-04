@@ -7,10 +7,10 @@ import org.jetbrains.annotations.NotNull;
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
  * This software us licensed under the AGPL-3.0 or later.
  *
- * A helper class to calculate distance, speed and others for a recorded track
+ * A helper class to calculate distance, speed and others for a recorded track.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.0.1
+ * @since 0.1
  */
 public class TrackPoint {
 

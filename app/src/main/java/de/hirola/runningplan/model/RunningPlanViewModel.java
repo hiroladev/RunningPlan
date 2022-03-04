@@ -26,7 +26,7 @@ import java.util.List;
  *
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public class RunningPlanViewModel {
 

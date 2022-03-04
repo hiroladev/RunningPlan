@@ -1,7 +1,7 @@
 <resources>
     <!-- App Data -->
     <string name="app_name">Laufplan</string>
-    <string name="app_version" translatable="false">v1.1.1</string>
+    <string name="app_version" translatable="false">v.0.1</string>
     <string name="app_copyright" translatable="false">(c) Michael Schmidt 2021 - 2022\nFree Software License: AGPL
         Version 3
     </string>

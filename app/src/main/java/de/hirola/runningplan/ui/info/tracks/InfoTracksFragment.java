@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Fragment to view and edit recorded tracks.
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public class InfoTracksFragment extends Fragment implements View.OnClickListener {
 
@@ -78,8 +78,10 @@ public class InfoTracksFragment extends Fragment implements View.OnClickListener
                     });
         }
         if (deletedTracks.get() > 0) {
-            // refresh the list
-            listAdapter.notifyDataSetChanged();
+            // go back
+            if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
         }
     }
 }

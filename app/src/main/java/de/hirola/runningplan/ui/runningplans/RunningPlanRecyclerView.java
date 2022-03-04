@@ -23,7 +23,7 @@ import java.util.List;
  * Custom Adapter for RunningPlans to view in list.
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

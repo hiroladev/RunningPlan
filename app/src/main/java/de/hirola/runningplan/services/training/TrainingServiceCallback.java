@@ -9,7 +9,7 @@ import android.content.ServiceConnection;
  * Callback for A background services.
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public interface TrainingServiceCallback {
     String SERVICE_RECEIVER_ACTION = "RunningPlan_Service_Receiver_Action";

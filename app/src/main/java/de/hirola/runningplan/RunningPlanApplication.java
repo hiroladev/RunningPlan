@@ -16,7 +16,7 @@ import java.io.InputStream;
  * In all activities you can access to this object.
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public class RunningPlanApplication extends Application implements SportsLibraryApplication {
 

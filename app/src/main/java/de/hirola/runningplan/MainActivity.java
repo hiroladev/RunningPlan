@@ -10,7 +10,15 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-
+/**
+ * Copyright 2021 by Michael Schmidt, Hirola Consulting
+ * This software us licensed under the AGPL-3.0 or later.
+ *
+ * Main activity of the app.
+ *
+ * @author Michael Schmidt (Hirola)
+ * @since 0.1
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override

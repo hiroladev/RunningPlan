@@ -14,6 +14,15 @@ import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.model.UUID;
 import de.hirola.sportslibrary.model.User;
 
+/**
+ * Copyright 2021 by Michael Schmidt, Hirola Consulting
+ * This software us licensed under the AGPL-3.0 or later.
+ *
+ * Fragment for a overview of trainings, like a dashboard.
+ *
+ * @author Michael Schmidt (Hirola)
+ * @since 0.1
+ */
 public class StartFragment extends Fragment {
 
     private final static String TAG = StartFragment.class.getSimpleName();

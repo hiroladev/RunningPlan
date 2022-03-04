@@ -23,6 +23,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Copyright 2021 by Michael Schmidt, Hirola Consulting
+ * This software us licensed under the AGPL-3.0 or later.
+ *
+ * Fragment for app settings.
+ *
+ * @author Michael Schmidt (Hirola)
+ * @since 0.1
+ */
 public class SettingsFragment extends PreferenceFragmentCompat
         implements Preference.OnPreferenceChangeListener, EditTextPreference.OnBindEditTextListener {
 

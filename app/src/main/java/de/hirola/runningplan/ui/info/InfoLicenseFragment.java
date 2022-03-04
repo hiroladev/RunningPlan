@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
  * Fragment to load and view infos about the app from text resources.
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public class InfoLicenseFragment extends Fragment {
 

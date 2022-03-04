@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * A dialog for user messages, alerts and to get decisions.
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public final class ModalOptionDialog {
 

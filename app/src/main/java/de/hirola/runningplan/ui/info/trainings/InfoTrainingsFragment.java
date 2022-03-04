@@ -15,7 +15,7 @@ import de.hirola.runningplan.util.AppLogManager;
  * Fragment to view and edit saved trainings.
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public class InfoTrainingsFragment extends Fragment {
 

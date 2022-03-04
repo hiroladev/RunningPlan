@@ -21,7 +21,7 @@ import java.util.List;
  * Manager to handle the recorded track locations.
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public class TrackManager {
 

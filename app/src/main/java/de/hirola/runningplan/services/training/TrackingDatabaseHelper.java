@@ -25,7 +25,7 @@ import java.util.List;
  * Database helper to create and upgrade sqlite database for tracks (locations).
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public class TrackingDatabaseHelper extends SQLiteOpenHelper {
 
@@ -217,6 +217,8 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                     logManager.log(TAG, "Column (index) does not exists", exception);
                 }
                 return null;
+            } finally {
+                sqLiteDatabase.close();
             }
         }
         return null;
@@ -252,6 +254,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 String logMessage = "There have been " +  deletedTrackRows + " track rows deleted";
                 logManager.log(TAG, logMessage, null);
             }
+            sqLiteDatabase.close();
             return true;
         }
         return false;
@@ -295,6 +298,8 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 logManager.log(TAG, "Column (index) does not exists", exception);
             }
             return null;
+        } finally {
+            sqLiteDatabase.close();
         }
     }
 
@@ -327,6 +332,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                     deletedLocations, deletedTracks);
             logManager.log(TAG, message, null);
         }
+        sqLiteDatabase.close();
         return deletedTracks;
     }
 
@@ -354,6 +360,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 null                       // sort order
         );
         boolean returnValue = cursor.getCount() == 1;
+        sqLiteDatabase.close();
         cursor.close();
         return returnValue;
     }
@@ -410,6 +417,8 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                     logManager.log(TAG, "Column (index) does not exists", exception);
                 }
                 return null;
+            } finally {
+                sqLiteDatabase.close();
             }
         }
         return null;

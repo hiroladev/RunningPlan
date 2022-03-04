@@ -18,6 +18,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Copyright 2021 by Michael Schmidt, Hirola Consulting
+ * This software us licensed under the AGPL-3.0 or later.
+ *
+ * The content fragment for infos.
+ *
+ * @author Michael Schmidt (Hirola)
+ * @since 0.1
+ */
 public class InfoContentFragment extends Fragment implements View.OnClickListener {
 
     private final static String TAG = InfoContentFragment.class.getSimpleName();

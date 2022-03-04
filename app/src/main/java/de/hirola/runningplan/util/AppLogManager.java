@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * Manager for app logging and debugging.
  *
  * @author Michael Schmidt (Hirola)
- * @since 1.1.1
+ * @since 0.1
  */
 public class AppLogManager {
 
