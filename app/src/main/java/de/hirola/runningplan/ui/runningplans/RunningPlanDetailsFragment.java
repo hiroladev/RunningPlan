@@ -11,12 +11,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.lifecycle.ViewModelProvider;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
-import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.model.UUID;
 import de.hirola.sportslibrary.model.User;
@@ -28,7 +26,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -43,7 +40,7 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
 
     private final static String TAG = RunningPlanDetailsFragment.class.getSimpleName();
 
-    private AppLogManager logManager;
+    private AppLogManager appLogManager;
     private RunningPlanViewModel viewModel;
     private User appUser;
     private UUID runningPlanUUID;
@@ -85,7 +82,7 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
         }
 
         // app logger
-        logManager = AppLogManager.getInstance(requireContext());
+        appLogManager = AppLogManager.getInstance(requireContext());
 
         // app data
         viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
@@ -144,7 +141,7 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                     // user would not like the running plan as active
                     ModalOptionDialog.showYesNoDialog(
                             requireContext(),
-                            getString(R.string.question), getString(R.string.remove_active_running_plan),
+                            getString(R.string.question), getString(R.string.reset_active_running_plan),
                             getString(R.string.ok), getString(R.string.cancel),
                             button -> {
                                 if (button == ModalOptionDialog.Button.OK) {
@@ -158,10 +155,7 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                     appUser.setActiveRunningPlanUUID(runningPlan.getUUID());
                 }
                 // update the user and the running plan
-                try {
-                    viewModel.updateObject(appUser);
-                    viewModel.updateObject(runningPlan);
-                } catch (SportsLibraryException exception) {
+                if (!viewModel.updateObject(appUser) || !viewModel.updateObject(runningPlan)) {
                     ModalOptionDialog.showMessageDialog(
                             ModalOptionDialog.DialogStyle.CRITICAL,
                             requireContext(),
@@ -169,11 +163,7 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                             getString(R.string.ok));
                     // disable switch again
                     activeRunningPlanSwitch.setChecked(false);
-                    if (logManager.isDebugMode()) {
-                        logManager.log(TAG, null, exception);
-                    }
                 }
-
             }
         }
     }
@@ -222,8 +212,8 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                     }
                 } catch (Resources.NotFoundException exception) {
                     runningPlanRemarksTextView.setText(R.string.no_remarks);
-                    if (logManager.isDebugMode()) {
-                        logManager.log(TAG, null, exception);
+                    if (appLogManager.isDebugMode()) {
+                        appLogManager.log(TAG, null, exception);
                     }
                 }
             } else {

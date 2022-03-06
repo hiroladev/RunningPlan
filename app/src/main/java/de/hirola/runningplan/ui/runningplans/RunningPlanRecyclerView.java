@@ -29,7 +29,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
 
     private final static String TAG = RunningPlanRecyclerView.class.getSimpleName();
 
-    private final AppLogManager logManager;
+    private final AppLogManager appLogManager;
     private final Context context;
     private final List<RunningPlan> runningPlans;
     private View.OnClickListener onClickListener;
@@ -37,7 +37,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
     public RunningPlanRecyclerView(Context context, List<RunningPlan> runningPlans) {
         this.context = context;
         this.runningPlans = runningPlans;
-        logManager = AppLogManager.getInstance(context);
+        appLogManager = AppLogManager.getInstance(context);
     }
 
     @NonNull
@@ -64,8 +64,8 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
                     viewHolder.statusImageView.setImageResource(R.drawable.completed20x20);
                 }
             } catch (Resources.NotFoundException exception) {
-                if (logManager.isDebugMode()) {
-                    logManager.log(TAG, null, exception);
+                if (appLogManager.isDebugMode()) {
+                    appLogManager.log(TAG, null, exception);
                 }
             }
             viewHolder.nameTextView.setText(runningPlan.getName());
@@ -83,8 +83,8 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
                     }
                 } catch (Resources.NotFoundException exception) {
                     viewHolder.remarksTextView.setText(R.string.no_remarks);
-                    if (logManager.isDebugMode()) {
-                        logManager.log(TAG, null, exception);
+                    if (appLogManager.isDebugMode()) {
+                        appLogManager.log(TAG, null, exception);
                     }
                 }
             } else {

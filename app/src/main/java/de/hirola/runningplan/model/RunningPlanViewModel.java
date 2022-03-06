@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.RunningPlanApplication;
 
+import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.database.DataRepository;
 import de.hirola.sportslibrary.database.DatastoreDelegate;
 import de.hirola.sportslibrary.database.PersistentObject;
@@ -11,7 +12,6 @@ import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.*;
 import android.app.Application;
-import de.hirola.sportslibrary.util.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,13 +32,13 @@ public class RunningPlanViewModel {
 
     private final static String TAG = RunningPlanViewModel.class.getSimpleName();
 
-    private final Logger logger;
+    private final AppLogManager appLogger;
     private final SportsLibrary sportsLibrary;
     private final DataRepository dataRepository; // the datastore layer
 
     public RunningPlanViewModel(@NonNull Application application, @Nullable DatastoreDelegate delegate)  {
         // initialize attributes
-        logger = Logger.getInstance(application.getPackageName());
+        appLogger = AppLogManager.getInstance(application.getApplicationContext());
         sportsLibrary = ((RunningPlanApplication) application).getSportsLibrary();
         if (delegate != null) {
             sportsLibrary.addDelegate(delegate);
@@ -69,7 +69,9 @@ public class RunningPlanViewModel {
                 // we do not add this to the list and make a  log entry
                 String errorMessage = "List of running plans contains an object from type "
                         + object.getClass().getSimpleName();
-                logger.log(Logger.DEBUG, TAG, errorMessage, exception);
+                if (appLogger.isDebugMode()) {
+                    appLogger.log(TAG, errorMessage, exception);
+                }
             }
         }
         // sort the plans
@@ -77,16 +79,58 @@ public class RunningPlanViewModel {
         return runningPlans;
     }
 
-    public void addObject(PersistentObject persistentObject) throws SportsLibraryException {
-        dataRepository.add(persistentObject);
+    /**
+     * Add a new object to datastore.
+     *
+     * @param persistentObject to be added to the datastore
+     * @return True, if the object was added or false if an error occurred.
+     */
+    public boolean addObject(PersistentObject persistentObject)  {
+        try {
+            dataRepository.add(persistentObject);
+            return true;
+        } catch (SportsLibraryException exception) {
+            if (appLogger.isDebugMode()) {
+                appLogger.log(TAG, "Adding an object failed.", exception);
+            }
+        }
+        return false;
     }
 
-    public void updateObject(PersistentObject persistentObject) throws SportsLibraryException {
-        dataRepository.update(persistentObject);
+    /**
+     * Update an existing object in datastore.
+     *
+     * @param persistentObject to be added to the datastore
+     * @return True, if the object was updated or false if an error occurred.
+     */
+    public boolean updateObject(PersistentObject persistentObject) {
+        try {
+            dataRepository.update(persistentObject);
+            return true;
+        } catch (SportsLibraryException exception) {
+            if (appLogger.isDebugMode()) {
+                appLogger.log(TAG, "Updating an object failed.", exception);
+            }
+        }
+        return false;
     }
 
-    public void deleteObject(PersistentObject persistentObject) throws SportsLibraryException {
-        dataRepository.delete(persistentObject);
+    /**
+     * Delete an existing object in datastore.
+     *
+     * @param persistentObject to be added to the datastore
+     * @return True, if the object was deleted or false if an error occurred.
+     */
+    public boolean deleteObject(PersistentObject persistentObject) {
+        try {
+            dataRepository.delete(persistentObject);
+            return true;
+        } catch (SportsLibraryException exception) {
+            if (appLogger.isDebugMode()) {
+                appLogger.log(TAG, "Deleting an object failed.", exception);
+            }
+        }
+        return false;
     }
 
     public void removeDelegate(@NonNull DatastoreDelegate delegate) {

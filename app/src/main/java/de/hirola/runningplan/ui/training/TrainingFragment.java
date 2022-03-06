@@ -21,14 +21,14 @@ import de.hirola.runningplan.R;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.runningplan.services.training.TrainingServiceCallback;
 import de.hirola.runningplan.services.training.TrainingServiceConnection;
-import de.hirola.runningplan.ui.runningplans.RunningPlanListFragment;
+import de.hirola.runningplan.ui.runningplans.RunningPlansFragment;
 import de.hirola.runningplan.util.AppLogManager;
+import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.runningplan.util.TrainingNotificationManager;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibraryException;
-import de.hirola.sportslibrary.model.*;
-import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.sportslibrary.model.UUID;
+import de.hirola.sportslibrary.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -57,6 +57,7 @@ public class TrainingFragment extends Fragment
 
     // app data
     private RunningPlanViewModel viewModel;
+    private User appUser;
     private RunningPlan runningPlan; // the actual running plan, selected by the user
                                      // if no running plan selected, the plan with the lowest order number
                                      // will be selected
@@ -153,24 +154,31 @@ public class TrainingFragment extends Fragment
         requireActivity().registerReceiver(backgroundTimeReceiver,
                 new IntentFilter(TrainingServiceCallback.SERVICE_RECEIVER_ACTION));
 
-        // training data
-        viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
-
-        // set plan for the training
-        setActiveRunningPlan();
-
         // check permissions for locations services
         checkLocationPermissions();
         // check gps
         checkGPSStatus();
 
+        // load the training data
+        viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
+        appUser = viewModel.getAppUser();
+        UUID runningPlanUUID = appUser.getActiveRunningPlanUUID();
+        if (runningPlanUUID != null) {
+            runningPlan = viewModel.getRunningPlanByUUID(runningPlanUUID);
+            isTrainingPossible = runningPlan != null;
+        }
+
+        // set training data
+        setTrainingData();
+
         // initialize background timer service
+        // if training is possible
         handleBackgroundTimerService();
     }
 
     public View onCreateView(@NotNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View trainingView = inflater.inflate(R.layout.fragment_training, container, false);
+        View trainingView = inflater.inflate(R.layout.fragment_training_content, container, false);
         // initialize ui elements
         setViewElements(trainingView);
         return trainingView;
@@ -310,7 +318,7 @@ public class TrainingFragment extends Fragment
     private void handleBackgroundTimerService() {
         // bind and start service on application context
         // on fragment the service is destroyed when switching to another fragment
-        if (isTrainingPossible) {
+        if (isTrainingPossible && ! isTrainingServiceConnected) {
             trainingServiceConnection.bindAndStartService(requireActivity().getApplicationContext());
             if (logManager.isDebugMode()) {
                 logManager.log(TAG, "Service bind and start.", null);
@@ -499,17 +507,14 @@ public class TrainingFragment extends Fragment
                 // paused the training, maybe there is another one unit
                 pauseTraining();
                 // unit completed, add the state
-                try {
-                    runningUnit.setCompleted(true);
-                    runningPlan.completeUnit(runningUnit);
-                    viewModel.updateObject(runningPlan);
-                } catch (SportsLibraryException exception) {
-                    // error occurred
-                    didCompleteUpdateError = true;
+                runningUnit.setCompleted(true);
+                runningPlan.completeUnit(runningUnit);
+                if (!viewModel.updateObject(runningPlan)) {
                     // TODO: alert to user
                     if (logManager.isDebugMode()) {
-                        logManager.log(TAG, "A running unit couldn't set as completed.", exception);
+                        logManager.log(TAG, "A running unit couldn't set as completed.", null);
                     }
+                    didCompleteUpdateError = true;
                 }
                 // more units of the training section available
                 // than continue the training
@@ -742,16 +747,9 @@ public class TrainingFragment extends Fragment
         return trainingUnitsStringList;
     }
 
-    // set the active running plan for the view
-    private void setActiveRunningPlan() {
-        // set the running plan for the view
-        // is users running plan not set, no training is possible
-        // set the active running plan from user
-        UUID runningPlanUUID = viewModel.getAppUser().getActiveRunningPlanUUID();
-        if (runningPlanUUID != null) {
-            runningPlan = viewModel.getRunningPlanByUUID(runningPlanUUID);
-        }
-        isTrainingPossible = runningPlan != null;
+    // set the training data in the view
+    // is no plan available - no training is possible
+    private void setTrainingData() {
         if (!isTrainingPossible) {
             // info to user
             ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
@@ -763,7 +761,8 @@ public class TrainingFragment extends Fragment
         }
         // check if the users running plan completed
         if (runningPlan.isCompleted()) {
-            // ask user how we proceed further
+            // try to set the next plan in order
+            // otherwise ask user how we proceed further
             handleRunningPlan();
             return;
         }
@@ -829,21 +828,35 @@ public class TrainingFragment extends Fragment
     // select plan in list
     private void handleRunningPlan() {
         // active running plan is completed
-        // ask user for action
-        if (runningPlan != null) {
-            // deactivate option 3 (argument is null) if all running plans completed
-            String optionThreeButtonText = null;
-            List<RunningPlan> runningPlans = viewModel.getRunningPlans();
-            if (runningPlans.stream().allMatch(RunningPlan::isCompleted)) {
-                optionThreeButtonText = getString(R.string.select_running_plan_option_3);
+        // try to set the next plan in order
+        // otherwise ask user for action
+        List<RunningPlan> runningPlans = viewModel.getRunningPlans();
+        // get the next uncompleted plan
+        Optional<RunningPlan> optionalRunningPlan = runningPlans
+                .stream()
+                .filter(runningPlan1 -> !runningPlan1.isCompleted())
+                .findFirst();
+        if (optionalRunningPlan.isPresent()) {
+            // set the next plan as active
+            runningPlan = optionalRunningPlan.get();
+            appUser.setActiveRunningPlanUUID(runningPlan.getUUID());
+            if (viewModel.updateObject(appUser)) {
+                isTrainingPossible = true;
+                // refresh the ui
+                setTrainingData();
+            } else {
+                isTrainingPossible = false;
             }
-            ModalOptionDialog.showThreeOptionsDialog(
+        } else {
+            isTrainingPossible = false;
+        }
+        if (!isTrainingPossible) {
+            ModalOptionDialog.showOptionsDialog(
                     requireContext(),
                     getString(R.string.running_plan_completed),
                     getString(R.string.title_select_new_running_plan_options),
                     getString(R.string.select_running_plan_option_1),
                     getString(R.string.select_running_plan_option_2),
-                    optionThreeButtonText,
                     button -> {
                         // reset the active running plan
                         if (button == ModalOptionDialog.Button.OPTION_1) {
@@ -854,31 +867,10 @@ public class TrainingFragment extends Fragment
                         if (button == ModalOptionDialog.Button.OPTION_2) {
                             // select from list, open list fragment with running plans
                             FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                            Fragment fragment = new RunningPlanListFragment();
-                            fragmentTransaction.replace(R.id.content, fragment);
+                            Fragment fragment = new RunningPlansFragment();
+                            fragmentTransaction.replace(R.id.fragment_training_container, fragment);
                             fragmentTransaction.addToBackStack(null);
                             fragmentTransaction.commit();
-                        }
-                        // select from list, open list fragment
-                        if (button == ModalOptionDialog.Button.OPTION_3) {
-                            Optional<RunningPlan> nextRunningPlan = runningPlans
-                                    .stream()
-                                    .filter(r -> !r.isCompleted())
-                                    .min(Comparator.comparing(RunningPlan::getOrderNumber));
-                            // try to get the next running plan
-                            nextRunningPlan.ifPresent(plan -> runningPlan = plan);
-                            // set the new plan as active
-                            User appUser = viewModel.getAppUser();
-                            appUser.setActiveRunningPlanUUID(runningPlan.getUUID());
-                            try {
-                                viewModel.updateObject(appUser);
-                                // recall the method to set active running plan
-                                setActiveRunningPlan();
-                            } catch (SportsLibraryException exception) {
-                                if (logManager.isDebugMode()) {
-                                    logManager.log(TAG, null, exception);
-                                }
-                            }
                         }
                     });
         }
@@ -888,8 +880,15 @@ public class TrainingFragment extends Fragment
     private void resetRunningPlan() {
         if (runningPlan != null) {
             runningPlan.setUncompleted();
-            // refresh ui
-            setActiveRunningPlan();
+            if (viewModel.updateObject(runningPlan)) {
+                // refresh ui
+                setTrainingData();
+            } else {
+                // TODO: info to the user
+                if (logManager.isDebugMode()) {
+                    logManager.log(TAG, "Could not reset running plan.", null);
+                }
+            }
         }
     }
 
@@ -971,12 +970,11 @@ public class TrainingFragment extends Fragment
 
             }
 
-            final int DELAY = 0, VIBRATE = 1000, SLEEP = 1000, START = 0;
+            final int DELAY = 0, VIBRATE = 500, SLEEP = 500, START = -1;
             long[] vibratePattern = {DELAY, VIBRATE, SLEEP};
 
             vibrator.vibrate(VibrationEffect.createWaveform(vibratePattern, START));
 
         }
     }
-
 }

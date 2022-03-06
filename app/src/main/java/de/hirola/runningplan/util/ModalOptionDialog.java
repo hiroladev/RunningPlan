@@ -59,8 +59,6 @@ public final class ModalOptionDialog {
             alert.setButton(AlertDialog.BUTTON_NEUTRAL,
                     buttonText,
                     (dialogInterface, i) -> finalAlert.dismiss());
-        } else {
-            //TODO: jvm
         }
         switch (dialogStyle) {
             case 0:
@@ -111,17 +109,14 @@ public final class ModalOptionDialog {
                     negativeButtonText,
                     (dialogInterface, i) -> buttonClickListener.onButtonClicked(Button.CANCEL));
             alert.show();
-        } else {
-            //TODO: jvm
         }
     }
 
-    public static void showThreeOptionsDialog(@Nullable Context context,
-                                              @Nullable String title, @NotNull String message,
-                                              @NotNull String optionOneButtonText,
-                                              @NotNull String optionTwoButtonText,
-                                              @Nullable String optionThreeButtonText,
-                                              @NotNull ModalOptionDialogListener buttonClickListener) {
+    public static void showOptionsDialog(@Nullable Context context,
+                                         @Nullable String title, @NotNull String message,
+                                         @NotNull String optionOneButtonText,
+                                         @NotNull String optionTwoButtonText,
+                                         @NotNull ModalOptionDialogListener buttonClickListener) {
 
         boolean isRunningOnAndroid = context != null;
         AlertDialog alert;
@@ -140,14 +135,7 @@ public final class ModalOptionDialog {
             alert.setButton(AlertDialog.BUTTON_NEGATIVE,
                     optionTwoButtonText,
                     (dialogInterface, i) -> buttonClickListener.onButtonClicked(Button.OPTION_2));
-            if (optionThreeButtonText != null) {
-                alert.setButton(AlertDialog.BUTTON_NEUTRAL,
-                        optionThreeButtonText,
-                        (dialogInterface, i) -> buttonClickListener.onButtonClicked(Button.OPTION_3));
-            }
             alert.show();
-        } else {
-            //TODO: jvm
         }
     }
 

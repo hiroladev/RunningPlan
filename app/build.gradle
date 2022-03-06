@@ -11,7 +11,7 @@ android {
         minSdkVersion 27
         targetSdkVersion 31
         versionCode 1
-        versionName "1.1.1"
+        versionName "v.01"
         
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -45,8 +45,8 @@ configurations.all {
 }
 
 dependencies {
-    implementation 'de.hirola:sports-library:0.0.3-SNAPSHOT'
-    //implementation files('C:/Users/schmid02/IdeaProjects/sports-library/target/sports-library-0.0.3-SNAPSHOT.jar')
+    implementation 'de.hirola:sports-library:0.1-SNAPSHOT'
+    //implementation files('C:/Users/schmid02/IdeaProjects/sports-library/target/sports-library-0.1-SNAPSHOT.jar')
     implementation 'org.dizitart:nitrite:3.4.3'
     implementation 'org.slf4j:slf4j-simple:1.7.36'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'

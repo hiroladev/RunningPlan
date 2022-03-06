@@ -39,7 +39,10 @@ public class TrainingNotificationManager {
         // Create an explicit intent for an Activity in your app
         Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        // app crashs on API 31
+        int pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, pendingFlags);
 
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -82,9 +85,10 @@ public class TrainingNotificationManager {
     private void makeServiceNotificationBuilder(Context context, PendingIntent pendingIntent) {
         serviceNotificationBuilder = new NotificationCompat.Builder(context, SERVICE_CHANNEL_ID);
         serviceNotificationBuilder
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setSilent(true)
                 .setOnlyAlertOnce(true)
-                .setOngoing(true)
+                .setOngoing(false)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(context.getText(R.string.start_training_service))

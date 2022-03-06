@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.R;
 import de.hirola.sportslibrary.Global;
+import de.hirola.sportslibrary.util.Logger;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 public class AppLogManager {
 
     private static AppLogManager instance = null;
+    private Logger logger;
     private final boolean debugMode;
     private final boolean sendDebugLog;
 
@@ -73,7 +75,12 @@ public class AppLogManager {
         return sendDebugLog;
     }
 
+    public Logger getLogger() {
+        return logger;
+    }
+
     private AppLogManager(Context context) {
+        logger = Logger.getInstance(context.getPackageName());
         SharedPreferences sharedPreferences =
                 context.getSharedPreferences(context.getString(R.string.preference_file), Context.MODE_PRIVATE);
         debugMode = Global.APP_DEBUG_MODE || sharedPreferences.getBoolean(Global.PreferencesKeys.debugMode, false);

@@ -1,7 +1,7 @@
 {
     "name": "Start60",
     "orderNumber": 2,
-    "remarks":"runningplan_start_60_remarks",
+    "remarks":"running_plan_start_60_remarks",
     "trainingUnits" : [
         {
           "week": 1,

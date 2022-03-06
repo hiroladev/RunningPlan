@@ -51,12 +51,13 @@
     <string name="name_must_be_not_null">Der Name darf nicht leer sein.</string>
     <string name="no_active_running_plan">Zum Trainieren bitte einen Laufplan auswählen.</string>
     <string name="no_running_plans_available">Es sind keine Laufpläne vorhanden.</string>
-    <string name="remove_active_running_plan">Soll mit diesem Laufplan wirklich nicht mehr trainiert werden?</string>
+    <string name="reset_active_running_plan">Soll mit diesem Laufplan wirklich nicht mehr trainiert werden?</string>
     <string name="ask_for_cancel_training">Soll das Training wirklich abgebrochen werden?</string>
     <string name="no_file_selected">Es wurde keine Datei ausgewählt.</string>
-    <string name="ask_before_remove_running_plan">Soll der Laufplan wirklich gelöscht werden?</string>
+    <string name="ask_before_delete_running_plan">Soll der Laufplan wirklich gelöscht werden?</string>
     <string name="recorded_track_not_found">Die Aufzeichnung des Trainings wurde nicht gefunden.</string>
     <string name="ask_before_clear_all_tracks">Sollen alle Tracks gelöscht werden?</string>
+    <string name="deleting_failed">Das Löschen ist fehlgeschlagen.</string>
 
     <!-- Common -->
     <string name="no_content">Die Inhalte konnten nicht geladen werden.</string>
@@ -100,7 +101,7 @@
     <string name="running_unit_started_at">Laufeinheit gestartet um</string>
     <string name="training_unit_finished">Laufeinheit abgeschlossen</string>
     <string name="training_completed">Training abgeschlossen</string>
-    <string name="running_plan_completed">Dieser Laufplan wurde bereits vollständig abgeschlossen.</string>
+    <string name="running_plan_completed">Dieser Laufplan wurde vollständig abgeschlossen.</string>
 
     <!-- Tooltips -->
     <string name="template_must_be_changed">Vorlagen dürfen nicht verändert werden</string>
@@ -120,12 +121,15 @@
     <!-- Movement Data -->
     <string name="movement_type_not_found">Unbekannt</string>
     <string name="P">Pause</string>
+    <string name="EL">Einlaufen</string>
     <string name="LG">Langsames Gehen</string>
     <string name="ZG">Zügiges Gehen</string>
     <string name="LL">Langsames Laufen</string>
     <string name="FL">Flottes Laufen</string>
     <string name="SL">Schnelles Laufen</string>
     <string name="SSL">Sehr schnelles Laufen</string>
+    <string name="LDL">Langsamer Dauerlauf</string>
+    <string name="ZDL">Zügiger Dauerlauf</string>
     <string name="L">Laufen</string>
     <string name="R">Rennen</string>
     <string name="movement_type_summary">Arten der Bewegung während des Lauftrainings</string>
@@ -145,6 +149,10 @@
     <string name="show_training_details">Trainingdetails anzeigen …</string>
     <string name="select_as_active_running_plan">Als aktiven Plan auswählen</string>
     <string name="select_week_of_start">Startwoche festlegen</string>
+    <string name="running_plan_start_remarks">Laufplan zum Einstieg in das Laufen</string>
+    <string name="running_plan_start_60_remarks">Fortsetzung des Laufplans Start</string>
+    <string name="running_plan_start_90_remarks">Fortsetzung des Laufplans Start 60</string>
+    <string name="running_plan_start_test_remarks">Laufplan für Tests</string>
 
     <!-- Preferences -->
     <string name="preference_not_found">Unbekannte Einstellung</string>

@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,9 +18,6 @@ import android.view.ViewGroup;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
-import de.hirola.sportslibrary.SportsLibraryException;
-import de.hirola.sportslibrary.database.DatastoreDelegate;
-import de.hirola.sportslibrary.database.PersistentObject;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.sportslibrary.model.UUID;
@@ -41,11 +37,11 @@ import java.util.stream.Stream;
  * @author Michael Schmidt (Hirola)
  * @since 0.1
  */
-public class RunningPlanListFragment extends Fragment implements View.OnClickListener {
+public class RunningPlansFragment extends Fragment implements View.OnClickListener {
 
-    private final static String TAG = RunningPlanListFragment.class.getSimpleName();
+    private final static String TAG = RunningPlansFragment.class.getSimpleName();
 
-    private AppLogManager logManager; // app logger
+    private AppLogManager appLogManager; // app logger
     // view model
     private RunningPlanViewModel viewModel;
     // recycler view list adapter
@@ -74,7 +70,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_running_plans, container, false);
         // app logger
-        logManager = AppLogManager.getInstance(requireContext());
+        appLogManager = AppLogManager.getInstance(requireContext());
         // should I hide templates?
         SharedPreferences sharedPreferences =
                 requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
@@ -113,7 +109,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
                                 // warning before remove
                                 ModalOptionDialog.showYesNoDialog(requireContext(),
                                         null,
-                                        getString(R.string.ask_before_remove_running_plan),
+                                        getString(R.string.ask_before_delete_running_plan),
                                         null,
                                         null,
                                         button -> {
@@ -122,18 +118,14 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
                                                 int position1 = viewHolder.getBindingAdapterPosition();
                                                 RunningPlan runningPlan1 = runningPlans.get(position1);
                                                 // remove running plan
-                                                try {
-                                                    viewModel.deleteObject(runningPlan1);
+                                                if (viewModel.deleteObject(runningPlan1)) {
                                                     listAdapter.notifyItemRemoved(position1);
-                                                } catch (SportsLibraryException exception) {
+                                                } else {
                                                     ModalOptionDialog.showMessageDialog(
                                                             ModalOptionDialog.DialogStyle.CRITICAL,
                                                             requireContext(),
-                                                            null, getString(R.string.remove_active_running_plan),
+                                                            null, getString(R.string.deleting_failed),
                                                             null);
-                                                    if (logManager.isDebugMode()) {
-                                                        logManager.log(TAG, null, exception);
-                                                    }
                                                 }
                                             }
                                         });
@@ -206,7 +198,7 @@ public class RunningPlanListFragment extends Fragment implements View.OnClickLis
     }
 
     private void showFragment(Fragment fragment) {
-        // hides the RunningPlanListFragment
+        // hides the RunningPlansFragment
         FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
         fragmentTransaction.hide(this);
         // starts the RunningPlanDetailsFragment

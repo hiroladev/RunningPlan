@@ -47,10 +47,11 @@ public class RunningPlanApplication extends Application implements SportsLibrary
 
     @Override
     public InputStream[] getRunningPlanTemplates() {
-        InputStream[] inputStreams = new InputStream[3];
+        InputStream[] inputStreams = new InputStream[4];
         inputStreams[0] = getResources().openRawResource(R.raw.start);
         inputStreams[1] = getResources().openRawResource(R.raw.start60);
-        inputStreams[2] = getResources().openRawResource(R.raw.start_test);
+        inputStreams[2] = getResources().openRawResource(R.raw.start90);
+        inputStreams[3] = getResources().openRawResource(R.raw.start_test);
         return inputStreams;
     }
 

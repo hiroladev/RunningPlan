@@ -10,12 +10,12 @@
 
     <fragment
             android:id="@+id/navigation_training"
-            android:name="de.hirola.runningplan.ui.training.TrainingFragment"
+            android:name="de.hirola.runningplan.ui.training.TrainingContainerFragment"
             android:label="@string/title_training"/>
 
     <fragment
             android:id="@+id/navigation_running_plans"
-            android:name="de.hirola.runningplan.ui.runningplans.RunningPlanFragment"
+            android:name="de.hirola.runningplan.ui.runningplans.RunningPlansContainerFragment"
             android:label="@string/title_running_plans"/>
 
     <fragment

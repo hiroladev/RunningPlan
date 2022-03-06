@@ -56,7 +56,7 @@
     <string name="template_must_be_changed">Templates must be changed</string>
     <string name="question">Question</string>
     <string name="hint">Hint</string>
-    <string name="remove_active_running_plan">Shouldn\'t this running plan really be used any more?</string>
+    <string name="reset_active_running_plan">Shouldn\'t this running plan really be used any more?</string>
     <string name="name_must_be_not_null">The name must be not null.</string>
     <string name="error">Error</string>
     <string name="warning">Warning</string>
@@ -66,7 +66,7 @@
     <string name="import_succeed">Import succeed</string>
     <string name="import_failed">Import failed</string>
     <string name="loading_file_succeed">File successfully read</string>
-    <string name="ask_before_remove_running_plan">Do you really want to delete the plan?</string>
+    <string name="ask_before_delete_running_plan">Do you really want to delete the plan?</string>
     <string name="recorded_track_not_found">The recording of the training was not found.</string>
     <string name="training_unit_finished">Unit completed</string>
     <string name="running_unit_started_at">Running unit started at</string>
@@ -111,4 +111,12 @@
     <string name="menu_item_track">Tracks</string>
     <string name="ask_before_clear_all_tracks">Do you want to delete all tracks?</string>
     <string name="no_active_running_plan">Please select a running plan for training.</string>
+    <string name="EL">Run in</string>
+    <string name="LDL">Slow continuous run</string>
+    <string name="ZDL">Fast continuous run</string>
+    <string name="running_plan_start_remarks">Running plan to start running</string>
+    <string name="running_plan_start_test_remarks">Running plan for App tests</string>
+    <string name="running_plan_start_60_remarks">Continuation of the running plan Start</string>
+    <string name="running_plan_start_90_remarks">Continuation of the running plan Start 60</string>
+    <string name="deleting_failed">Deletion failed.</string>
 </resources>

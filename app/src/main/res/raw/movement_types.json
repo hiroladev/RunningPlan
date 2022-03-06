@@ -21,10 +21,31 @@
         "colorKeyString": "green"
     },
     {
+        "key": "EL",
+        "stringForKey": "EL",
+        "speed": 8.75,
+        "pace": 7.06,
+        "colorKeyString": "green"
+    },
+    {
         "key": "LL",
         "stringForKey": "LL",
         "speed": 9.23,
         "pace": 6.3,
+        "colorKeyString": "green"
+    },
+    {
+        "key": "LDL",
+        "stringForKey": "LDL",
+        "speed": 10.00,
+        "pace": 6.0,
+        "colorKeyString": "green"
+    },
+    {
+        "key": "ZDL",
+        "stringForKey": "ZDL",
+        "speed": 12.00,
+        "pace": 5.0,
         "colorKeyString": "green"
     },
     {

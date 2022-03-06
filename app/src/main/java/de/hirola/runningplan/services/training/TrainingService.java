@@ -106,6 +106,10 @@ public class TrainingService extends Service implements LocationListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        // When you use a foreground service, you must display a notification
+        // so that users are actively aware that the service is running.
+        // This notification cannot be dismissed unless the service is either
+        // stopped or removed from the foreground.
         // created a foreground service with user notification
         // start service and send notification, if the app hidden
         // the drawable will be display in top

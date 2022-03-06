@@ -3,7 +3,6 @@ package de.hirola.runningplan.services.training;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
@@ -97,7 +96,6 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
      *
      * @param trackId of the track to be updated
      * @param trackPoint with updates for the track
-     * @return 0 if no track is updated, 1 if the track updated or -1 if an error occurred
      */
     public void updateTrack(Track.Id trackId, TrackPoint trackPoint) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();

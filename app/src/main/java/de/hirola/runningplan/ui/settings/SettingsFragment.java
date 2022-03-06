@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.EditText;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.*;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.model.RunningPlanViewModel;
@@ -212,10 +211,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 }
             }
         }
-        try {
-            // save the data
-            viewModel.updateObject(appUser);
-        } catch (SportsLibraryException exception) {
+        // save the data
+        if (!viewModel.updateObject(appUser)) {
             // data could not saved
             // alert dialog to user
             ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
@@ -224,7 +221,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     getString(R.string.save_data_error),
                     getString(R.string.ok));
             if (logManager.isDebugMode()) {
-                exception.printStackTrace();
+                logManager.log(TAG, "Error while saving settings.", null);
             }
             return false;
         }
@@ -424,11 +421,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 maxPulse = maxPulse - age;
             }
         }
-        try {
-            // save the data
-            appUser.setMaxPulse(maxPulse);
-            viewModel.updateObject(appUser);
-        } catch (SportsLibraryException exception) {
+        // save the data
+        appUser.setMaxPulse(maxPulse);
+        if (!viewModel.updateObject(appUser)) {
             // data could not saved
             // alert dialog to user
             ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.CRITICAL,
@@ -437,10 +432,10 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     getString(R.string.save_data_error),
                     getString(R.string.ok));
             if (logManager.isDebugMode()) {
-                exception.printStackTrace();
+                logManager.log(TAG, "Error while saving user data.", null);
             }
-            return;
         }
+
         // add to preferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Global.PreferencesKeys.userMaxPulse, String.valueOf(maxPulse));

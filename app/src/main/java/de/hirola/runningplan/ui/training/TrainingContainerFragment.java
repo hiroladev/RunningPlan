@@ -1,24 +1,24 @@
-package de.hirola.runningplan.ui.runningplans;
+package de.hirola.runningplan.ui.training;
 
-import android.os.Bundle;
-import androidx.fragment.app.Fragment;
+import android.os.*;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.fragment.app.Fragment;
 import de.hirola.runningplan.R;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
  * This software us licensed under the AGPL-3.0 or later.
  *
- * The main fragment for the running plans.
+ * Fragment for the training.
  *
  * @author Michael Schmidt (Hirola)
  * @since 0.1
  */
-public class RunningPlanFragment extends Fragment {
+public class TrainingContainerFragment extends Fragment {
 
-    public RunningPlanFragment() {
+    public TrainingContainerFragment() {
         // Required empty public constructor
     }
 
@@ -26,8 +26,8 @@ public class RunningPlanFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            RunningPlanListFragment listFragment = new RunningPlanListFragment();
-            getChildFragmentManager().beginTransaction().add(R.id.fragment_running_plan_container, listFragment).commit();
+            TrainingFragment trainingContentFragment1 = new TrainingFragment();
+            getChildFragmentManager().beginTransaction().add(R.id.fragment_training_container, trainingContentFragment1).commit();
         }
     }
 
@@ -35,6 +35,6 @@ public class RunningPlanFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_running_plan, container, false);
+        return inflater.inflate(R.layout.fragment_training, container, false);
     }
 }
