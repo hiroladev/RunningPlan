@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+import android.util.Pair;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.util.AppLogManager;
@@ -15,6 +16,7 @@ import de.hirola.sportslibrary.tables.TrackColumns;
 import de.hirola.sportslibrary.tables.TrackLocationColumns;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -263,20 +265,20 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns the id's for all recorded (and saved) tracks.
+     * Returns the id's for all recorded (and saved) tracks with the recording status.
      *
-     * @return a list of id's of recorded tracks or null if there are no tracks
+     * @return a list of id's of recorded tracks and the flags
+     *         or null if there are no tracks
      */
     @Nullable
-    public List<Track.Id> getTrackIds() {
-        // get all locations for the track
-        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-        // get the data
+    public List<Pair<Track.Id, Boolean>> getTrackIds() {
+        // get the id and the flag of tracks
         String[] projection = {
-                TrackColumns.ID
+                TrackColumns.ID,
+                TrackColumns.ACTIVE
         };
         // build a list of locations for the track
-        try (Cursor cursor = sqLiteDatabase.query(
+        try (SQLiteDatabase sqLiteDatabase = getReadableDatabase(); Cursor cursor = sqLiteDatabase.query(
                 TrackColumns.TABLE_NAME,   // table to query
                 projection,                // columns to return (pass null to get all)
                 null,                      // columns for the WHERE clause
@@ -285,14 +287,17 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 null,                      // having
                 null                       // sort order
         )) {
-            List<Track.Id> trackIds = new ArrayList<>();
+            List<Pair<Track.Id, Boolean>> trackIds = new ArrayList<>();
             while (cursor.moveToNext()) {
                 // get the data (attributes) from cursor
                 long id = cursor.getLong(cursor.getColumnIndexOrThrow(TrackColumns.ID));
+                long flag = cursor.getLong(cursor.getColumnIndexOrThrow(TrackColumns.ACTIVE));
                 // create a new track id object
                 Track.Id trackId = new Track.Id(id);
-                // add location to list
-                trackIds.add(trackId);
+                // determine the flag
+                boolean active = flag !=0;
+                // add to list
+                trackIds.add(new Pair<>(trackId, active));
             }
             return trackIds;
         } catch (IllegalArgumentException exception) {
@@ -300,8 +305,6 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 logManager.log(TAG, "Column (index) does not exists", exception);
             }
             return null;
-        } finally {
-            sqLiteDatabase.close();
         }
     }
 
@@ -311,10 +314,12 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
      * @return a list of id's of recorded tracks or null if there are no tracks
      */
     @Nullable
-    public List<Track> getRecordedTracks(@NonNull List<Track.Id> trackIds) {
+    public List<Track> getRecordedTracks(@NonNull List<Pair<Track.Id, Boolean>> trackIds) {
         List<Track> tracks = new ArrayList<>();
-        for (Track.Id trackId: trackIds) {
-            tracks.add(getTrack(trackId));
+        Iterator<Pair<Track.Id, Boolean>> iterator = trackIds.stream().iterator();
+        while (iterator.hasNext()) {
+            Pair<Track.Id, Boolean> trackId = iterator.next();
+            tracks.add(getTrack(trackId.first));
         }
         return tracks;
     }

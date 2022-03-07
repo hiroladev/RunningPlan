@@ -2,6 +2,7 @@ package de.hirola.runningplan.services.training;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Pair;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.R;
@@ -12,6 +13,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -25,7 +27,7 @@ import java.util.List;
  */
 public class TrackManager {
 
-    private List<Track.Id> trackIds; // query the list to avoid get from sqlite
+    private List<Pair<Track.Id, Boolean>> trackIds; // query the list to avoid get from sqlite
     private final Context context;
     private final TrackingDatabaseHelper databaseHelper;
     private TrackPoint trackPoint;
@@ -54,14 +56,15 @@ public class TrackManager {
         if (primaryKey > -1) {
             Track.Id trackId = new Track.Id(primaryKey);
             // remember the new track in local list
-            trackIds.add(trackId);
+            // set the recording state to true
+            trackIds.add(new Pair<>(trackId, true));
             return trackId;
         }
         return null;
     }
 
     public boolean insertLocationForTrack(@NonNull Track.Id trackId, @NonNull Location location) {
-        if (trackIds.contains(trackId)) {
+        if (trackIds.contains(new Pair<>(trackId, true))) {
             // create the first point of the track with the start time of track
             if (trackPoint == null) {
                 trackPoint = new TrackPoint(location);
@@ -76,14 +79,15 @@ public class TrackManager {
     }
 
     public boolean completeTrack(Track.Id trackId) {
-        if (trackIds.contains(trackId)) {
+        if (trackIds.contains(new Pair<>(trackId, true))) {
             return databaseHelper.completeTrack(trackId, trackPoint);
         }
         return false;
     }
 
     public Track getTrack(Track.Id trackId) {
-        if (trackIds.contains(trackId)) {
+        if (trackIds.contains(new Pair<>(trackId, true)) ||
+                trackIds.contains(new Pair<>(trackId, false))) {
             return databaseHelper.getTrack(trackId);
         }
         return null;
@@ -94,7 +98,7 @@ public class TrackManager {
     }
 
     public boolean removeTrack(Track.Id trackId) {
-        if (trackIds.contains(trackId)) {
+        if (trackIds.contains(new Pair<>(trackId, false))) {
             return databaseHelper.removeTrack(trackId);
         }
         return false;
@@ -106,7 +110,14 @@ public class TrackManager {
      * @return The number of deleted tracks.
      */
     public int clearAll() {
-        trackIds.clear();
+        // clear only inactive tracks
+        Iterator<Pair<Track.Id, Boolean>> iterator = trackIds.stream().iterator();
+        while (iterator.hasNext()) {
+            Pair<Track.Id, Boolean> trackId = iterator.next();
+            if (!trackId.second) {
+                trackIds.remove(trackId);
+            }
+        }
         return databaseHelper.clearAll();
     }
 }
