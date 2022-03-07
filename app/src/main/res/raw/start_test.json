@@ -1,30 +1,26 @@
 {
   "name": "Start-Test",
-  "orderNumber": 4,
+  "orderNumber": 5,
   "remarks":"running_plan_start_test_remarks",
   "trainingUnits" : [
     {
       "week": 1,
       "day": 1,
-      "duration": 1,
       "units": [ "1", "ZG" ]
     },
     {
       "week": 1,
       "day": 3,
-      "duration": 2,
       "units": [ "1", "ZG", "1", "L" ]
     },
     {
       "week": 1,
       "day": 5,
-      "duration": 4,
       "units": [ "1", "ZG", "1", "L", "1", "ZG", "1", "L" ]
     },
     {
       "week": 1,
       "day": 6,
-      "duration": 2,
       "units": [ "2", "ZG" ]
     }
   ]

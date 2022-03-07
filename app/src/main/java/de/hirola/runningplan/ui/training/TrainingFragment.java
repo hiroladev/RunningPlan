@@ -26,7 +26,6 @@ import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.runningplan.util.TrainingNotificationManager;
 import de.hirola.sportslibrary.Global;
-import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.UUID;
 import de.hirola.sportslibrary.model.*;
 import org.jetbrains.annotations.NotNull;
@@ -842,8 +841,10 @@ public class TrainingFragment extends Fragment
             appUser.setActiveRunningPlanUUID(runningPlan.getUUID());
             if (viewModel.updateObject(appUser)) {
                 isTrainingPossible = true;
-                // refresh the ui
                 setTrainingData();
+                // refresh the ui
+                showRunningPlanInView();
+                showRunningPlanEntryInView();
             } else {
                 isTrainingPossible = false;
             }
@@ -970,7 +971,7 @@ public class TrainingFragment extends Fragment
 
             }
 
-            final int DELAY = 0, VIBRATE = 500, SLEEP = 500, START = -1;
+            final int DELAY = 0, VIBRATE = 1000, SLEEP = 1000, START = -1;
             long[] vibratePattern = {DELAY, VIBRATE, SLEEP};
 
             vibrator.vibrate(VibrationEffect.createWaveform(vibratePattern, START));

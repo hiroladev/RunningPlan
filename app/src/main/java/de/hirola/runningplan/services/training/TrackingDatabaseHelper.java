@@ -85,6 +85,8 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         values.put(TrackColumns.DESCRIPTION, track.getDescription());
         // start time
         values.put(TrackColumns.STARTTIME, track.getStartTimeInMilli());
+        // flag as recording, 1 is true
+        values.put(TrackColumns.ACTIVE, 1);
         // insert the new track (row), returning the primary key value of the new row
         long primaryKey = sqLiteDatabase.insert(TrackColumns.TABLE_NAME, null, values);
         sqLiteDatabase.close();
@@ -92,7 +94,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Insert a new track in the local track datastore.
+     * Update an existing track from the local track datastore.
      *
      * @param trackId of the track to be updated
      * @param trackPoint with updates for the track
@@ -164,6 +166,8 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(TrackColumns.STOPTIME, stopTime);
         values.put(TrackColumns.DISTANCE, distance);
+        // no active recording, o is false
+        values.put(TrackColumns.ACTIVE, 0);
         // Which row to update, based on the title
         String selection = TrackColumns.ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(trackId.getId()) };
@@ -321,9 +325,20 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
      * @return The number of deleted tracks.
      */
     public int clearAll() {
+        // hint: to remove all rows and get a count pass "1" as the whereClause
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        int deletedLocations = sqLiteDatabase.delete(TrackLocationColumns.TABLE_NAME,"1", null);
-        int deletedTracks = sqLiteDatabase.delete(TrackColumns.TABLE_NAME,"1", null);
+        // delete no active tracks
+        String whereClauseTracks = TrackColumns.ACTIVE + " = ?";
+        String[] whereClauseTracksArgs = { "0" };
+        int deletedTracks = sqLiteDatabase.delete(TrackColumns.TABLE_NAME,whereClauseTracks, whereClauseTracksArgs);
+        // delete all locations where no track exists now
+        String whereClauseLocations = TrackLocationColumns.TRACK_ID
+                + " NOT IN ( SELECT "
+                + TrackColumns.ID
+                + " FROM "
+                + TrackColumns.TABLE_NAME
+                + ")";
+        int deletedLocations = sqLiteDatabase.delete(TrackLocationColumns.TABLE_NAME,whereClauseLocations, null);
         sqLiteDatabase.close();
         if (logManager.isDebugMode()) {
             String message = String.format("%s locations and %s tracks deleted.",

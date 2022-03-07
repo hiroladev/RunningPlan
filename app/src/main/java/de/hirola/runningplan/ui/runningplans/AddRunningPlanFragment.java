@@ -21,7 +21,6 @@ import de.hirola.sportslibrary.database.DataRepository;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.runningplan.util.ModalOptionDialog;
-import de.hirola.sportslibrary.util.Logger;
 import de.hirola.sportslibrary.util.RunningPlanTemplate;
 import de.hirola.sportslibrary.util.TemplateLoader;
 

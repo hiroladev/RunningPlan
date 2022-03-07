@@ -11,7 +11,6 @@ import de.hirola.runningplan.R;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
-import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.User;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import org.jetbrains.annotations.NotNull;

@@ -76,11 +76,12 @@ public class InfoTracksFragment extends Fragment implements View.OnClickListener
                             deletedTracks.set(trackManager.clearAll());
                         }
                     });
-        }
-        if (deletedTracks.get() > 0) {
-            // go back
-            if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                requireActivity().getSupportFragmentManager().popBackStack();
+            if (deletedTracks.get() > 0) {
+                listAdapter.notifyItemRangeRemoved(0, listAdapter.getItemCount());
+                // go back
+                if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                }
             }
         }
     }

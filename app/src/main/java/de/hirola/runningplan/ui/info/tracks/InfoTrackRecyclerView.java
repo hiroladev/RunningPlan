@@ -90,7 +90,7 @@ public class InfoTrackRecyclerView extends RecyclerView.Adapter<RecyclerView.Vie
             } else {
                 viewHolder.distanceTextView.setText("-");
             }
-            viewHolder.averageSpeedTextView.setText(String.valueOf(track.getAverageSpeed()));
+            viewHolder.averageSpeedTextView.setText(String.format("%,.2f%s",track.getAverageSpeed(), " km/h"));
             //TODO: track altitude
             viewHolder.altitudeDifferenceTextView.setText("-");
         }
