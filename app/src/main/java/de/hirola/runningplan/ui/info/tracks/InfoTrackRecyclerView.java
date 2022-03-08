@@ -34,7 +34,7 @@ public class InfoTrackRecyclerView extends RecyclerView.Adapter<RecyclerView.Vie
 
     private final AppLogManager logManager;
     private View.OnClickListener onClickListener;
-    private final List<Track> tracks;
+    private List<Track> tracks;
 
     public InfoTrackRecyclerView(Context context, @NonNull List<Track> tracks) {
         this.tracks = tracks;
@@ -103,5 +103,9 @@ public class InfoTrackRecyclerView extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
+    }
+
+    public void submitList(@NonNull List<Track> tracks) {
+        this.tracks = tracks;
     }
 }

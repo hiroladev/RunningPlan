@@ -80,6 +80,11 @@ public class TrackManager {
 
     public boolean completeTrack(Track.Id trackId) {
         if (trackIds.contains(new Pair<>(trackId, true))) {
+            // update track list
+            int index = trackIds.indexOf(new Pair<>(trackId, true));
+            if (index > -1) {
+                trackIds.add(index, new Pair<>(trackId, false));
+            }
             return databaseHelper.completeTrack(trackId, trackPoint);
         }
         return false;
@@ -111,13 +116,19 @@ public class TrackManager {
      */
     public int clearAll() {
         // clear only inactive tracks
+        List <Pair<Track.Id, Boolean>> tempList = new ArrayList<>();
         Iterator<Pair<Track.Id, Boolean>> iterator = trackIds.stream().iterator();
         while (iterator.hasNext()) {
             Pair<Track.Id, Boolean> trackId = iterator.next();
-            if (!trackId.second) {
-                trackIds.remove(trackId);
+            if (trackId.second) {
+                // save active track
+                tempList.add(trackId);
             }
         }
+        // clear the list
+        trackIds.clear();
+        // add active tracks
+        trackIds.addAll(tempList);
         return databaseHelper.clearAll();
     }
 }

@@ -1,5 +1,6 @@
 package de.hirola.runningplan.ui.info.tracks;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ public class InfoTracksFragment extends Fragment implements View.OnClickListener
     private final static String TAG = InfoTracksFragment.class.getSimpleName();
 
     private AppLogManager logManager; // app logger
+    private Button clearAllTracksButton;
     private InfoTrackRecyclerView listAdapter;
     private TrackManager trackManager; // track manager for handling tracks
     private List<Track> tracks; // list if tacks
@@ -47,7 +49,7 @@ public class InfoTracksFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View infoTracksView = inflater.inflate(R.layout.fragment_info_tracks, container, false);
-        Button clearAllTracksButton = infoTracksView.findViewById(R.id.fgmt_info_tracks_clear_all_button);
+        clearAllTracksButton = infoTracksView.findViewById(R.id.fgmt_info_tracks_clear_all_button);
         clearAllTracksButton.setOnClickListener(this);
         // handling recorded tracks
         trackManager = new TrackManager(requireContext());
@@ -63,26 +65,29 @@ public class InfoTracksFragment extends Fragment implements View.OnClickListener
         return infoTracksView;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onClick(View v) {
         if (v instanceof Button) {
-            AtomicInteger deletedTracks = new AtomicInteger(0);
             ModalOptionDialog.showYesNoDialog(
                     requireContext(),
                     getString(R.string.question), getString(R.string.ask_before_clear_all_tracks),
                     getString(R.string.ok), getString(R.string.cancel),
                     button -> {
                         if (button == ModalOptionDialog.Button.OK) {
-                            deletedTracks.set(trackManager.clearAll());
+                            int deletedTracks = trackManager.clearAll();
+                            tracks.clear();
+                            tracks = trackManager.getRecordedTracks();
+                            if (deletedTracks > 0) {
+                                // refresh list
+                                listAdapter.submitList(tracks);
+                                listAdapter.notifyDataSetChanged();
+                                if (tracks.isEmpty()) {
+                                    clearAllTracksButton.setEnabled(false);
+                                }
+                            }
                         }
                     });
-            if (deletedTracks.get() > 0) {
-                listAdapter.notifyItemRangeRemoved(0, listAdapter.getItemCount());
-                // go back
-                if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                    requireActivity().getSupportFragmentManager().popBackStack();
-                }
-            }
         }
     }
 }

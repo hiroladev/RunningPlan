@@ -184,7 +184,7 @@ public class TrainingFragment extends Fragment
 
     public View onCreateView(@NotNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View trainingView = inflater.inflate(R.layout.fragment_training_content, container, false);
+        View trainingView = inflater.inflate(R.layout.fragment_training, container, false);
         // initialize ui elements
         setViewElements(trainingView);
         return trainingView;
