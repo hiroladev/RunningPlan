@@ -56,7 +56,7 @@
     <string name="template_must_be_changed">Templates must be changed</string>
     <string name="question">Question</string>
     <string name="hint">Hint</string>
-    <string name="reset_active_running_plan">Shouldn\'t this running plan really be used any more?</string>
+    <string name="stop_active_running_plan">Shouldn\'t this running plan really be used any more?</string>
     <string name="name_must_be_not_null">The name must be not null.</string>
     <string name="error">Error</string>
     <string name="warning">Warning</string>
@@ -119,4 +119,5 @@
     <string name="running_plan_start_60_remarks">Continuation of the running plan Start</string>
     <string name="running_plan_start_90_remarks">Continuation of the running plan Start 60</string>
     <string name="deleting_failed">Deletion failed.</string>
+    <string name="reset_running_plan">Do you want to reset the completed schedule?</string>
 </resources>

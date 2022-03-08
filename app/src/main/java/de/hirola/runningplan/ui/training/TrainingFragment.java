@@ -49,6 +49,8 @@ public class TrainingFragment extends Fragment
 
     private final static String TAG = TrainingFragment.class.getSimpleName();
 
+    private PowerManager.WakeLock wakeLock;
+
     private AppLogManager logManager; // app logging
     private SharedPreferences sharedPreferences; // user and app preferences
     private boolean useNotifications;
@@ -136,6 +138,11 @@ public class TrainingFragment extends Fragment
                 requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
         useNotifications = sharedPreferences.getBoolean(Global.PreferencesKeys.useNotifications, true);
 
+        // avoid screen locks - stop the training
+        PowerManager powerManager = (PowerManager) requireContext().getSystemService(Context.POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                requireActivity().getPackageName() + ":wake_lock");
+
         // checking location permissions
         useLocationData = sharedPreferences.getBoolean(Global.PreferencesKeys.useLocationData, false);
         locationPermissionRequest =
@@ -197,11 +204,14 @@ public class TrainingFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
+        wakeLock.release();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        //
+        wakeLock.acquire();
         // location permissions can be changed by user
         checkLocationPermissions();
         // check gps
@@ -374,8 +384,6 @@ public class TrainingFragment extends Fragment
 
     private void showRunningPlanInView() {
         if (runningPlan != null) {
-            // display the name of active running plan in view
-            runningPlanNameLabel.setText(runningPlan.getName());
             // display the plan state
             if (runningPlan.isCompleted()) {
                 runningPlanStateImageView.setImageResource(R.drawable.completed20x20);
@@ -391,6 +399,8 @@ public class TrainingFragment extends Fragment
             if (index > -1) {
                 trainingDaysSpinner.setSelection(index);
             }
+            // display the name of active running plan in view
+            runningPlanNameLabel.setText(runningPlan.getName());
             showRunningPlanEntryInView();
         } else {
             // no training possible
@@ -842,9 +852,6 @@ public class TrainingFragment extends Fragment
             if (viewModel.updateObject(appUser)) {
                 isTrainingPossible = true;
                 setTrainingData();
-                // refresh the ui
-                showRunningPlanInView();
-                showRunningPlanEntryInView();
             } else {
                 isTrainingPossible = false;
             }

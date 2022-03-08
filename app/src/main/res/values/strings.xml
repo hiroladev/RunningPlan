@@ -51,7 +51,8 @@
     <string name="name_must_be_not_null">Der Name darf nicht leer sein.</string>
     <string name="no_active_running_plan">Zum Trainieren bitte einen Laufplan auswählen.</string>
     <string name="no_running_plans_available">Es sind keine Laufpläne vorhanden.</string>
-    <string name="reset_active_running_plan">Soll mit diesem Laufplan wirklich nicht mehr trainiert werden?</string>
+    <string name="stop_active_running_plan">Soll mit diesem Laufplan wirklich nicht mehr trainiert werden?</string>
+    <string name="reset_running_plan">Soll der abgeschlossene Laufplan wieder zurückgesetzt werden?</string>
     <string name="ask_for_cancel_training">Soll das Training wirklich abgebrochen werden?</string>
     <string name="no_file_selected">Es wurde keine Datei ausgewählt.</string>
     <string name="ask_before_delete_running_plan">Soll der Laufplan wirklich gelöscht werden?</string>

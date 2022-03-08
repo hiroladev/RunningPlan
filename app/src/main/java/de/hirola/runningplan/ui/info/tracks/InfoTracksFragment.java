@@ -65,8 +65,8 @@ public class InfoTracksFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        AtomicInteger deletedTracks = new AtomicInteger(0);
         if (v instanceof Button) {
+            AtomicInteger deletedTracks = new AtomicInteger(0);
             ModalOptionDialog.showYesNoDialog(
                     requireContext(),
                     getString(R.string.question), getString(R.string.ask_before_clear_all_tracks),

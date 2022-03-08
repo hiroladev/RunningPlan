@@ -3,6 +3,7 @@ package de.hirola.runningplan.ui.runningplans;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.appcompat.widget.SwitchCompat;
@@ -36,7 +37,8 @@ import java.util.List;
  * @author Michael Schmidt (Hirola)
  * @since 0.1
  */
-public class RunningPlanDetailsFragment extends Fragment implements View.OnClickListener {
+public class RunningPlanDetailsFragment extends Fragment
+        implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private final static String TAG = RunningPlanDetailsFragment.class.getSimpleName();
 
@@ -141,7 +143,7 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
                     // user would not like the running plan as active
                     ModalOptionDialog.showYesNoDialog(
                             requireContext(),
-                            getString(R.string.question), getString(R.string.reset_active_running_plan),
+                            getString(R.string.question), getString(R.string.stop_active_running_plan),
                             getString(R.string.ok), getString(R.string.cancel),
                             button -> {
                                 if (button == ModalOptionDialog.Button.OK) {
@@ -168,6 +170,37 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
         }
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        if (isChecked) {
+            if (runningPlan.isCompleted()) {
+                // to train a completed running plan again, reset the plan
+                // user would not like the running plan as active
+                ModalOptionDialog.showYesNoDialog(
+                        requireContext(),
+                        getString(R.string.question), getString(R.string.reset_running_plan),
+                        getString(R.string.ok), getString(R.string.cancel),
+                        button -> {
+                            if (button == ModalOptionDialog.Button.OK) {
+                                // reset the running plan
+                                runningPlan.setUncompleted();
+                                if (!viewModel.updateObject(runningPlan)) {
+                                    ModalOptionDialog.showMessageDialog(
+                                            ModalOptionDialog.DialogStyle.CRITICAL,
+                                            requireContext(),
+                                            getString(R.string.error), getString(R.string.save_data_error),
+                                            getString(R.string.ok));
+                                    // disable switch again
+                                    activeRunningPlanSwitch.setChecked(false);
+                                }
+                            } else {
+                                activeRunningPlanSwitch.setChecked(false);
+                            }
+                        });
+            }
+        }
+    }
+
     public UUID getUUID() {
         return runningPlanUUID;
     }
@@ -183,6 +216,7 @@ public class RunningPlanDetailsFragment extends Fragment implements View.OnClick
         saveRunningPlanButton.setOnClickListener(this);
         // initialize the switch
         activeRunningPlanSwitch = view.findViewById(R.id.fgmt_running_plan_details_active_plan_switch);
+        activeRunningPlanSwitch.setOnCheckedChangeListener(this);
         // initialize the spinner
         startWeekSpinner = view.findViewById(R.id.fgmt_running_plan_details_start_week_spinner);
         // creating adapter for spinner with an empty list
