@@ -15,6 +15,10 @@ import de.hirola.sportslibrary.model.Track;
 import de.hirola.sportslibrary.tables.TrackColumns;
 import de.hirola.sportslibrary.tables.TrackLocationColumns;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -161,8 +165,8 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             return false;
         }
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        // last timestamp = stop time
-        long stopTime = trackPoint.getLocation().getTime();
+        // TODO: stop time
+        long stopTime = trackPoint.getStopTime();
         double distance = trackPoint.getActualDistance();
         // update the track
         ContentValues values = new ContentValues();
@@ -188,12 +192,11 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             // get the track with all location updates
             List<LocationData> locations = getLocationsForTrack(trackId);
             // get the track data from tables
-            SQLiteDatabase sqLiteDatabase = getReadableDatabase();
             // WHERE clause "title" = 'My Title'
+            // result as cursor
             String selection = TrackColumns.ID + " = ?";
             String[] selectionArgs = {String.valueOf(trackId.getId())};
-            // result as cursor
-            try (Cursor cursor = sqLiteDatabase.query(
+            try (SQLiteDatabase sqLiteDatabase = getReadableDatabase(); Cursor cursor = sqLiteDatabase.query(
                     TrackColumns.TABLE_NAME,   // table to query
                     null,                      // pass null to get all
                     selection,                 // columns for the WHERE clause
@@ -221,8 +224,6 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                     logManager.log(TAG, "Column (index) does not exists", exception);
                 }
                 return null;
-            } finally {
-                sqLiteDatabase.close();
             }
         }
         return null;
@@ -389,8 +390,14 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
     private List<LocationData> getLocationsForTrack(Track.Id trackId) {
         if (trackExist(trackId)) {
             // get all locations for the track
-            SQLiteDatabase sqLiteDatabase = getReadableDatabase();
             // get the data
+            // WHERE clause
+            // results sorted by timestamp
+            // build a list of locations for the track
+            String selection = TrackLocationColumns.TRACK_ID + " = ?";
+            String[] selectionArgs = {String.valueOf(trackId.getId())};
+            String sortOrder =
+                    TrackLocationColumns.TIME_STAMP + " DESC";
             String[] projection = {
                     TrackLocationColumns.TIME_STAMP,
                     TrackLocationColumns.PROVIDER,
@@ -399,14 +406,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                     TrackLocationColumns.ALTITUDE,
                     TrackLocationColumns.SPEED
             };
-            // WHERE clause
-            String selection = TrackLocationColumns.TRACK_ID + " = ?";
-            String[] selectionArgs = {String.valueOf(trackId.getId())};
-            // results sorted by timestamp
-            String sortOrder =
-                    TrackLocationColumns.TIME_STAMP + " DESC";
-            // build a list of locations for the track
-            try (Cursor cursor = sqLiteDatabase.query(
+            try (SQLiteDatabase sqLiteDatabase = getReadableDatabase(); Cursor cursor = sqLiteDatabase.query(
                     TrackLocationColumns.TABLE_NAME,   // table to query
                     projection,                // columns to return (pass null to get all)
                     selection,                 // columns for the WHERE clause
@@ -435,8 +435,6 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                     logManager.log(TAG, "Column (index) does not exists", exception);
                 }
                 return null;
-            } finally {
-                sqLiteDatabase.close();
             }
         }
         return null;

@@ -142,6 +142,8 @@ public class TrainingFragment extends Fragment
         PowerManager powerManager = (PowerManager) requireContext().getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 requireActivity().getPackageName() + ":wake_lock");
+        //TODO: set dynamically from running plan
+        wakeLock.acquire(120*60*1000L /*120 minutes*/);
 
         // checking location permissions
         useLocationData = sharedPreferences.getBoolean(Global.PreferencesKeys.useLocationData, false);
@@ -204,14 +206,11 @@ public class TrainingFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
-        wakeLock.release();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //
-        wakeLock.acquire();
         // location permissions can be changed by user
         checkLocationPermissions();
         // check gps
@@ -236,6 +235,7 @@ public class TrainingFragment extends Fragment
             // unbind service connections only if no training active
             trainingServiceConnection.stopAndUnbindService(requireActivity().getApplicationContext());
         }
+        wakeLock.release();
         super.onDestroy();
     }
 
@@ -452,7 +452,7 @@ public class TrainingFragment extends Fragment
                 //  resume the training, track id can be null
                 trainingInfolabel.setText(R.string.continue_training);
                 trainingServiceConnection.resumeTraining(timeToRun, trackId);
-            } else if (isValidTraining()) {
+            } else {
                 // start a new training
                 trainingInfolabel.setText(R.string.start_training);
                 trackId = trainingServiceConnection.startTraining(timeToRun, locationServicesAvailable);
@@ -898,18 +898,6 @@ public class TrainingFragment extends Fragment
                 }
             }
         }
-    }
-
-    // check if valid running plan and training day
-    private boolean isValidTraining() {
-        // is running plan completed?
-        if (runningPlan != null) {
-            if (runningPlan.isCompleted()) {
-                //TODO: Frage an Nutzer
-                //Plan neu starten?
-            }
-        }
-        return true;
     }
 
     @NotNull

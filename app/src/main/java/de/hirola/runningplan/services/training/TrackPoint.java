@@ -3,6 +3,10 @@ package de.hirola.runningplan.services.training;
 import android.location.Location;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
  * This software us licensed under the AGPL-3.0 or later.
@@ -14,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class TrackPoint {
 
-    private final long startTime; // start time of recorded track from gps
+    private final long startTime; // start time of recorded track
     private double actualDistance; // distance of all previous locations
     private Location location; // the actual location of recorded track
 
@@ -23,7 +27,7 @@ public class TrackPoint {
         // the track starts
         actualDistance = 0.0;
         // add the start time
-        startTime = location.getTime();
+        startTime = Instant.now(Clock.system(ZoneId.systemDefault())).toEpochMilli();
     }
 
     public void setActualLocation(@NotNull Location location) {
@@ -44,5 +48,9 @@ public class TrackPoint {
 
     public double getActualDistance() {
         return actualDistance;
+    }
+
+    public long getStopTime() {
+        return Instant.now(Clock.system(ZoneId.systemDefault())).toEpochMilli();
     }
 }
