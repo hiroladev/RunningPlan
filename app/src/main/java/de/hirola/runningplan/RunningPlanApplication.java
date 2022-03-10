@@ -1,6 +1,7 @@
 package de.hirola.runningplan;
 
 import android.app.Application;
+import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.SportsLibraryApplication;
 import de.hirola.sportslibrary.SportsLibraryException;
@@ -51,7 +52,9 @@ public class RunningPlanApplication extends Application implements SportsLibrary
         inputStreams[0] = getResources().openRawResource(R.raw.start);
         inputStreams[1] = getResources().openRawResource(R.raw.start60);
         inputStreams[2] = getResources().openRawResource(R.raw.start90);
-        inputStreams[3] = getResources().openRawResource(R.raw.start_test);
+        if (Global.APP_DEBUG_MODE) {
+            inputStreams[3] = getResources().openRawResource(R.raw.start_test);
+        }
         return inputStreams;
     }
 
