@@ -161,8 +161,15 @@
     <string name="debugging">Fehlerbehebung</string>
     <string name="debug_mode">Debug-Modus</string>
     <string name="send_debug_log">Fehler-Log versenden</string>
+    <string name="gender_undefined">undefiniert</string>
+    <string name="gender_diverse">divers</string>
+    <string name="gender_male">männlich</string>
+    <string name="gender_female">divers</string>
     <string name="save_trainings">Trainings speichern</string>
     <string name="user_training_level">Trainingslevel</string>
+    <string name="training_beginner">Anfänger</string>
+    <string name="training_amateur">Amateur</string>
+    <string name="training_profi">Profi</string>
     <string name="use_sync">Daten synchronisieren</string>
     <string name="hide_templates">Vorlagen ausblenden</string>
     <string name="notifications">Benachrichtigungen</string>

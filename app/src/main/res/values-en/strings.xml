@@ -120,4 +120,11 @@
     <string name="running_plan_start_90_remarks">Continuation of the running plan Start 60</string>
     <string name="deleting_failed">Deletion failed.</string>
     <string name="reset_running_plan">Do you want to reset the completed schedule?</string>
+    <string name="gender_undefined">undefinied</string>
+    <string name="gender_diverse">diverse</string>
+    <string name="gender_male">male</string>
+    <string name="gender_female">female</string>
+    <string name="training_beginner">Beginner</string>
+    <string name="training_amateur">Amateur</string>
+    <string name="training_profi">Profi</string>
 </resources>
