@@ -127,6 +127,15 @@
                     app:layout_constraintTop_toBottomOf="@+id/fgmt_running_plan_details_start_week_spinner"
                     android:layout_marginTop="20dp"/>
 
+            <CheckBox
+                    android:id="@+id/fgmt_running_plan_details_reset_check_box"
+                    android:text="@string/reset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/fgmt_running_plan_details_save_button"
+                    app:layout_constraintStart_toStartOf="@+id/fgmt_running_plan_details_save_button"
+                    android:layout_marginTop="60dp"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

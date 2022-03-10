@@ -2,10 +2,7 @@ package de.hirola.runningplan.ui.runningplans;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.TooltipCompat;
 import androidx.fragment.app.Fragment;
@@ -52,6 +49,7 @@ public class RunningPlanDetailsFragment extends Fragment
     private TextView runningPlanRemarksTextView;
     private Button showTrainingDetailsButton;
     private Button saveRunningPlanButton;
+    private CheckBox resetRunningPlanCheckBox;
     private SwitchCompat activeRunningPlanSwitch;
     private Spinner startWeekSpinner;
     private StartDateArrayAdapter startWeekSpinnerArrayAdapter;
@@ -114,8 +112,8 @@ public class RunningPlanDetailsFragment extends Fragment
     }
 
     @Override
-    public void onClick(View v) {
-        if (v == saveRunningPlanButton) {
+    public void onClick(View view) {
+        if (view == saveRunningPlanButton) {
             // add running plan and go back
             if (runningPlan != null) {
                 // text
@@ -168,14 +166,8 @@ public class RunningPlanDetailsFragment extends Fragment
                 }
             }
         }
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        if (isChecked) {
-            if (runningPlan.isCompleted()) {
-                // to train a completed running plan again, reset the plan
-                // user would not like the running plan as active
+        if (view == resetRunningPlanCheckBox) {
+            if (resetRunningPlanCheckBox.isChecked()) {
                 ModalOptionDialog.showYesNoDialog(
                         requireContext(),
                         getString(R.string.question), getString(R.string.reset_running_plan),
@@ -190,14 +182,44 @@ public class RunningPlanDetailsFragment extends Fragment
                                             requireContext(),
                                             getString(R.string.error), getString(R.string.save_data_error),
                                             getString(R.string.ok));
-                                    // disable switch again
-                                    activeRunningPlanSwitch.setChecked(false);
                                 }
+                                // disable switch again
+                                resetRunningPlanCheckBox.setChecked(false);
                             } else {
-                                activeRunningPlanSwitch.setChecked(false);
+                                resetRunningPlanCheckBox.setChecked(false);
                             }
                         });
             }
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        if (isUsersRunningPlan && !isChecked) {
+            // the plan should no longer be trained.
+            ModalOptionDialog.showYesNoDialog(
+                    requireContext(),
+                    getString(R.string.question), getString(R.string.stop_active_running_plan),
+                    getString(R.string.ok), getString(R.string.cancel),
+                    button -> {
+                        if (button == ModalOptionDialog.Button.OK) {
+                            // remove the running plan uuid from user
+                            appUser.setActiveRunningPlanUUID(null);
+                            if (!viewModel.updateObject(appUser)) {
+                                ModalOptionDialog.showMessageDialog(
+                                        ModalOptionDialog.DialogStyle.CRITICAL,
+                                        requireContext(),
+                                        getString(R.string.error), getString(R.string.save_data_error),
+                                        getString(R.string.ok));
+                                // activate switch again
+                                activeRunningPlanSwitch.setChecked(true);
+                            } else {
+                                activeRunningPlanSwitch.setChecked(false);
+                            }
+                        } else {
+                            activeRunningPlanSwitch.setChecked(true);
+                        }
+                    });
         }
     }
 
@@ -214,6 +236,9 @@ public class RunningPlanDetailsFragment extends Fragment
         showTrainingDetailsButton.setOnClickListener(this);
         saveRunningPlanButton = view.findViewById(R.id.fgmt_running_plan_details_save_button);
         saveRunningPlanButton.setOnClickListener(this);
+        // initialize check box
+        resetRunningPlanCheckBox = view.findViewById(R.id.fgmt_running_plan_details_reset_check_box);
+        resetRunningPlanCheckBox.setOnClickListener(this);
         // initialize the switch
         activeRunningPlanSwitch = view.findViewById(R.id.fgmt_running_plan_details_active_plan_switch);
         activeRunningPlanSwitch.setOnCheckedChangeListener(this);
