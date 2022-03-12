@@ -13,11 +13,13 @@ import android.view.ViewGroup;
 import android.widget.*;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import de.hirola.runningplan.R;
+import de.hirola.runningplan.RunningPlanApplication;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.runningplan.services.training.TrainingServiceCallback;
 import de.hirola.runningplan.services.training.TrainingServiceConnection;
@@ -26,11 +28,15 @@ import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.runningplan.util.TrainingNotificationManager;
 import de.hirola.sportslibrary.Global;
+import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.model.UUID;
 import de.hirola.sportslibrary.model.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -354,7 +360,7 @@ public class TrainingFragment extends Fragment
         // creating adapter for spinner with empty list
         trainingDaysSpinnerArrayAdapter = new ArrayAdapter<>(
                 requireContext(),
-                android.R.layout.simple_spinner_item,
+                R.layout.spinner_item,
                 new ArrayList<>());
         // attaching data adapter to spinner with empty list
         trainingDaysSpinner.setAdapter(trainingDaysSpinnerArrayAdapter);
@@ -364,7 +370,7 @@ public class TrainingFragment extends Fragment
         // creating adapter for spinner with empty list
         trainingUnitsSpinnerArrayAdapter = new ArrayAdapter<>(
                 requireContext(),
-                android.R.layout.simple_spinner_item,
+                R.layout.spinner_item,
                 new ArrayList<>());
         // attaching data adapter to spinner with empty list
         trainingUnitsSpinner.setAdapter(trainingUnitsSpinnerArrayAdapter);
@@ -566,8 +572,8 @@ public class TrainingFragment extends Fragment
             trainingInfoImageView.setImageResource(R.drawable.baseline_done_black_24);
             if (locationServicesAvailable) {
                 // get the recorded data
-                Track recorderdTrack = trainingServiceConnection.getRecordedTrack(trackId);
-                if (recorderdTrack == null) {
+                Track recordedTrack = trainingServiceConnection.getRecordedTrack(trackId);
+                if (recordedTrack == null) {
                     ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
                             requireContext(),
                             getString(R.string.error),
@@ -575,34 +581,40 @@ public class TrainingFragment extends Fragment
                             getString(R.string.ok));
                 } else {
                     // show training infos
-                    String trainingTrackInfoString = getString(R.string.training_completed) + "\n";
-                    trainingTrackInfoString += getString(R.string.distance) + ": ";
-                    double runningDistance = recorderdTrack.getDistance();
+                    StringBuilder trainingTrackInfoString = new StringBuilder(getString(R.string.training_completed) + "\n");
+                    trainingTrackInfoString.append(getString(R.string.distance));
+                    trainingTrackInfoString.append(": ");
+                    double runningDistance = recordedTrack.getDistance();
                     if (runningDistance < 999.99) {
-                        //  Angabe in m
-                        trainingTrackInfoString += String.format("%,.2f%s",runningDistance, " m");
+                        //  distance in m
+                        trainingTrackInfoString.append(String.format("%,.2f%s",runningDistance, " m"));
                     } else {
-                        //  Angabe in km
-                        trainingTrackInfoString += String.format("%,.2f%s",runningDistance / 1000, " km");
+                        //  distance in km
+                        trainingTrackInfoString.append(String.format("%,.2f%s",runningDistance / 1000, " km"));
                     }
-                    trainingTrackInfoString += "\n";
-                    //  Geschwindigkeit in km/h
-                    double averageSpeed = recorderdTrack.getAverageSpeed();
-                    trainingTrackInfoString += getString(R.string.speed);
-                    trainingTrackInfoString += ": ";
-                    trainingTrackInfoString += String.format("%,.2f%s",averageSpeed, " km/h");
+                    trainingTrackInfoString.append("\n");
+                    //  average speed in km/h
+                    double averageSpeed = recordedTrack.getAverageSpeed();
+                    trainingTrackInfoString.append(getString(R.string.speed));
+                    trainingTrackInfoString.append(": ");
+                    trainingTrackInfoString.append(String.format("%,.2f%s",averageSpeed, " km/h"));
                     trainingInfolabel.setText(trainingTrackInfoString);
+                    // save training
+                    boolean saveTrainings = sharedPreferences.getBoolean(Global.PreferencesKeys.saveTrainings, false);
+                    if (saveTrainings) {
+                        if (!saveTraining(recordedTrack)) {
+                            // error while saving the training
+                            ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                                    requireContext(),
+                                    getString(R.string.error),
+                                    getString(R.string.error_saving_training),
+                                    getString(R.string.ok));
+                        }
+                    }
                 }
             }
 
-            // add training
-            boolean saveTrainings = sharedPreferences.getBoolean(Global.PreferencesKeys.saveTrainings, false);
-            if (saveTrainings) {
-                // Nutzer fragen, ob gespeichert werden soll
-                // TODO: Alert-Dialog
-                saveTraining();
-            }
-            //  Elemente können wieder bedient werden
+            // elements can be operated again
             trainingDaysSpinner.setEnabled(true);
             trainingUnitsSpinner.setEnabled(true);
             startButton.setEnabled(true);
@@ -612,63 +624,26 @@ public class TrainingFragment extends Fragment
     }
 
     // add the training
-    private void saveTraining() {
-        //TODO: implementieren
-    }
-
-    // aktuelle Informationen zum Laufen anzeigen
-    private void viewRunningInfos() {
-        // Info-Label wieder auf "normale" Farben setzen
-        // TODO: Hinweisfarben
-        //  self.setInfoLabelDefaultColors()
-        /*String trainingInfoString;
-        //  zurückgelegte Strecke anzeigen, wenn GPS verfügbar ist
-        if (useLocationData) {
-            if (trackLocations.count > 0) {
-                trainingInfoString+= R.string.distance + ": ";
-                double distance = trackLocations.totalDistance;
-                //  Angabe in m
-                if (distance > 0 && distance < 1000) {
-                    // TODO: Format Komma
-                    trainingInfoString+= distance + " m\n";
-                } else {
-                    //  Angabe in km
-                    distance = distance / 1000;
-                    // TODO: Format Komma
-                    trainingInfoString+= distance + " km\n";
-                }
-                //  aktuelle Geschwindigkeit in km / h umrechnen
-                double runningSpeed = trackLocations.last?.speed ?? 0) * 3.6;
-                // ... a negative value indicates an invalid speed ...
-                if (runningSpeed > 0.5) {
-                    //  Informationen zum Label: Standard-Ausgabe
-                    trainingInfoString+= R.string.speed + ": ";
-                    trainingInfoString+= runningSpeed +" km/h";
-                }
-                //  Monitoring des Trainings
-                if (runningUnit != null) {
-                    //  Abgleich der Geschwindigkeit mit dem Soll aus der Bewegungsart
-                    //  TODO: Toleranz einbauen, in Abhängigkeit von Zeit
-                    double referenceSpeed = runningUnit.getMovementType().getSpeed();
-                    if (referenceSpeed > 0.0) {
-                        //  zu "langsam"
-                        if (runningSpeed + Global.Defaults.movementTolerance < referenceSpeed) {
-                            // TODO: Hinweis an Nutzer - Vibration / Ton?
-                            // TODO: Farbe
-                            trainingInfolabel.setBackgroundColor(Color.YELLOW);
-                            trainingInfolabel.setTextColor(Color.BLACK);
-                        }
-                        //  zu "schnell"
-                        if (runningSpeed - Global.Defaults.movementTolerance > referenceSpeed) {
-                            // TODO: Hinweis an Nutzer - Vibration / Ton?
-                            // TODO: Farbe
-                            trainingInfolabel.setBackgroundColor(Color.RED);
-                            trainingInfolabel.setTextColor(Color.WHITE);
-                        }
-                    }
-                }
-            }
-        }*/
+    private boolean saveTraining(@NonNull Track recordedTrack) {
+        // save the track of the training
+        if (viewModel.addObject(recordedTrack)) {
+            // build the training name and remarks
+            String name = getString(R.string.training_of_running_plan) + " " +
+                    runningPlan.getName();
+            LocalDate today = LocalDate.now(ZoneId.systemDefault());
+            DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
+            String remarks = " " +
+                    formatter.format(today);
+            // get the uuid of running type
+            SportsLibrary sportsLibrary = ((RunningPlanApplication) requireActivity()
+                    .getApplication())
+                    .getSportsLibrary();
+            UUID trainingTypeUUID = sportsLibrary.getUuidForTrainingType(TrainingType.RUNNING); // can be null
+            UUID trackUUID = recordedTrack.getUUID();
+            Training training = new Training(name, remarks, trainingTypeUUID, trackUUID, today);
+            return viewModel.addObject(training);
+        }
+        return false;
     }
 
     private void startButtonClicked(View view) {
@@ -681,79 +656,6 @@ public class TrainingFragment extends Fragment
 
     private void stopButtonClicked(View view) {
         cancelTraining();
-    }
-
-    // list of training days from selected running plan as string
-    @NotNull
-    private List<String> getTrainingDaysAsStrings() {
-        List<String> trainingDaysStringList = new ArrayList<>();
-        if (runningPlan != null) {
-            // monday, day 1 and week 1
-            LocalDate startDate = runningPlan.getStartDate();
-            Iterator<RunningPlanEntry> iterator= runningPlan
-                    .getEntries()
-                    .stream()
-                    .iterator();
-            while (iterator.hasNext()) {
-                RunningPlanEntry entry = iterator.next();
-                int day = entry.getDay();
-                int week = entry.getWeek();
-                LocalDate trainingDate = startDate.plusDays(day - 1);
-                trainingDate = trainingDate.plusWeeks(week - 1);
-                String trainingDateAsString = trainingDate
-                        .getDayOfWeek()
-                        .getDisplayName(TextStyle.FULL, Locale.getDefault());
-                trainingDateAsString+= " (";
-                trainingDateAsString+= trainingDate
-                        .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-                trainingDateAsString+= ")";
-                trainingDaysStringList.add(trainingDateAsString);
-            }
-        }
-        return trainingDaysStringList;
-    }
-
-    // list of training unit from selected running plan entry as string
-    @NotNull
-    private List<String> getTrainingUnitsAsStrings() {
-        List<String> trainingUnitsStringList = new ArrayList<>();
-        if (runningPlanEntry != null) {
-            for (RunningUnit runningUnit : runningPlanEntry.getRunningUnits()) {
-                // TODO: format spinner
-                String trainingUnitsSpinnerElementString = "";
-                MovementType movementType = runningUnit.getMovementType();
-                if (movementType != null) {
-                    // the type of movement
-                    try {
-                        // load strings from res dynamically
-                        String movementKeyString = movementType.getStringForKey();
-                        if (movementKeyString.length() > 0) {
-                            int remarksResourceStringId = requireContext()
-                                    .getResources()
-                                    .getIdentifier(movementKeyString, "string", requireContext().getPackageName());
-                            trainingUnitsSpinnerElementString = getString(remarksResourceStringId);
-                        } else {
-                            trainingUnitsSpinnerElementString += R.string.movement_type_not_found;
-                        }
-                    } catch (Resources.NotFoundException exception) {
-                        trainingUnitsSpinnerElementString += R.string.movement_type_not_found;
-                        if (logManager.isDebugMode()) {
-                            logManager.log(TAG, null, exception);
-                        }
-                    }
-                    // running unit duration
-                    trainingUnitsSpinnerElementString += " (";
-                    trainingUnitsSpinnerElementString += String.valueOf(runningUnit.getDuration());
-                    trainingUnitsSpinnerElementString += " min)";
-
-                } else {
-                    trainingUnitsSpinnerElementString += R.string.movement_type_not_found;
-                }
-                // add the string value for the movement type to the list
-                trainingUnitsStringList.add(trainingUnitsSpinnerElementString);
-            }
-        }
-        return trainingUnitsStringList;
     }
 
     // set the training data in the view
@@ -903,20 +805,89 @@ public class TrainingFragment extends Fragment
     @NotNull
     private String buildStringForDuration(long duration) {
         // show the complete training time
-        String durationString = getString(R.string.total_time)+ " ";
+        StringBuilder durationString = new StringBuilder(getString(R.string.total_time)+ " ");
         // display in hour or minutes?
         if (duration < 60) {
-            durationString+= String.valueOf(duration);
+            durationString.append(String.valueOf(duration));
         } else {
             //  in h und min umrechnen
             long hours = (duration * 60) / 3600;
             long minutes = (duration / 60) % 60;
-            durationString+= String.valueOf(hours);
-            durationString+= " h : ";
-            durationString+= String.valueOf(minutes);
+            durationString.append(String.valueOf(hours));
+            durationString.append(" h : ");
+            durationString.append(String.valueOf(minutes));
         }
-        durationString+= " min";
-        return durationString;
+        durationString.append(" min");
+        return durationString.toString();
+    }
+
+    // list of training days from selected running plan as string
+    @NotNull
+    private List<String> getTrainingDaysAsStrings() {
+        List<String> trainingDaysStringList = new ArrayList<>();
+        if (runningPlan != null) {
+            // monday, day 1 and week 1
+            LocalDate startDate = runningPlan.getStartDate();
+            Iterator<RunningPlanEntry> iterator= runningPlan
+                    .getEntries()
+                    .stream()
+                    .iterator();
+            while (iterator.hasNext()) {
+                RunningPlanEntry entry = iterator.next();
+                int day = entry.getDay();
+                int week = entry.getWeek();
+                LocalDate trainingDate = startDate.plusDays(day - 1).plusWeeks(week - 1);
+                String trainingDateAsString = trainingDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault())
+                        + " ("
+                        + trainingDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                        + ")";
+                trainingDaysStringList.add(trainingDateAsString);
+            }
+        }
+        return trainingDaysStringList;
+    }
+
+    // list of training unit from selected running plan entry as string
+    @NotNull
+    private List<String> getTrainingUnitsAsStrings() {
+        List<String> trainingUnitsStringList = new ArrayList<>();
+        if (runningPlanEntry != null) {
+            for (RunningUnit runningUnit : runningPlanEntry.getRunningUnits()) {
+                // TODO: format spinner
+                StringBuilder unitsAsString = new StringBuilder();
+                MovementType movementType = runningUnit.getMovementType();
+                if (movementType != null) {
+                    // the type of movement
+                    try {
+                        // load strings from res dynamically
+                        String movementKeyString = movementType.getStringForKey();
+                        if (movementKeyString.length() > 0) {
+                            int remarksResourceStringId = requireContext()
+                                    .getResources()
+                                    .getIdentifier(movementKeyString, "string", requireContext().getPackageName());
+                            unitsAsString.append(getString(remarksResourceStringId));
+                        } else {
+                            unitsAsString.append(R.string.movement_type_not_found);
+                        }
+                    } catch (Resources.NotFoundException exception) {
+                        unitsAsString.append(R.string.movement_type_not_found);
+                        if (logManager.isDebugMode()) {
+                            logManager.log(TAG, null, exception);
+                        }
+                    }
+                    // running unit duration
+                    unitsAsString.append(" (");
+                    unitsAsString.append(String.valueOf(runningUnit.getDuration()));
+                    unitsAsString.append(" min)");
+
+                } else {
+                    unitsAsString.append(R.string.movement_type_not_found);
+                }
+                // add the string value for the movement type to the list
+                trainingUnitsStringList.add(unitsAsString.toString());
+            }
+        }
+        return trainingUnitsStringList;
     }
 
     // format the time and refresh the label

@@ -128,4 +128,7 @@
     <string name="training_amateur">Amateur</string>
     <string name="training_profi">Profi</string>
     <string name="reset">Reset</string>
+    <string name="error_saving_training">The training could not be saved</string>
+    <string name="training_of_running_plan">Training of running plan</string>
+    <string name="training_at_date">Training at</string>
 </resources>

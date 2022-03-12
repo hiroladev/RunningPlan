@@ -16,7 +16,6 @@ import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.sportslibrary.model.Track;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting

@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 public class AppLogManager {
 
     private static AppLogManager instance = null;
-    private Logger logger;
+    private final Logger logger;
     private final boolean debugMode;
     private final boolean sendDebugLog;
 

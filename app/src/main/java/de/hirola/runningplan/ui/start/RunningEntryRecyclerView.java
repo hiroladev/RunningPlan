@@ -35,12 +35,14 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
 
     private final static String TAG = RunningEntryRecyclerView.class.getSimpleName();
 
+    private final Context context;
     private final AppLogManager logManager;
     private final RunningPlan runningPlan;
     private final List<RunningPlanEntry> runningPlanEntries;
     private final List<String> trainingDaysAsString;
 
     public RunningEntryRecyclerView(Context context, @NonNull RunningPlan runningPlan) {
+        this.context = context;
         this.runningPlan = runningPlan;
         this.runningPlanEntries = runningPlan.getEntries();
         trainingDaysAsString = getTrainingDaysAsStrings();
@@ -50,7 +52,7 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.running_entry_row, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.running_entry_simple_row, parent, false);
         return new RunningEntryRecyclerViewHolder(v);
     }
 
@@ -82,11 +84,34 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
             int loop = 1;
             for (RunningUnit runningUnit: runningUnits) {
                 MovementType movementType = runningUnit.getMovementType();
-                if (loop < runningUnits.size()) {
-                    unitsAsString.append(movementType.getKey()).append(": ");
-                } else {
-                    unitsAsString.append(movementType.getKey());
-                }
+                String key = movementType.getKey();
+                String durationString = String.valueOf(runningUnit.getDuration());
+                unitsAsString.append(durationString).append(" min ");
+                // load the string dynamically
+                int movementTypeResourceStringId = context
+                        .getResources()
+                        .getIdentifier(key, "string", context.getPackageName());
+                    if (loop < runningUnits.size()) {
+                        try {
+
+                            unitsAsString.append(context.getString(movementTypeResourceStringId)).append("\n");
+                        } catch (Resources.NotFoundException exception) {
+                            unitsAsString.append(key).append("\n");
+                            if (logManager.isDebugMode()) {
+                                logManager.log(TAG, "Movement type resource not found,", exception);
+                            }
+                        }
+                    } else {
+                        try {
+                            unitsAsString.append(context.getString(movementTypeResourceStringId));
+                        } catch (Resources.NotFoundException exception) {
+                            unitsAsString.append(key);
+                            if (logManager.isDebugMode()) {
+                                logManager.log(TAG, "Movement type resource not found,", exception);
+                            }
+                        }
+                    }
+
                 loop++;
             }
             viewHolder.unitsTextView.setText(unitsAsString.toString());

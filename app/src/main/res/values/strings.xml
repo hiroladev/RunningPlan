@@ -1,6 +1,7 @@
 <resources>
     <!-- App Data -->
     <string name="app_name">Laufplan</string>
+    <string name="app_logo" translatable="false">Logo</string>
     <string name="app_version" translatable="false">v.0.1</string>
     <string name="app_copyright" translatable="false">(c) Michael Schmidt 2021 - 2022\nFree Software License: AGPL
         Version 3
@@ -54,6 +55,7 @@
     <string name="stop_active_running_plan">Soll mit diesem Laufplan wirklich nicht mehr trainiert werden?</string>
     <string name="reset_running_plan">Soll der abgeschlossene Laufplan wieder zurückgesetzt werden?</string>
     <string name="ask_for_cancel_training">Soll das Training wirklich abgebrochen werden?</string>
+    <string name="error_saving_training">Das Training konnte nicht gespeichert werden.</string>
     <string name="no_file_selected">Es wurde keine Datei ausgewählt.</string>
     <string name="ask_before_delete_running_plan">Soll der Laufplan wirklich gelöscht werden?</string>
     <string name="recorded_track_not_found">Die Aufzeichnung des Trainings wurde nicht gefunden.</string>
@@ -118,6 +120,8 @@
     </string>
 
     <!-- Training Data -->
+    <string name="training_of_running_plan">Training des Laufplans</string>
+    <string name="training_at_date">Training am</string>
     <string name="training_day">Trainingstag</string>
 
     <!-- Movement Data -->

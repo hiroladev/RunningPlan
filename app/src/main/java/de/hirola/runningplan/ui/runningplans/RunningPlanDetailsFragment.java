@@ -3,12 +3,14 @@ package de.hirola.runningplan.ui.runningplans;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.*;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.TooltipCompat;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.fragment.app.FragmentTransaction;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.runningplan.util.AppLogManager;
@@ -191,6 +193,10 @@ public class RunningPlanDetailsFragment extends Fragment
                         });
             }
         }
+        if (view == showTrainingDetailsButton) {
+            // show the running units
+            showRunningPLanUnitDetails();
+        }
     }
 
     @Override
@@ -223,6 +229,7 @@ public class RunningPlanDetailsFragment extends Fragment
         }
     }
 
+    @Nullable
     public UUID getUUID() {
         return runningPlanUUID;
     }
@@ -305,6 +312,31 @@ public class RunningPlanDetailsFragment extends Fragment
                 startWeekSpinner.setEnabled(false);
             }
         }
+    }
+
+    private void showRunningPLanUnitDetails() {
+        RunningPlanEntriesFragment entriesFragment = null;
+        List<Fragment> fragments = getParentFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof RunningPlanEntriesFragment) {
+                entriesFragment = (RunningPlanEntriesFragment) fragment;
+                break;
+            }
+        }
+        // if fragment or uuid null or a fragment for another running plan (uuid)
+        // then create a new fragment
+        if (entriesFragment == null || entriesFragment.getUUID() == null) {
+            entriesFragment = RunningPlanEntriesFragment.newInstance(runningPlanUUID);
+        } else if (!entriesFragment.getUUID().equals(runningPlanUUID)) {
+            entriesFragment = RunningPlanEntriesFragment.newInstance(runningPlanUUID);
+        }
+        // hides the RunningPlansFragment
+        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+        fragmentTransaction.hide(this);
+        // starts the RunningPlanDetailsFragment
+        fragmentTransaction.replace(R.id.fragment_running_plan_container, entriesFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     // list of training days from selected running plan as string

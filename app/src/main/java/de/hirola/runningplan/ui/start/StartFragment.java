@@ -27,9 +27,6 @@ public class StartFragment extends Fragment {
 
     private final static String TAG = StartFragment.class.getSimpleName();
 
-    // recycler view list adapter
-    private RecyclerView recyclerView;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View startView = inflater.inflate(R.layout.fragment_start, container, false);
@@ -42,7 +39,8 @@ public class StartFragment extends Fragment {
             RunningPlan runningPlan = viewModel.getRunningPlanByUUID(runningPlanUUID);
             if (runningPlan != null) {
                 RunningEntryRecyclerView listAdapter = new RunningEntryRecyclerView(requireContext(), runningPlan);
-                recyclerView = startView.findViewById(R.id.fgmt_start_trainings_recyclerview);
+                // recycler view list adapter
+                RecyclerView recyclerView = startView.findViewById(R.id.fgmt_start_trainings_recyclerview);
                 recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
                 recyclerView.setAdapter(listAdapter);
             }

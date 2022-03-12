@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--copyright>
+Copyright 2021 by Michael Schmidt, Hirola Consulting
+This software us licensed under the AGPL-3.0 or later.
+</copyright-->
 <LinearLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
@@ -74,6 +78,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="15dp"
+                    android:textSize="18sp"
                     app:layout_constraintTop_toBottomOf="@+id/fgmt_training_select_day_label"
                     android:minHeight="48dp"/>
 

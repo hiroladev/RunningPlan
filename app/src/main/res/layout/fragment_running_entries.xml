@@ -8,11 +8,11 @@ This software us licensed under the AGPL-3.0 or later.
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/fgmt_running_plans_recyclerview"
+            android:id="@+id/fgmt_running_entries_recyclerview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="5dp"
@@ -20,15 +20,5 @@ This software us licensed under the AGPL-3.0 or later.
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fgmt_running_plans_add_running_plan_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:contentDescription="@string/add"
-            android:src="@drawable/baseline_add_black_24"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

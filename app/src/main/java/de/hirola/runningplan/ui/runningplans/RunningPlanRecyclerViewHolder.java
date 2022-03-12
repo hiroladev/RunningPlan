@@ -28,9 +28,9 @@ public class RunningPlanRecyclerViewHolder extends RecyclerView.ViewHolder {
 
     public RunningPlanRecyclerViewHolder(@NonNull @NotNull View itemView) {
         super(itemView);
-        statusImageView = itemView.findViewById(R.id.running_plan_row_menu_item_imageview);
-        nameTextView = itemView.findViewById(R.id.track_row_name_label);
-        remarksTextView = itemView.findViewById(R.id.running_plan_row_running_entry_units_textview);
+        statusImageView = itemView.findViewById(R.id.running_entry_simple_row_imageview);
+        nameTextView = itemView.findViewById(R.id.running_entry_simple_row_date_label);
+        remarksTextView = itemView.findViewById(R.id.running_entry_row_duration_textview);
         startDateTextView = itemView.findViewById(R.id.track_row_start_time_label);
         durationTextView = itemView.findViewById(R.id.track_row_stop_time_label);
         percentCompletedTextView = itemView.findViewById(R.id.track_row_duration_label);

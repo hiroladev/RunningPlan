@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import de.hirola.runningplan.model.RunningPlanViewModel;
-import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.runningplan.util.ModalOptionDialog;
@@ -39,17 +38,10 @@ import java.util.stream.Stream;
  */
 public class RunningPlansFragment extends Fragment implements View.OnClickListener {
 
-    private final static String TAG = RunningPlansFragment.class.getSimpleName();
-
-    private AppLogManager appLogManager; // app logger
-    // view model
     private RunningPlanViewModel viewModel;
-    // recycler view list adapter
-    private RecyclerView recyclerView;
-    // last selected running plan (list index)
-    private int lastSelectedIndex;
-    // cached list of running plans
-    private List<RunningPlan> runningPlans;
+    private RecyclerView recyclerView; // recycler view list adapter
+    private int lastSelectedIndex; // last selected running plan (list index)
+    private List<RunningPlan> runningPlans;  // cached list of running plans
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,8 +61,6 @@ public class RunningPlansFragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_running_plans, container, false);
-        // app logger
-        appLogManager = AppLogManager.getInstance(requireContext());
         // should I hide templates?
         SharedPreferences sharedPreferences =
                 requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
@@ -187,9 +177,11 @@ public class RunningPlansFragment extends Fragment implements View.OnClickListen
                     break;
                 }
             }
-            // if fragment null or a fragment for another running plan (uuid)
+            // if fragment or uuid null or a fragment for another running plan (uuid)
             // then create a new fragment
-            if (detailsFragment == null || ! detailsFragment.getUUID().equals(runningPlanUUID)) {
+            if (detailsFragment == null || detailsFragment.getUUID() == null) {
+                detailsFragment = RunningPlanDetailsFragment.newInstance(runningPlanUUID);
+            } else if (!detailsFragment.getUUID().equals(runningPlanUUID)) {
                 detailsFragment = RunningPlanDetailsFragment.newInstance(runningPlanUUID);
             }
             // starts the RunningPlanDetailsFragment
