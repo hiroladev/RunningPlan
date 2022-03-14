@@ -167,6 +167,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         // update the track
         ContentValues values = new ContentValues();
         values.put(TrackColumns.STOPTIME, stopTime);
+        //values.put(TrackColumns.DURATION, duration);
         values.put(TrackColumns.DISTANCE, distance);
         // no active recording, o is false
         values.put(TrackColumns.ACTIVE, 0);

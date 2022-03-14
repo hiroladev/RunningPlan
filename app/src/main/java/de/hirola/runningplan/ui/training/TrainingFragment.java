@@ -33,10 +33,7 @@ import de.hirola.sportslibrary.model.UUID;
 import de.hirola.sportslibrary.model.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -632,15 +629,25 @@ public class TrainingFragment extends Fragment
                     runningPlan.getName();
             LocalDate today = LocalDate.now(ZoneId.systemDefault());
             DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
-            String remarks = " " +
-                    formatter.format(today);
+            String remarks = getString(R.string.training_at_date)
+                    + " "
+                    + formatter.format(today);
+            // calculate the duration
+            Instant startTime = Instant.ofEpochMilli(recordedTrack.getStartTimeInMilli());
+            Instant stopTime = Instant.ofEpochMilli(recordedTrack.getStopTimeInMilli());
+            Duration duration = Duration.between(startTime, stopTime);
             // get the uuid of running type
             SportsLibrary sportsLibrary = ((RunningPlanApplication) requireActivity()
                     .getApplication())
                     .getSportsLibrary();
             UUID trainingTypeUUID = sportsLibrary.getUuidForTrainingType(TrainingType.RUNNING); // can be null
             UUID trackUUID = recordedTrack.getUUID();
-            Training training = new Training(name, remarks, trainingTypeUUID, trackUUID, today);
+            Training training = new Training(name, remarks, today,
+                    Math.abs(duration.toMinutes()),
+                    recordedTrack.getDistance(),
+                    recordedTrack.getAverageSpeed(),
+                    recordedTrack.getAltitudeDifference(),
+                    trainingTypeUUID, trackUUID);
             return viewModel.addObject(training);
         }
         return false;

@@ -63,12 +63,15 @@
     <string name="deleting_failed">Das Löschen ist fehlgeschlagen.</string>
 
     <!-- Common -->
+    <string name="no_remarks">Keine Anmerkungen vorhanden.</string>
     <string name="no_content">Die Inhalte konnten nicht geladen werden.</string>
     <string name="remarks">Anmerkungen</string>
     <string name="start_date">Start-Datum</string>
     <string name="state">Status</string>
     <string name="percent">Prozent</string>
     <string name="duration">Dauer</string>
+    <string name="total_durations">Gesamtdauer</string>
+    <string name="total_distance">Gesamtstrecke</string>
     <string name="duration_null_hours_minutes" translatable="false">00h:00min</string>
 
     <!-- Location data -->
@@ -91,6 +94,7 @@
     <string name="clear_all_tracks">Alle Tracks löschen</string>
 
     <!-- Infos -->
+    <string name="banner_content_description">Laufen im Wald …</string>
     <string name="unit_state_image_content_description">Status des Laufabschnittes</string>
     <string name="running_plan_state_image_content_description">Status des Laufplanes</string>
     <string name="start_training_service">Unterstützung wurde gestartet (siehe FAQ).</string>
@@ -120,9 +124,11 @@
     </string>
 
     <!-- Training Data -->
+    <string name="overview_trainings">Training-Übersicht</string>
     <string name="training_of_running_plan">Training des Laufplans</string>
     <string name="training_at_date">Training am</string>
     <string name="training_day">Trainingstag</string>
+    <string name="no_trainings">Noch keine Trainingsdaten vorhanden.</string>
 
     <!-- Movement Data -->
     <string name="movement_type_not_found">Unbekannt</string>
@@ -147,7 +153,7 @@
     <!-- Running Plans -->
     <string name="running_plan">Laufplan</string>
     <string name="running_plan_name">Laufplan-Name</string>
-    <string name="no_remarks">Keine Anmerkungen vorhanden.</string>
+    <string name="actual_running_plan">Aktueller Laufplan</string>
     <string name="select_training_date">Trainingstag wählen</string>
     <string name="total_time">Gesamtdauer</string>
     <string name="unit_time">Dauer Laufeinheit</string>

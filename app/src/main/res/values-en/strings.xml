@@ -131,4 +131,10 @@
     <string name="error_saving_training">The training could not be saved</string>
     <string name="training_of_running_plan">Training of running plan</string>
     <string name="training_at_date">Training at</string>
+    <string name="overview_trainings">Overview of trainings</string>
+    <string name="actual_running_plan">Actual plan</string>
+    <string name="banner_content_description">Running in forrest ...</string>
+    <string name="no_trainings">No training data available yet.</string>
+    <string name="total_durations">Total duration</string>
+    <string name="total_distance">Total distance</string>
 </resources>

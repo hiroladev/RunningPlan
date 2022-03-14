@@ -56,6 +56,12 @@ public class RunningPlanViewModel {
         return (RunningPlan) dataRepository.findByUUID(RunningPlan.class, uuid);
     }
 
+    /**
+     * Get the list of running plans, sorted by order number.
+     * The list can be empty.
+     *
+     * @return A list of running plans, sorted by order number.
+     */
     public List<RunningPlan> getRunningPlans() {
         List<RunningPlan> runningPlans = new ArrayList<>();
         List<? extends PersistentObject> persistentObjects = dataRepository.findAll(RunningPlan.class);
@@ -77,6 +83,35 @@ public class RunningPlanViewModel {
         // sort the plans
         Collections.sort(runningPlans);
         return runningPlans;
+    }
+
+    /**
+     * Get the list of trainings, sorted by date of training.
+     * The list can be empty.
+     *
+     * @return A list of trainings, sorted by training date.
+     */
+    public List<Training> getTrainings() {
+        List<Training> trainings = new ArrayList<>();
+        List<? extends PersistentObject> persistentObjects = dataRepository.findAll(Training.class);
+        if (persistentObjects.isEmpty()) {
+            return trainings; // return an empty list
+        }
+        for (PersistentObject object : persistentObjects) {
+            try {
+                trainings.add((Training) object);
+            } catch (ClassCastException exception) {
+                // we do not add this to the list and make a  log entry
+                String errorMessage = "List of trainings contains an object from type "
+                        + object.getClass().getSimpleName();
+                if (appLogger.isDebugMode()) {
+                    appLogger.log(TAG, errorMessage, exception);
+                }
+            }
+        }
+        // sort the training by date
+        Collections.sort(trainings);
+        return trainings;
     }
 
     /**
