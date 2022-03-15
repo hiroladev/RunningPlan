@@ -57,12 +57,19 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
             RunningPlan runningPlan = runningPlans.get(position);
             // Name und Status (mittels Bild darstellen)
             try {
+                // active
                 if (runningPlan.isActive()) {
                     viewHolder.statusImageView.setImageResource(R.drawable.active20x20);
                 }
+                // completed
                 if (runningPlan.isCompleted()) {
                     viewHolder.statusImageView.setImageResource(R.drawable.completed20x20);
                 }
+                //TODO: canceled
+                // canceled
+                //if (!runningPlan.isActive() && runningPlan.percentCompleted() > 0) {
+                //    viewHolder.statusImageView.setImageResource(R.drawable.aborted20x20);
+                //}
             } catch (Resources.NotFoundException exception) {
                 if (appLogManager.isDebugMode()) {
                     appLogManager.log(TAG, null, exception);

@@ -16,6 +16,7 @@ import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.model.Training;
 import de.hirola.sportslibrary.model.UUID;
 import de.hirola.sportslibrary.model.User;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.List;
@@ -70,7 +71,7 @@ public class StartFragment extends Fragment {
     }
 
     @SuppressLint("DefaultLocale")
-    private void showTrainingOverview(View view) {
+    private void showTrainingOverview(@NotNull View view) {
         // show all trainings summary
         TextView trainingsOverviewTextView = view.findViewById(R.id.fgmt_start_training_overview_text_view);
         List<Training> trainings = viewModel.getTrainings();
@@ -88,9 +89,8 @@ public class StartFragment extends Fragment {
             if (duration > 0 &&  duration < 60) {
                 trainingOverviewString.append(String.format("%s%s", duration, " min"));
             } else if (duration > 59) {
-                Duration durationOfTraining = Duration.ofMinutes(duration);
                 trainingOverviewString.append(String.format("%s%s%s%s",
-                        durationOfTraining.toHours(), "h : ", durationOfTraining.toMinutes(), " min"));
+                        duration / 60, "h : ", duration % 60, " min"));
             }
             trainingOverviewString.append("\n");
             trainingOverviewString.append(getString(R.string.total_distance));
@@ -102,6 +102,7 @@ public class StartFragment extends Fragment {
                 trainingOverviewString.append(String.format("%,.2f%s", distance / 1000, " km"));
             }
             trainingsOverviewTextView.setText(trainingOverviewString);
+            System.out.println(trainingOverviewString);
         } else {
             trainingsOverviewTextView.setText(R.string.no_trainings);
         }

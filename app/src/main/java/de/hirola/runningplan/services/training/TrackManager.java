@@ -8,8 +8,7 @@ import androidx.annotation.Nullable;
 import de.hirola.runningplan.R;
 import de.hirola.sportslibrary.model.Track;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -45,11 +44,11 @@ public class TrackManager {
     public Track.Id addNewTrack() {
         // create a new track and start recording
         // we needed name, description, start time
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
         String name = context.getString(R.string.training_unit_track);
         String description = context.getString(R.string.running_unit_started_at) + " " + formatter.format(now);
-        long startTime = now.toInstant(ZoneOffset.UTC).toEpochMilli();
+        long startTime = Instant.now(Clock.system(ZoneId.systemDefault())).toEpochMilli();
         // build a track with a start time
         Track track = new Track(name, description, startTime);
         long primaryKey = databaseHelper.insertTrack(track);
@@ -109,8 +108,32 @@ public class TrackManager {
         return false;
     }
 
+    public void clearRecordingStates() {
+        // set the recording state to false
+        List <Pair<Track.Id, Boolean>> tempList = new ArrayList<>();
+        Iterator<Pair<Track.Id, Boolean>> iterator = trackIds.stream().iterator();
+        while (iterator.hasNext()) {
+            Pair<Track.Id, Boolean> trackId = iterator.next();
+            if (trackId.second) {
+                // set state to false
+                Pair<Track.Id, Boolean> updatedTrackID = new Pair<>(trackId.first, false);
+                // add to list
+                tempList.add(updatedTrackID);
+            } else {
+                // add to list
+                tempList.add(trackId);
+            }
+        }
+        // clear the list
+        trackIds.clear();
+        // update list
+        trackIds.addAll(tempList);
+        // reset the state in database
+        databaseHelper.unsetRecordingStates();
+    }
+
     /**
-     * Remove all entries from datastore.
+     * Remove all (inactive) tracks and locations from datastore.
      *
      * @return The number of deleted tracks.
      */

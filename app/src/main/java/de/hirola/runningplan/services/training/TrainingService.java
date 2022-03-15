@@ -97,6 +97,8 @@ public class TrainingService extends Service implements LocationListener {
         if (logManager.isDebugMode()) {
             logManager.log(TAG, "The training service will be destroyed", null);
         }
+        // set all recorded tracks as finished
+        trackManager.clearRecordingStates();
         handler.removeCallbacks(secondsInTraining);
         handler = null;
         notificationManager = null;

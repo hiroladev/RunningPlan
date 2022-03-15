@@ -75,9 +75,8 @@ public class InfoTrackRecyclerView extends RecyclerView.Adapter<RecyclerView.Vie
             if (duration > 0 &&  duration < 60) {
                 viewHolder.durationTextView.setText(String.format("%s%s", duration, " min"));
             } else if (duration > 59) {
-                Duration durationOfTraining = Duration.ofMinutes(duration);
                 viewHolder.durationTextView.setText(String.format("%s%s%s%s",
-                        durationOfTraining.toHours(), "h : ", durationOfTraining.toMinutes(), " min"));
+                        duration / 60, "h : ", duration % 60, " min"));
             } else {
                 viewHolder.durationTextView.setText("-");
             }

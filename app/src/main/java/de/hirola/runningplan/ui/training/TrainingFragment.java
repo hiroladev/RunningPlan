@@ -14,6 +14,7 @@ import android.widget.*;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -118,7 +119,6 @@ public class TrainingFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // restore saved data
         if (savedInstanceState != null) {
             long id = savedInstanceState.getLong("trackId", -1);
@@ -204,6 +204,20 @@ public class TrainingFragment extends Fragment
         // add training state
         savedInstanceState.putBoolean("isTrainingRunning", isTrainingRunning);
         savedInstanceState.putBoolean("isTrainingPaused", isTrainingPaused);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        // restore saved data
+        if (savedInstanceState != null) {
+            long id = savedInstanceState.getLong("trackId", -1);
+            if (id > -1) {
+                trackId = new Track.Id(id);
+            }
+            isTrainingRunning = savedInstanceState.getBoolean("isTrainingRunning", false);
+            isTrainingPaused = savedInstanceState.getBoolean("isTrainingPaused", false);
+        }
     }
 
     @Override
@@ -432,6 +446,11 @@ public class TrainingFragment extends Fragment
                 trainingInfoImageView.setImageResource(R.drawable.baseline_done_black_24);
             } else {
                 trainingInfoImageView.setImageResource(R.drawable.baseline_self_improvement_black_24);
+            }
+            // set the first unit as active running unit
+            runningUnit = runningPlanEntry.getRunningUnits().get(0);
+            if (runningUnit != null) {
+                activeRunningUnit();
             }
         }
     }
@@ -711,7 +730,7 @@ public class TrainingFragment extends Fragment
                     .findFirst();
             if (unit.isPresent()) {
                 runningUnit = unit.get();
-                setRunningUnit();
+                activeRunningUnit();
                 return true;
             } else {
                 return false;
@@ -722,19 +741,21 @@ public class TrainingFragment extends Fragment
 
     // set the values if a running unit selected
     // called by nextUnit
-    private void setRunningUnit() {
+    private void activeRunningUnit() {
         List<RunningUnit> units = runningPlanEntry.getRunningUnits();
         // select the unit in spinner
         int index = units.indexOf(runningUnit);
         if (index > -1) {
             trainingUnitsSpinner.setSelection(index);
+            // set the training time
+            timeToRun = runningUnit.getDuration();
+            // update training info label
+            // show the training time for the unit
+            if (isTrainingRunning) {
+                String durationString = getString(R.string.unit_time) + ": " + buildStringForDuration(timeToRun);
+                trainingInfolabel.setText(durationString);
+            }
         }
-        // set the training time
-        timeToRun = runningUnit.getDuration();
-        // update training info label
-        // show the training time for the unit
-        String durationString = getString(R.string.unit_time)+ ": " + buildStringForDuration(timeToRun);
-        trainingInfolabel.setText(durationString);
     }
 
     // ask user to reset the plan (repeat),
@@ -940,7 +961,7 @@ public class TrainingFragment extends Fragment
 
             }
 
-            final int DELAY = 0, VIBRATE = 1000, SLEEP = 1000, START = -1;
+            final int DELAY = 0, VIBRATE = 2000, SLEEP = 1000, START = -1;
             long[] vibratePattern = {DELAY, VIBRATE, SLEEP};
 
             vibrator.vibrate(VibrationEffect.createWaveform(vibratePattern, START));

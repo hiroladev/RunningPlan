@@ -105,8 +105,6 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         // map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        // start time
-        values.put(TrackColumns.STARTTIME, trackPoint.getStartTime());
         // distance
         values.put(TrackColumns.DISTANCE, trackPoint.getActualDistance());
         // update the track, returning the primary key value of the new row
@@ -320,6 +318,25 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             tracks.add(getTrack(trackId.first));
         }
         return tracks;
+    }
+
+    /**
+     * Set all state of recorded tracks to inactive.
+     */
+    public void unsetRecordingStates() {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        // update all "active" tracks
+        String whereClauseTracks = TrackColumns.ACTIVE + " = ?";
+        String[] whereClauseTracksArgs = { "1" };
+        ContentValues values = new ContentValues();
+        values.put(TrackColumns.ACTIVE, 0);
+        long updatedTracks = sqLiteDatabase.update(TrackColumns.TABLE_NAME, values,
+                whereClauseTracks, whereClauseTracksArgs);
+        sqLiteDatabase.close();
+        if (logManager.isDebugMode()) {
+            String message = String.format("%s track states was set to false.", updatedTracks);
+            logManager.log(TAG, message, null);
+        }
     }
 
     /**
