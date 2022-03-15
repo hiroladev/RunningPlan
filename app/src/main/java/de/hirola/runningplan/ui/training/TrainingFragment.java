@@ -632,10 +632,6 @@ public class TrainingFragment extends Fragment
             String remarks = getString(R.string.training_at_date)
                     + " "
                     + formatter.format(today);
-            // calculate the duration
-            Instant startTime = Instant.ofEpochMilli(recordedTrack.getStartTimeInMilli());
-            Instant stopTime = Instant.ofEpochMilli(recordedTrack.getStopTimeInMilli());
-            Duration duration = Duration.between(startTime, stopTime);
             // get the uuid of running type
             SportsLibrary sportsLibrary = ((RunningPlanApplication) requireActivity()
                     .getApplication())
@@ -643,7 +639,7 @@ public class TrainingFragment extends Fragment
             UUID trainingTypeUUID = sportsLibrary.getUuidForTrainingType(TrainingType.RUNNING); // can be null
             UUID trackUUID = recordedTrack.getUUID();
             Training training = new Training(name, remarks, today,
-                    Math.abs(duration.toMinutes()),
+                    recordedTrack.getDuration(),
                     recordedTrack.getDistance(),
                     recordedTrack.getAverageSpeed(),
                     recordedTrack.getAltitudeDifference(),
@@ -815,14 +811,14 @@ public class TrainingFragment extends Fragment
         StringBuilder durationString = new StringBuilder(getString(R.string.total_time)+ " ");
         // display in hour or minutes?
         if (duration < 60) {
-            durationString.append(String.valueOf(duration));
+            durationString.append(duration);
         } else {
             //  in h und min umrechnen
             long hours = (duration * 60) / 3600;
             long minutes = (duration / 60) % 60;
-            durationString.append(String.valueOf(hours));
+            durationString.append(hours);
             durationString.append(" h : ");
-            durationString.append(String.valueOf(minutes));
+            durationString.append(minutes);
         }
         durationString.append(" min");
         return durationString.toString();
@@ -884,7 +880,7 @@ public class TrainingFragment extends Fragment
                     }
                     // running unit duration
                     unitsAsString.append(" (");
-                    unitsAsString.append(String.valueOf(runningUnit.getDuration()));
+                    unitsAsString.append(runningUnit.getDuration());
                     unitsAsString.append(" min)");
 
                 } else {
