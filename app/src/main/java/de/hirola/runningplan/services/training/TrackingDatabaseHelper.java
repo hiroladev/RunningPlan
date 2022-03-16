@@ -267,7 +267,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
      *         or null if there are no tracks
      */
     @Nullable
-    public List<Pair<Track.Id, Boolean>> getTrackIds() {
+    public List<Track.Id> getTrackIds() {
         // get the id and the flag of tracks
         String[] projection = {
                 TrackColumns.ID,
@@ -283,17 +283,18 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 null,                      // having
                 null                       // sort order
         )) {
-            List<Pair<Track.Id, Boolean>> trackIds = new ArrayList<>();
+            List<Track.Id> trackIds = new ArrayList<>();
             while (cursor.moveToNext()) {
                 // get the data (attributes) from cursor
                 long id = cursor.getLong(cursor.getColumnIndexOrThrow(TrackColumns.ID));
                 long flag = cursor.getLong(cursor.getColumnIndexOrThrow(TrackColumns.ACTIVE));
                 // create a new track id object
                 Track.Id trackId = new Track.Id(id);
-                // determine the flag
+                // determine and set the flag
                 boolean active = flag !=0;
+                trackId.setRecording(active);
                 // add to list
-                trackIds.add(new Pair<>(trackId, active));
+                trackIds.add(trackId);
             }
             return trackIds;
         } catch (IllegalArgumentException exception) {
@@ -310,12 +311,12 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
      * @return a list of id's of recorded tracks or null if there are no tracks
      */
     @Nullable
-    public List<Track> getRecordedTracks(@NonNull List<Pair<Track.Id, Boolean>> trackIds) {
+    public List<Track> getRecordedTracks(@NonNull List<Track.Id> trackIds) {
         List<Track> tracks = new ArrayList<>();
-        Iterator<Pair<Track.Id, Boolean>> iterator = trackIds.stream().iterator();
+        Iterator<Track.Id> iterator = trackIds.stream().iterator();
         while (iterator.hasNext()) {
-            Pair<Track.Id, Boolean> trackId = iterator.next();
-            tracks.add(getTrack(trackId.first));
+            Track.Id trackId = iterator.next();
+            tracks.add(getTrack(trackId));
         }
         return tracks;
     }

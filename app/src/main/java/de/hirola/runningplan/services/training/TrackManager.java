@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class TrackManager {
 
-    private List<Pair<Track.Id, Boolean>> trackIds; // query the list to avoid get from sqlite
+    private List<Track.Id> trackIds; // query the list to avoid get from sqlite
     private final Context context;
     private final TrackingDatabaseHelper databaseHelper;
     private TrackPoint trackPoint;
@@ -56,14 +56,14 @@ public class TrackManager {
             Track.Id trackId = new Track.Id(primaryKey);
             // remember the new track in local list
             // set the recording state to true
-            trackIds.add(new Pair<>(trackId, true));
+            trackIds.add(trackId);
             return trackId;
         }
         return null;
     }
 
     public boolean insertLocationForTrack(@NonNull Track.Id trackId, @NonNull Location location) {
-        if (trackIds.contains(new Pair<>(trackId, true))) {
+        if (trackIds.contains(trackId)) {
             // create the first point of the track with the start time of track
             if (trackPoint == null) {
                 trackPoint = new TrackPoint(location);
@@ -78,11 +78,11 @@ public class TrackManager {
     }
 
     public boolean completeTrack(Track.Id trackId) {
-        if (trackIds.contains(new Pair<>(trackId, true))) {
-            // update track list
-            int index = trackIds.indexOf(new Pair<>(trackId, true));
-            if (index > -1) {
-                trackIds.add(index, new Pair<>(trackId, false));
+        if (trackIds.contains(trackId)) {
+            // set recording state to false
+            int index = trackIds.indexOf(trackId);
+            if (index  > -1) {
+                trackIds.get(index).setRecording(false);
             }
             return databaseHelper.completeTrack(trackId, trackPoint);
         }
@@ -90,8 +90,7 @@ public class TrackManager {
     }
 
     public Track getTrack(Track.Id trackId) {
-        if (trackIds.contains(new Pair<>(trackId, true)) ||
-                trackIds.contains(new Pair<>(trackId, false))) {
+        if (trackIds.contains(trackId)) {
             return databaseHelper.getTrack(trackId);
         }
         return null;
@@ -102,32 +101,23 @@ public class TrackManager {
     }
 
     public boolean removeTrack(Track.Id trackId) {
-        if (trackIds.contains(new Pair<>(trackId, false))) {
-            return databaseHelper.removeTrack(trackId);
+        if (trackIds.contains(trackId)) {
+            // remove from local list
+            if (trackIds.remove(trackId)) {
+                // remove from database
+                return databaseHelper.removeTrack(trackId);
+            }
         }
         return false;
     }
 
     public void clearRecordingStates() {
         // set the recording state to false
-        List <Pair<Track.Id, Boolean>> tempList = new ArrayList<>();
-        Iterator<Pair<Track.Id, Boolean>> iterator = trackIds.stream().iterator();
-        while (iterator.hasNext()) {
-            Pair<Track.Id, Boolean> trackId = iterator.next();
-            if (trackId.second) {
-                // set state to false
-                Pair<Track.Id, Boolean> updatedTrackID = new Pair<>(trackId.first, false);
-                // add to list
-                tempList.add(updatedTrackID);
-            } else {
-                // add to list
-                tempList.add(trackId);
+        for (Track.Id trackId: trackIds) {
+            if (trackId.isRecording()) {
+                trackId.setRecording(false);
             }
         }
-        // clear the list
-        trackIds.clear();
-        // update list
-        trackIds.addAll(tempList);
         // reset the state in database
         databaseHelper.unsetRecordingStates();
     }
@@ -139,16 +129,14 @@ public class TrackManager {
      */
     public int clearAll() {
         // clear only inactive tracks
-        List <Pair<Track.Id, Boolean>> tempList = new ArrayList<>();
-        Iterator<Pair<Track.Id, Boolean>> iterator = trackIds.stream().iterator();
-        while (iterator.hasNext()) {
-            Pair<Track.Id, Boolean> trackId = iterator.next();
-            if (trackId.second) {
-                // save active track
+        List <Track.Id> tempList = new ArrayList<>();
+        for (Track.Id trackId: trackIds) {
+            if (trackId.isRecording()) {
+                // backup track id to temp lisz
                 tempList.add(trackId);
             }
         }
-        // clear the list
+        // clear the previous list
         trackIds.clear();
         // add active tracks
         trackIds.addAll(tempList);
