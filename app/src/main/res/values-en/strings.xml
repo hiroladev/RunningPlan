@@ -120,7 +120,7 @@
     <string name="running_plan_start_90_remarks">Continuation of the running plan Start 60</string>
     <string name="deleting_failed">Deletion failed.</string>
     <string name="reset_running_plan">Do you want to reset the completed schedule?</string>
-    <string name="gender_undefined">undefinied</string>
+    <string name="gender_undefined">undefined</string>
     <string name="gender_diverse">diverse</string>
     <string name="gender_male">male</string>
     <string name="gender_female">female</string>
@@ -137,4 +137,22 @@
     <string name="no_trainings">No training data available yet.</string>
     <string name="total_durations">Total duration</string>
     <string name="total_distance">Total distance</string>
+    <string name="use_locations_summary_on" translatable="false">Runs can be recorded (distance, speed).</string>
+    <string name="use_locations_summary_off" translatable="false">Runs are not recorded.</string>
+    <string name="save_trainings_summary_on" translatable="false">Training data with recorded tracks are saved.</string>
+    <string name="save_trainings_summary_off" translatable="false">Training data is not saved.</string>
+    <string name="hide_templates_summary_on" translatable="false">Only own running plans are displayed.</string>
+    <string name="hide_templates_summary_off" translatable="false">All running plans are displayed.</string>
+    <string name="enable_notifications_summary_on" translatable="false">Notifications are displayed.</string>
+    <string name="enable_notifications_summary_off" translatable="false">Notifications are not displayed.</string>
+    <string name="enable_sync_summary_on" translatable="false">Data is synchronized. Only available in the next
+        version.
+    </string>
+    <string name="enable_sync_summary_off" translatable="false">No data will be synced.</string>
+    <string name="enable_debug_mode_summary_on" translatable="false">Es werden Logs erzeugt. Hilfreich für die
+        Fehlersuche. Only available in the next version.
+    </string>
+    <string name="enable_debug_mode_summary_off" translatable="false">No logs are generated.</string>
+    <string name="send_debug_logs_summary_on" translatable="false">Errors can be reported.</string>
+    <string name="send_debug_logs_summary_off" translatable="false">Errors cannot be reported.</string>
 </resources>

@@ -38,8 +38,8 @@
         <SwitchPreferenceCompat
                 app:key="save_trainings"
                 app:title="@string/save_trainings"
-                app:summaryOn="@string/todo_data_summary_on"
-                app:summaryOff="@string/todo_data_summary_off"/>
+                app:summaryOn="@string/save_trainings_summary_on"
+                app:summaryOff="@string/save_trainings_summary_off"/>
 
     </PreferenceCategory>
 
@@ -48,7 +48,9 @@
 
         <SwitchPreferenceCompat
                 app:key="use_location_data"
-                app:title="@string/use_location_data"/>
+                app:title="@string/use_location_data"
+                app:summaryOn="@string/use_locations_summary_on"
+                app:summaryOff="@string/use_locations_summary_off" />
 
     </PreferenceCategory>
 
@@ -58,20 +60,20 @@
         <SwitchPreferenceCompat
                 app:key="hide_templates"
                 app:title="@string/hide_templates"
-                app:summaryOn="@string/todo_data_summary_on"
-                app:summaryOff="@string/todo_data_summary_off" />
+                app:summaryOn="@string/hide_templates_summary_on"
+                app:summaryOff="@string/hide_templates_summary_off" />
 
         <SwitchPreferenceCompat
                 app:key="use_notifications"
                 app:title="@string/notifications"
-                app:summaryOn="@string/todo_data_summary_on"
-                app:summaryOff="@string/todo_data_summary_off" />
+                app:summaryOn="@string/enable_notifications_summary_on"
+                app:summaryOff="@string/enable_notifications_summary_off" />
 
         <SwitchPreferenceCompat
                 app:key="use_sync"
                 app:title="@string/use_sync"
-                app:summaryOn="@string/todo_data_summary_on"
-                app:summaryOff="@string/todo_data_summary_off"/>
+                app:summaryOn="@string/enable_sync_summary_on"
+                app:summaryOff="@string/enable_sync_summary_off"/>
 
     </PreferenceCategory>
 
@@ -81,14 +83,14 @@
         <SwitchPreferenceCompat
                 app:key="debug_mode"
                 app:title="@string/debug_mode"
-                app:summaryOn="@string/todo_data_summary_on"
-                app:summaryOff="@string/todo_data_summary_off" />
+                app:summaryOn="@string/enable_debug_mode_summary_on"
+                app:summaryOff="@string/enable_debug_mode_summary_off" />
 
         <SwitchPreferenceCompat
                 app:key="send_debug_log"
                 app:title="@string/send_debug_log"
-                app:summaryOn="@string/todo_data_summary_on"
-                app:summaryOff="@string/todo_data_summary_off" />
+                app:summaryOn="@string/send_debug_logs_summary_on"
+                app:summaryOff="@string/send_debug_logs_summary_off" />
 
     </PreferenceCategory>
 
