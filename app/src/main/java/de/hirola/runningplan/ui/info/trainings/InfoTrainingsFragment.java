@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.util.AppLogManager;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -19,22 +18,15 @@ import de.hirola.runningplan.util.AppLogManager;
  */
 public class InfoTrainingsFragment extends Fragment {
 
-    private final static String TAG = InfoTrainingsFragment.class.getSimpleName();
-
-    private AppLogManager logManager; // app logger
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // app logger
-        logManager = AppLogManager.getInstance(requireContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View aboutView = inflater.inflate(R.layout.fragment_info_trainings, container, false);
-        return aboutView;
+        return inflater.inflate(R.layout.fragment_info_trainings, container, false);
     }
 }

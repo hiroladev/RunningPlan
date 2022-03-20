@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.services.training.TrackManager;
-import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.sportslibrary.model.Track;
 
@@ -28,9 +27,6 @@ import java.util.List;
  */
 public class InfoTracksFragment extends Fragment implements View.OnClickListener {
 
-    private final static String TAG = InfoTracksFragment.class.getSimpleName();
-
-    private AppLogManager logManager; // app logger
     private Button clearAllTracksButton;
     private InfoTrackRecyclerView listAdapter;
     private TrackManager trackManager; // track manager for handling tracks
@@ -39,8 +35,6 @@ public class InfoTracksFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // app logger
-        logManager = AppLogManager.getInstance(requireContext());
     }
 
     @Override

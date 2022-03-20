@@ -56,6 +56,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
             // Laufplan darstellen
             RunningPlan runningPlan = runningPlans.get(position);
             // Name und Status (mittels Bild darstellen)
+            //noinspection CommentedOutCode
             try {
                 // active
                 if (runningPlan.isActive()) {

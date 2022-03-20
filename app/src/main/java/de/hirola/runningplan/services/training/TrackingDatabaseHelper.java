@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
-import android.util.Pair;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.util.AppLogManager;
@@ -204,7 +203,6 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                     // cursor is position at index -1 initially
                     cursor.moveToNext();
                     // get the data (attributes) from cursor
-                    long id = cursor.getLong(cursor.getColumnIndexOrThrow(TrackColumns.ID));
                     String name = cursor.getString(cursor.getColumnIndexOrThrow(TrackColumns.NAME));
                     String description = cursor.getString(cursor.getColumnIndexOrThrow(TrackColumns.DESCRIPTION));
                     long startTime = cursor.getLong(cursor.getColumnIndexOrThrow(TrackColumns.STARTTIME));

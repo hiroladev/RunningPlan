@@ -16,9 +16,7 @@ import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.model.Training;
 import de.hirola.sportslibrary.model.UUID;
 import de.hirola.sportslibrary.model.User;
-import org.jetbrains.annotations.NotNull;
 
-import java.time.Duration;
 import java.util.List;
 
 /**
@@ -32,29 +30,38 @@ import java.util.List;
  */
 public class StartFragment extends Fragment {
 
-    private final static String TAG = StartFragment.class.getSimpleName();
+    private RecyclerView recyclerView;
+    private TextView trainingsOverviewTextView;
     private RunningPlanViewModel viewModel;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View startView = inflater.inflate(R.layout.fragment_start, container, false);
-        // show the active running plan details
-        // get the app user
-        viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
+        recyclerView = startView.findViewById(R.id.fgmt_start_active_running_plan_recyclerview);
+        trainingsOverviewTextView = startView.findViewById(R.id.fgmt_start_training_training_overview_text);
         // show active running plan overview
-        showRunningPlanOverview(startView);
+        showRunningPlanOverview();
         // show training data
-        showTrainingOverview(startView);
+        showTrainingOverview();
         return startView;
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onResume() {
+        super.onResume();
+        // show active running plan overview
+        showRunningPlanOverview();
+        // show training data
+        showTrainingOverview();
     }
 
-    private void showRunningPlanOverview(View view) {
+    private void showRunningPlanOverview() {
         User appUser = viewModel.getAppUser();
         UUID runningPlanUUID = appUser.getActiveRunningPlanUUID();
         if (runningPlanUUID != null) {
@@ -63,7 +70,6 @@ public class StartFragment extends Fragment {
             if (runningPlan != null) {
                 RunningEntryRecyclerView listAdapter = new RunningEntryRecyclerView(requireContext(), runningPlan);
                 // recycler view list adapter
-                RecyclerView recyclerView = view.findViewById(R.id.fgmt_start_active_running_plan_recyclerview);
                 recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
                 recyclerView.setAdapter(listAdapter);
             }
@@ -71,9 +77,8 @@ public class StartFragment extends Fragment {
     }
 
     @SuppressLint("DefaultLocale")
-    private void showTrainingOverview(@NotNull View view) {
+    private void showTrainingOverview() {
         // show all trainings summary
-        TextView trainingsOverviewTextView = view.findViewById(R.id.fgmt_start_training_overview_text_view);
         List<Training> trainings = viewModel.getTrainings();
         if (trainings.size() > 0) {
             // summaries some values
@@ -102,7 +107,6 @@ public class StartFragment extends Fragment {
                 trainingOverviewString.append(String.format("%,.2f%s", distance / 1000, " km"));
             }
             trainingsOverviewTextView.setText(trainingOverviewString);
-            System.out.println(trainingOverviewString);
         } else {
             trainingsOverviewTextView.setText(R.string.no_trainings);
         }

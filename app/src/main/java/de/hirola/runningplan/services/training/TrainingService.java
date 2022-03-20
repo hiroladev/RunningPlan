@@ -1,5 +1,6 @@
 package de.hirola.runningplan.services.training;
 
+import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
@@ -27,19 +28,19 @@ public class TrainingService extends Service implements LocationListener {
 
     private final static String TAG = TrainingService.class.getSimpleName();
 
-    // timer interval (tick) in milliseconds
-    // used for location updates too
-    private final static long TIME_INTERVAL_IN_MILLI = 1000;
-    // min distance for location updates in m
-    private final static long LOCATION_UPDATE_MIN_DISTANCE = 1;
+    private final static long TIME_INTERVAL_IN_MILLI = 1000; // timer interval (tick) in milliseconds
+                                                             // used for location updates too
+    private final static long LOCATION_UPDATE_MIN_DISTANCE = 10; // min distance for location updates in m
 
     private Handler handler;
     private AppLogManager logManager;
+    private PowerManager.WakeLock wakeLock; // partial wake lock for recording and time
     private TrainingNotificationManager notificationManager;
     private final IBinder serviceBinder = new BackgroundTimerServiceBinder();
     private TrackManager trackManager;
     private Track.Id trackId = null; // actual recording track
     private LocationManager locationManager; // location manager
+    private Location lastGoodLocation = null;
     private boolean withLocationTracking = false;
     private boolean gpsAvailable = false; // (gps) tracking available?
     private long trainingDuration = 0L;
@@ -73,12 +74,6 @@ public class TrainingService extends Service implements LocationListener {
         }
     };
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return serviceBinder;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -87,6 +82,8 @@ public class TrainingService extends Service implements LocationListener {
         trackManager = new TrackManager(this);
         notificationManager = new TrainingNotificationManager(this);
         handler = new Handler(Looper.getMainLooper());
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"RunningPlan:wakelock");
         if (logManager.isDebugMode()) {
             logManager.log(TAG, "The training service was created.", null);
         }
@@ -103,7 +100,20 @@ public class TrainingService extends Service implements LocationListener {
         handler = null;
         notificationManager = null;
         locationManager = null;
+        if (wakeLock != null && wakeLock.isHeld()) {
+            wakeLock.release();
+        }
         super.onDestroy();
+    }
+
+    @SuppressLint("WakelockTimeout")
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        if (wakeLock != null && !wakeLock.isHeld()) {
+            wakeLock.acquire();
+        }
+        return serviceBinder;
     }
 
     @Override
@@ -123,7 +133,10 @@ public class TrainingService extends Service implements LocationListener {
     public void onProviderEnabled(@NonNull String provider) {
         LocationListener.super.onProviderEnabled(provider);
         if (provider.equalsIgnoreCase(LocationManager.GPS_PROVIDER)) {
-            System.out.println("gps enabled");
+            gpsAvailable = true;
+            if (logManager.isDebugMode()) {
+                logManager.log(TAG, provider + " enabled", null);
+            }
         }
     }
 
@@ -131,16 +144,25 @@ public class TrainingService extends Service implements LocationListener {
     public void onProviderDisabled(@NonNull String provider) {
         LocationListener.super.onProviderDisabled(provider);
         if (provider.equalsIgnoreCase(LocationManager.GPS_PROVIDER)) {
-            System.out.println("gps disabled");
+            gpsAvailable = false;
+            if (logManager.isDebugMode()) {
+                logManager.log(TAG, provider + " disabled", null);
+            }
         }
     }
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        // insert location to local tracking database
-        // TODO: callback, if location not added
-        if (!trackManager.insertLocationForTrack(trackId, location)) {
-            System.out.println("Location not added!");
+        // is the location "better" than previous?
+        if (isBetterLocation(location)) {
+            lastGoodLocation = location;
+            // insert location to local tracking database
+            if (!trackManager.insertLocationForTrack(trackId, lastGoodLocation)) {
+                // TODO: callback, if location not added
+                if (logManager.isDebugMode()) {
+                    logManager.log(TAG, "Location not added!", null);
+                }
+            }
         }
     }
 
@@ -158,6 +180,19 @@ public class TrainingService extends Service implements LocationListener {
         this.withLocationTracking = withLocationTracking;
         if (withLocationTracking) {
             trackId = trackManager.addNewTrack();
+            // try to get the actual position from last known location,
+            // this is the fastest way to get a location fix
+            String provider = LocationManager.NETWORK_PROVIDER;
+            try {
+               lastGoodLocation = locationManager.getLastKnownLocation(provider);
+                if (lastGoodLocation != null) {
+                    trackManager.insertLocationForTrack(trackId, lastGoodLocation);
+                }
+            } catch (SecurityException exception) {
+                if (logManager.isDebugMode()) {
+                    logManager.log(TAG, "Error while getting the last known location.", exception);
+                }
+            }
         }
         this.trainingDuration = duration;
         isTrainingPaused = false;
@@ -268,7 +303,7 @@ public class TrainingService extends Service implements LocationListener {
 
     private void sendDurationUpdate() {
         Intent intent = new Intent(TrainingServiceCallback.SERVICE_RECEIVER_ACTION);
-        intent.putExtra(TrainingServiceCallback.SERVICE_RECEIVER_INTENT_EXRAS_DURATION, trainingDuration);
+        intent.putExtra(TrainingServiceCallback.SERVICE_RECEIVER_INTENT_ACTUAL_DURATION, trainingDuration);
         sendBroadcast(intent);
     }
 
@@ -291,7 +326,7 @@ public class TrainingService extends Service implements LocationListener {
         if (withLocationTracking) {
             // locationServicesAllowed is true, if gps available
             // minimal time between update = 1 sec
-            // minimal distance = 1 m
+            // minimal distance = 10 m
             try {
                 locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER,
@@ -301,7 +336,7 @@ public class TrainingService extends Service implements LocationListener {
             } catch (SecurityException exception) {
                 gpsAvailable = false;
                 if (logManager.isDebugMode()) {
-                    logManager.log(TAG, "Could not determine the status of gps.", exception);
+                    logManager.log(TAG, "Could not determine the status of GPS.", exception);
                 }
             }
         }
@@ -313,6 +348,20 @@ public class TrainingService extends Service implements LocationListener {
                 locationManager.removeUpdates(this);
             }
         }
+    }
+
+    // decide if the new is better than the previous location
+    private boolean isBetterLocation(Location newLocation) {
+        if(lastGoodLocation != null) {
+            // check if new location is newer in time
+            boolean isNewer = newLocation.getTime() > lastGoodLocation.getTime();
+
+            // check if new location more accurate (radius in meters), so less is better
+            boolean isMoreAccurate = newLocation.getAccuracy() < lastGoodLocation.getAccuracy();
+            // more accurate and newer is always better
+            return isMoreAccurate && isNewer;
+        }
+        return false;
     }
 
 }

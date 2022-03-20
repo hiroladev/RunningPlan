@@ -13,7 +13,7 @@ import android.content.ServiceConnection;
  */
 public interface TrainingServiceCallback {
     String SERVICE_RECEIVER_ACTION = "RunningPlan_Service_Receiver_Action";
-    String SERVICE_RECEIVER_INTENT_EXRAS_DURATION = "actualDuration";
+    String SERVICE_RECEIVER_INTENT_ACTUAL_DURATION = "actualDuration";
     long INVALID_TRAINING_DURATION = 0;
     void onServiceConnected(ServiceConnection connection);
     default void onServiceDisconnected(ServiceConnection connection) {}

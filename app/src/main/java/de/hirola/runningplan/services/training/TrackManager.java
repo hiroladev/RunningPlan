@@ -2,7 +2,6 @@ package de.hirola.runningplan.services.training;
 
 import android.content.Context;
 import android.location.Location;
-import android.util.Pair;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.R;
@@ -12,7 +11,6 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -132,7 +130,7 @@ public class TrackManager {
         List <Track.Id> tempList = new ArrayList<>();
         for (Track.Id trackId: trackIds) {
             if (trackId.isRecording()) {
-                // backup track id to temp lisz
+                // backup track id to temp list
                 tempList.add(trackId);
             }
         }

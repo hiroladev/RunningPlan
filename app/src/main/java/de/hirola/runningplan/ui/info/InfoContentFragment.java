@@ -29,8 +29,6 @@ import java.util.Map;
  */
 public class InfoContentFragment extends Fragment implements View.OnClickListener {
 
-    private final static String TAG = InfoContentFragment.class.getSimpleName();
-
     private RecyclerView recyclerView; // recycler view list adapter
     private Map<Integer, MenuItem> menuItemMap; // menu items
 
@@ -58,11 +56,6 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(listAdapter);
         return infoView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
     }
 
     @Override

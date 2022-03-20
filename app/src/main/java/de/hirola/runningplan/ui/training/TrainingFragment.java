@@ -14,7 +14,6 @@ import android.widget.*;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -53,8 +52,6 @@ public class TrainingFragment extends Fragment
 
     private final static String TAG = TrainingFragment.class.getSimpleName();
 
-    private PowerManager.WakeLock wakeLock;
-
     private AppLogManager logManager; // app logging
     private SharedPreferences sharedPreferences; // user and app preferences
     private boolean useNotifications;
@@ -71,7 +68,6 @@ public class TrainingFragment extends Fragment
     private boolean isTrainingPossible = false; // if no running plan selected, no training is possible
     private boolean isTrainingRunning = false;
     private boolean isTrainingPaused = false;
-    private boolean didCompleteUpdateError; // error occurred while add complete state on units
 
     // spinner
     private Spinner trainingDaysSpinner;
@@ -107,7 +103,7 @@ public class TrainingFragment extends Fragment
         public void onReceive(Context context, Intent intent) {
             timeToRun = intent
                     .getExtras()
-                    .getLong(TrainingServiceCallback.SERVICE_RECEIVER_INTENT_EXRAS_DURATION, 0L);
+                    .getLong(TrainingServiceCallback.SERVICE_RECEIVER_INTENT_ACTUAL_DURATION, 0L);
             // refresh the time label
             updateTimerLabel();
             // check the training state
@@ -140,13 +136,6 @@ public class TrainingFragment extends Fragment
         SharedPreferences sharedPreferences =
                 requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
         useNotifications = sharedPreferences.getBoolean(Global.PreferencesKeys.useNotifications, true);
-
-        // avoid screen locks - stop the training
-        PowerManager powerManager = (PowerManager) requireContext().getSystemService(Context.POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                requireActivity().getPackageName() + ":wake_lock");
-        //TODO: set dynamically from running plan
-        wakeLock.acquire(120*60*1000L /*120 minutes*/);
 
         // checking location permissions
         useLocationData = sharedPreferences.getBoolean(Global.PreferencesKeys.useLocationData, false);
@@ -221,11 +210,6 @@ public class TrainingFragment extends Fragment
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         // location permissions can be changed by user
@@ -240,11 +224,6 @@ public class TrainingFragment extends Fragment
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public void onDestroy() {
         notificationManager = null;
         requireActivity().unregisterReceiver(backgroundTimeReceiver);
@@ -252,13 +231,7 @@ public class TrainingFragment extends Fragment
             // unbind service connections only if no training active
             trainingServiceConnection.stopAndUnbindService(requireActivity().getApplicationContext());
         }
-        wakeLock.release();
         super.onDestroy();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
     }
 
     @Override
@@ -545,7 +518,6 @@ public class TrainingFragment extends Fragment
                     if (logManager.isDebugMode()) {
                         logManager.log(TAG, "A running unit couldn't set as completed.", null);
                     }
-                    didCompleteUpdateError = true;
                 }
                 // more units of the training section available
                 // than continue the training

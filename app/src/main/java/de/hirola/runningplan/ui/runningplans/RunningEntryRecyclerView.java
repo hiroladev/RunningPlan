@@ -99,14 +99,14 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
         StringBuilder durationString = new StringBuilder(context.getString(R.string.total_time)+ " ");
         // display in hour or minutes?
         if (duration < 60) {
-            durationString.append(String.valueOf(duration));
+            durationString.append(duration);
         } else {
             //  in h und min umrechnen
             long hours = (duration * 60) / 3600;
             long minutes = (duration / 60) % 60;
-            durationString.append(String.valueOf(hours));
+            durationString.append(hours);
             durationString.append(" h : ");
-            durationString.append(String.valueOf(minutes));
+            durationString.append(minutes);
         }
         durationString.append(" min");
         return durationString.toString();

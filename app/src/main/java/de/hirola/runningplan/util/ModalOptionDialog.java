@@ -65,16 +65,12 @@ public final class ModalOptionDialog {
                 if (isRunningOnAndroid) {
                     alert.setIcon(android.R.drawable.ic_dialog_info);
                     alert.show();
-                } else {
-                    //TODO: jvm
                 }
                 break;
             case 1:  case 2:
                 if (isRunningOnAndroid) {
                     alert.setIcon(android.R.drawable.ic_dialog_alert);
                     alert.show();
-                } else {
-                    //TODO: jvm
                 }
                 break;
         }

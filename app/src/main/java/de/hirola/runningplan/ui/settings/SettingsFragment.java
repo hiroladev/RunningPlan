@@ -69,7 +69,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
         SharedPreferences.Editor editor = sharedPreferences.edit();
         // boolean preferences
         if (preference instanceof SwitchPreferenceCompat) {
-            boolean value = ((SwitchPreferenceCompat) preference).isChecked();
             // add trainings
             if (key.equalsIgnoreCase(Global.PreferencesKeys.saveTrainings)) {
                 editor.putBoolean(key, (Boolean) newValue);

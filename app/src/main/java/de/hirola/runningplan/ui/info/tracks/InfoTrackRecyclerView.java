@@ -8,10 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.model.Track;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -30,15 +28,11 @@ import java.util.List;
  */
 public class InfoTrackRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final static String TAG = InfoTrackRecyclerView.class.getSimpleName();
-
-    private final AppLogManager logManager;
     private View.OnClickListener onClickListener;
     private List<Track> tracks;
 
     public InfoTrackRecyclerView(Context context, @NonNull List<Track> tracks) {
         this.tracks = tracks;
-        logManager = AppLogManager.getInstance(context);
     }
 
     @NonNull

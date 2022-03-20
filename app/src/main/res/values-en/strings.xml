@@ -47,8 +47,8 @@
     <string name="use_sync">Sync data</string>
     <string name="notifications">Notifications</string>
     <string name="cancel">Cancel</string>
-    <string name="preferences_not_set">The preferences could not saved.</string>
-    <string name="save_data_error">The data could not saved.</string>
+    <string name="preferences_not_set">The preferences could not save.</string>
+    <string name="save_data_error">The data could not save.</string>
     <string name="hide_templates">Hide templates</string>
     <string name="show_training_details">Details of training</string>
     <string name="select_week_of_start">Set week of start</string>
@@ -56,7 +56,7 @@
     <string name="template_must_be_changed">Templates must be changed</string>
     <string name="question">Question</string>
     <string name="hint">Hint</string>
-    <string name="stop_active_running_plan">Shouldn\'t this running plan really be used any more?</string>
+    <string name="stop_active_running_plan">Should not this running plan really be used anymore?</string>
     <string name="name_must_be_not_null">The name must be not null.</string>
     <string name="error">Error</string>
     <string name="warning">Warning</string>
@@ -133,7 +133,7 @@
     <string name="training_at_date">Training at</string>
     <string name="overview_trainings">Overview of trainings</string>
     <string name="actual_running_plan">Actual plan</string>
-    <string name="banner_content_description">Running in forrest ...</string>
+    <string name="banner_content_description">Running in forrest …</string>
     <string name="no_trainings">No training data available yet.</string>
     <string name="total_durations">Total duration</string>
     <string name="total_distance">Total distance</string>
