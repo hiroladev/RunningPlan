@@ -153,8 +153,8 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    public boolean completeTrack(@NonNull Track.Id trackId, @NonNull TrackPoint trackPoint) {
-        if (!trackExist(trackId)) {
+    public boolean completeTrack(@NonNull Track.Id trackId, @Nullable TrackPoint trackPoint) {
+        if (!trackExist(trackId) || trackPoint == null) {
             return false;
         }
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();

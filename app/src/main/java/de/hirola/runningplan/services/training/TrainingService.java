@@ -29,7 +29,7 @@ public class TrainingService extends Service implements LocationListener {
     private final static String TAG = TrainingService.class.getSimpleName();
 
     private final static long TIME_INTERVAL_IN_MILLI = 1000; // timer interval (tick) in milliseconds
-                                                             // used for location updates too
+    private final static long LOCATION_UPDATE_INTERVAL_IN_MILLI = 5000; // location updates every
     private final static long LOCATION_UPDATE_MIN_DISTANCE = 10; // min distance for location updates in m
 
     private Handler handler;
@@ -40,7 +40,6 @@ public class TrainingService extends Service implements LocationListener {
     private TrackManager trackManager;
     private Track.Id trackId = null; // actual recording track
     private LocationManager locationManager; // location manager
-    private Location lastGoodLocation = null;
     private boolean withLocationTracking = false;
     private boolean gpsAvailable = false; // (gps) tracking available?
     private long trainingDuration = 0L;
@@ -153,15 +152,11 @@ public class TrainingService extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        // is the location "better" than previous?
-        if (isBetterLocation(location)) {
-            lastGoodLocation = location;
-            // insert location to local tracking database
-            if (!trackManager.insertLocationForTrack(trackId, lastGoodLocation)) {
-                // TODO: callback, if location not added
-                if (logManager.isDebugMode()) {
-                    logManager.log(TAG, "Location not added!", null);
-                }
+        // insert location to local tracking database
+        if (!trackManager.insertLocationForTrack(trackId, location)) {
+            // TODO: callback, if location not added
+            if (logManager.isDebugMode()) {
+                logManager.log(TAG, "Location not added!", null);
             }
         }
     }
@@ -184,9 +179,9 @@ public class TrainingService extends Service implements LocationListener {
             // this is the fastest way to get a location fix
             String provider = LocationManager.NETWORK_PROVIDER;
             try {
-               lastGoodLocation = locationManager.getLastKnownLocation(provider);
-                if (lastGoodLocation != null) {
-                    trackManager.insertLocationForTrack(trackId, lastGoodLocation);
+               Location location = locationManager.getLastKnownLocation(provider);
+                if (location != null) {
+                    trackManager.insertLocationForTrack(trackId, location);
                 }
             } catch (SecurityException exception) {
                 if (logManager.isDebugMode()) {
@@ -325,12 +320,12 @@ public class TrainingService extends Service implements LocationListener {
     private void startLocationUpdates() {
         if (withLocationTracking) {
             // locationServicesAllowed is true, if gps available
-            // minimal time between update = 1 sec
+            // minimal time between update = 5 sec
             // minimal distance = 10 m
             try {
                 locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER,
-                        TIME_INTERVAL_IN_MILLI,
+                        LOCATION_UPDATE_INTERVAL_IN_MILLI,
                         LOCATION_UPDATE_MIN_DISTANCE,
                         this);
             } catch (SecurityException exception) {
@@ -348,20 +343,6 @@ public class TrainingService extends Service implements LocationListener {
                 locationManager.removeUpdates(this);
             }
         }
-    }
-
-    // decide if the new is better than the previous location
-    private boolean isBetterLocation(Location newLocation) {
-        if(lastGoodLocation != null) {
-            // check if new location is newer in time
-            boolean isNewer = newLocation.getTime() > lastGoodLocation.getTime();
-
-            // check if new location more accurate (radius in meters), so less is better
-            boolean isMoreAccurate = newLocation.getAccuracy() < lastGoodLocation.getAccuracy();
-            // more accurate and newer is always better
-            return isMoreAccurate && isNewer;
-        }
-        return false;
     }
 
 }

@@ -149,9 +149,7 @@
         version.
     </string>
     <string name="enable_sync_summary_off" translatable="false">No data will be synced.</string>
-    <string name="enable_debug_mode_summary_on" translatable="false">Es werden Logs erzeugt. Hilfreich für die
-        Fehlersuche. Only available in the next version.
-    </string>
+    <string name="enable_debug_mode_summary_on" translatable="false">Logs are generated. Helpful for troubleshooting. Only available in the next version.</string>
     <string name="enable_debug_mode_summary_off" translatable="false">No logs are generated.</string>
     <string name="send_debug_logs_summary_on" translatable="false">Errors can be reported.</string>
     <string name="send_debug_logs_summary_off" translatable="false">Errors cannot be reported.</string>
