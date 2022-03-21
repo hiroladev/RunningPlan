@@ -84,8 +84,8 @@ Unbesehen davon würde ich gern Tipps zum Laufen in der App anbieten. Wenn jeman
 
 ## Installation der App
 
-Eine App unter Android nutzen zu können, ist zum Glück einfacher als bei Apple. Im Prinzip können Sie sich die App 
-wie ein ZIP-Archiv vorstellen. Alles, was die App benötigt, ist im Archiv, der APK-Datei. 
+Eine App unter Android nutzen zu können, ist zum Glück einfacher als bei Apple. Aus Sicherheitsgründen kan dies ein Nachteil sein. 
+Im Prinzip können Sie sich die App  wie ein ZIP-Archiv vorstellen. Alles, was die App benötigt, ist im Archiv, der APK-Datei. 
 Sie können das gerne nachprüfen, in dem Sie die Datei mit einem Entpacker-Programm, wie z.B. 7zip, einfach mal auspacken.
 
 Die App ist also eine Datei, welche Sie wie unter Windows z.B. einfach direkt auf Ihrem SmartPhone installieren könnten.
@@ -103,6 +103,11 @@ im PlayStore, wie auch bei F-Droid zur Verfügung stellen zu lassen.
 
 Bis dahin finden Sie die direkt installierbare APK auf Github. Sie können sich hier den Quelltext anschauen und 
 müssten mir einfach vertrauen.
+
+## Screenshots
+
+### Überblick
+
 
 
 ## Links
