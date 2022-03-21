@@ -1,124 +1,126 @@
 # RunningPlan
 
-## Von der Idee zur App
+*Read this in other languages: [Deutsch](README.de.md)*
 
-Manche kennen dies vielleicht. Man nimmt sich vor, mehr für seine Gesundheit zu tun. So geht es mir auch immer wieder. :grinning:
-Dafür suchte ich mal wieder in den unendlichen Weiten des Netzes nach Anregungen und fand dabei eine wunderbare Seite 
-zum Thema Laufen. Die Seite von Christian Zangl: https://lauftipps.ch.
+## From the idea to the app
 
-Neben den vielen nützlichen Informationen stellt Herr Zangl auch Trainingspläne bereit. Mithilfe dieser Pläne können 
-auch Amateure wie ich in das Laufen einteigen.
+Some may know this. You decide to do more for your health. That's how I always feel. :grinning:
+For this I searched the endless expanse of the net for suggestions and found a wonderful site
+about running. Christian Zangl's website: https://lauftipps.ch.
 
-Nun bin ich Informatiker mit einem Faible für das Programmieren und mir kam die Idee, das Ganze als App zu erstellen. 
-Herr Zangl gab mir freundlicherweise die Erlaubnis, seine Pläne hierfür zu verwenden. Noch einmal vielen Dank hierfür!
-Als langjähriger Apple-Nutzer habe ich mich also in die Sprache [Swift](https://developer.apple.com/swift/) und die 
-dazugehörige IDE [Xcode](https://apps.apple.com/us/app/xcode/id497799835?mt=12) eingearbeitet. 
+In addition to lots of useful information, Mr. Zangl also provides training plans. With the help of these plans
+even amateurs like me get into running.
 
-Die App war prinzipiell fertig.
+Now I'm a computer scientist with a penchant for programming and I had the idea of creating the whole thing as an app.
+Mr. Zangl kindly gave me permission to use his plans for this. Thank you again for this!
+So, as a longtime Apple user, I've become familiar with the [Swift](https://developer.apple.com/swift/) language and the
+associated IDE [Xcode](https://apps.apple.com/us/app/xcode/id497799835?mt=12) incorporated.
 
-Allerdings bin ich in der Zwischenzeit aus verschiedenen Gründen dann komplett von Apple weg und nutze nur noch 
-Linux (Mint). Als SmartPhone-Plattform nutze ich nun [CalyxOS](https://calyxos.org/). Damit musste ich auch meine App 
-neu programmieren. Da kam mir entgegen, dass ich mit Java immer mal wieder zu tun hatte.
-[Kotlin](https://kotlinlang.org/) habe ich mir angeschaut und finde es, genau wie Swift, sehr gut. 
-Allerdings hätte ich zur Einarbeitung in eine neue IDE, die Android-Programmierung auch noch eine neue Programmiersprache lernen müssen. 
-Da war mir dann doch zu viel.
+The app was basically finished.
 
-Tja, also hat es nun über ein Jahr von der Idee zur ersten Beta-Version der App gedauert. Ja, und auch Android hält 
-genau wie Swift viele kleine "Nettigkeiten" :confused: für einen unerfahrenen Entwickler wie mich bereit. 
-Für aus Sicht des Nutzers verständliche Dinge und Einstellungen, z.B. zum Thema Sicherheit, sorgen für Entwickler immer wieder für
-Herausforderungen :wink:.
+However, in the meantime I have completely left Apple for various reasons and only use
+Linux (Mint). I now use [CalyxOS](https://calyxos.org/) as my smartphone platform. With that, I also had to use my app
+reprogram. It was good for me that I had to deal with Java from time to time.
+I took a look at [Kotlin](https://kotlinlang.org/) and, like Swift, I think it's very good.
+However, I would have had to learn a new programming language to familiarize myself with a new IDE, Android programming.
+Then it was too much for me.
 
-Ein Beispiel gefällig: Wenn man läuft, bleibt die App ja nicht ständig sichtbar und aktiv, man schaut ja nicht ständig 
-auf das Smartphone. Die Trainingszeit allerdings soll natürlich weiterlaufen. Was der Nutzer nicht weiß und auch nicht 
-wissen muss: Sobald eine App im Hintergrund (nicht sichtbar) ist, "macht" sie auch nichts mehr :astonished:! 
-Auch keine Zeit zählen oder eine Strecke aufzeichnen!
+Well, it has now taken over a year from the idea to the first beta version of the app. Yes, and Android holds up too
+just like Swift lots of little "nice things" :confused: ready for an inexperienced developer like me.
+Developers always ensure things and settings that are understandable from the user's point of view, e.g. on the subject of security
+Challenges :wink:.
 
-Ich mache alles nebenberuflich und ohne finanzielle Interessen. Deshalb seien Sie bitte nachsichtig, wenn nicht immer 
-alles "rund" läuft. Für Anregungen, konstruktive Kritik und Verbesserungsvorschläge bin ich immer offen.
+An example: when you're running, the app doesn't always remain visible and active, you don't look all the time
+on the smartphone. Of course, the training time should continue. What the user doesn't know and doesn't either
+must know: As soon as an app is in the background (not visible), it "does" nothing more :astonished:!
+Also, don't count time or record a route!
 
-Auch die Erstellung von Dokumentationen, diesen Seiten oder auch die Umwandlung der Laufpläne kosten Zeit und Energie.
+I do everything part-time and without financial interests. So please be lenient if not always
+everything runs "round". I am always open to suggestions, constructive criticism and suggestions for improvement.
 
-
-## Die Idee hinter der App
-
-Ideen für die App habe ich noch viele. Alle können jedoch aus Zeitgründen leider nicht sofort umgesetzt werden. 
-Deshalb (vorerst) die Konzentration auf die wichtigsten Funktionen. Und auch diese Funktionen, so banal sie vielleicht 
-erscheinen, sind aufwendig umzusetzen.
-
-- Bereitstellung der Laufpläne von Herrn Zangl in einer für die App nutzbaren Form ([JSON](https://de.wikipedia.org/wiki/JavaScript_Object_Notation))
-- Import von Vorlagen
-- Laufplan wählen, Start-Datum und Trainingstage festlegen (Woche / Wochenende, Anzahl der Lauf-Tage)
-- Läufe aufzeichnen und je nach Strecke / Zeit / akustisch / grafisch Hinweise geben (Stop, Start, Pause, Langsam, …)
-- nach der Tour das aufgezeichnete Training auswerten
-
-Die App ist nicht für Laufprofis gedacht und erhebt keinen Anspruch darauf ein korrektes Lauftraining zu ermöglichen. 
-Dafür empfehle ich, sich z.B. auf der Seite von Herrn Zangl zu informieren.
-
-Ich persönlich möchte z.B. nicht Apps von Adidas, Nike, … verwenden und meine "Erfolge" auch nicht teilen.
-Eher soll ein (privates) Trainingstagebuch angelegt werden können. Ich bin Informatiker und auch deshalb kein großer
-Freund von bedrucktem Papier. Und möchte nicht mit Papier :page_facing_up: und Uhr :stopwatch: das Lauftraining :running:
-beginnen.
-
-Der Nutzer kann sich an die Vorgaben halt, muss aber nicht. Es sollen Empfehlungen sein. Ich persönlich würde / könnte 
-z.B. am Wochenende nicht laufen. Also würde sich der Plan "nach hinten verschieben".
-
-Die Pläne stehen als Vorlagen auf meiner Webseite (s.u.) bereit, weitere Vorlagen werden folgen. 
-Parallel wird es App auf Basis von Java für Windows, macOS und Linux geben, mit der man die Laufpläne verändern oder 
-komplett eigene anlegen kann. Die App gab es bereits für Swift und muss jetzt "nur" noch umprogrammiert werden.
+The creation of documentation, these pages or the conversion of the running schedules also cost time and energy.
 
 
-## Was kann die App „Laufplan“?
+## The idea behind the app
 
-Auf Grundlage der von Herrn Christian Zangl entwickelten [Laufplänen](https://lauftipps.ch/trainingsplaene/alle-trainingsplaene-auf-einen-blick/) können Laufanfänger und Hobby-Läufer ihre Lauftrainings mit Unterstützung eines Smartphones durchführen.
-Die von Herrn Zangl angebotenen Laufpläne wurden von mir in ein zur Nutzung in der App erforderliches Format gebracht und können dort genutzt werden. 
-Die Vorlagen können angepasst oder eigene Pläne angelegt werden.
+I still have a lot of ideas for the app. Unfortunately, not all of them can be implemented immediately due to time constraints.
+Therefore (for the time being) the concentration on the most important functions. And these functions too, as banal as they may be
+appear are difficult to implement.
+
+- Provision of Mr. Zangl's running plans in a form that can be used for the app ([JSON](https://de.wikipedia.org/wiki/JavaScript_Object_Notation))
+- Import templates
+- Choose a running plan, set the start date and training days (week / weekend, number of running days)
+- Record runs and give acoustic / graphical instructions depending on the distance / time (stop, start, pause, slow, ...)
+- evaluate the recorded training after the tour
+
+The app is not intended for running professionals and does not claim to enable correct running training.
+For this I recommend, for example, to inform yourself on Mr. Zangl's website.
+
+Personally, I don't want to use apps from Adidas, Nike, ... and I don't want to share my "successes".
+Rather, a (private) training diary should be able to be created. I am a computer scientist and therefore not a big one
+Printed paper friend. And I don't want to do the running training with paper :page_facing_up: and watch :stopwatch: :running:
+begin.
+
+The user can adhere to the specifications, but does not have to. They should be recommendations. I personally would/could
+e.g. not running at the weekend. So the plan would be "postponed".
+
+The plans are available as templates on my website (see below), more templates will follow.
+At the same time, there will be an app based on Java for Windows, macOS and Linux, with which you can change the running plans or
+can create your own. The app already existed for Swift and now "only" needs to be reprogrammed.
 
 
-## Was kann die App „Laufplan“ nicht?
+## What can the "RunningPlan" app do?
 
-Die App kann und soll nicht die Ansprüche von professionellen Läufern erfüllen. Es gibt keine Funktionen für „Social Media“, wie z.B. das Teilen von Läufen. 
-Dafür gibt es genug Apps. Ich bin auch kein Laufprofi und die App bietet dementsprechend auch keine professionelle Unterstützung oder erhebt auch nicht den Anspruch „lauftechnisch“ korrekt zu sein.
+Based on the [running plans](https://lauftipps.ch/trainingsplaene/alle-trainingsplaene-auf-einen-blick/) developed by Mr. Christian Zangl, beginners and hobby runners can carry out their running training with the support of a smartphone.
+The running plans offered by Mr. Zangl were put into a format required for use in the app and can be used there.
+The templates can be adapted or you can create your own plans.
 
-Unbesehen davon würde ich gern Tipps zum Laufen in der App anbieten. Wenn jemand mir eigenes Material zur Verfügung stellen möchte, sehr gern.  
+
+## What can't the "Laufplan" app do?
+
+The app cannot and should not meet the demands of professional runners. There are no "social media" features such as sharing runs.
+There are enough apps for that. I am also not a running professional and the app accordingly does not offer any professional support or claim to be technically correct.
+
+That aside, I'd like to offer running tips in the app. If someone would like to provide me with their own material, they are very welcome.
 
 
-## Installation der App
+## Installing the app
 
-Eine App unter Android nutzen zu können, ist zum Glück einfacher als bei Apple. Aus Sicherheitsgründen kan dies ein Nachteil sein. 
-Im Prinzip können Sie sich die App  wie ein ZIP-Archiv vorstellen. Alles, was die App benötigt, ist im Archiv, der APK-Datei. 
-Sie können das gerne nachprüfen, in dem Sie die Datei mit einem Entpacker-Programm, wie z.B. 7zip, einfach mal auspacken.
+Fortunately, using an app on Android is easier than on Apple. For security reasons, this can be a disadvantage.
+In principle, you can imagine the app as a ZIP archive. Everything the app needs is in the archive, the APK file.
+You are welcome to check this by simply unpacking the file with an unpacker program such as 7zip.
 
-Die App ist also eine Datei, welche Sie wie unter Windows z.B. einfach direkt auf Ihrem SmartPhone installieren könnten.
-Da so eine Datei jedoch auch Schadprogramme enthalten kann, sollten Sie dies nur tun, wenn Sie dem Programmierer und 
-der Quelle (Download) der Datei vertrauen! 
-Mich z.B. kennen Sie ja auch nicht persönlich und meine App könnte ja "böse" Absichten hegen :imp:.
+The app is therefore a file that you can simply install directly on your smartphone, just like under Windows.
+However, since such a file can also contain malicious programs, you should only do this if you want the programmer and
+trust the source (download) of the file!
+For example, you don't know me personally and my app could have "bad" intentions :imp:.
 
-Darum gibt es den App-Store. Der "offizielle" von Google und auch alternative Stores für Menschen, die 
-(verständlicherweise) Google nicht (sehr) vertrauen.
-Ich selbst nutze den Playstore auch nur über [Aurora](https://f-droid.org/en/packages/com.aurora.store/) für Apps und 
-ansonsten hauptsächlich [F-Droid](https://f-droid.org/).
+That's why the App Store exists. The "official" Google and also alternative stores for people who
+(understandably) don't trust Google (very much).
+I myself only use the Playstore via [Aurora](https://f-droid.org/en/packages/com.aurora.store/) for apps and
+otherwise mainly [F-Droid](https://f-droid.org/).
 
-Sobald die App aus **meiner Sicht** auf die Menschheit losgelassen werden kann, werde ich versuchen die App sowohl 
-im PlayStore, wie auch bei F-Droid zur Verfügung stellen zu lassen.
+As soon as the app can be unleashed on humanity from **my point of view**, I will try the app both
+in the PlayStore, as well as in F-Droid.
 
-Bis dahin finden Sie die direkt installierbare APK auf Github. Sie können sich hier den Quelltext anschauen und 
-müssten mir einfach vertrauen.
+Until then, you can find the directly installable APK on Github. You can view the source code here and
+just have to trust me.
 
 ## Screenshots
 
-|**Überblick** | **Training** | **Laufpläne** |
-| :---: | :---: | :---: |
+|                                                                **Overview**                                                                 | **Training** |                                                              **Running plans**                                                              |
+|:-------------------------------------------------------------------------------------------------------------------------------------------:| :---: |:-------------------------------------------------------------------------------------------------------------------------------------------:|
 | <img src="https://user-images.githubusercontent.com/48058062/159230830-dd74e050-c3b4-4d10-a65e-9cb44da2dd30.png" width="270" height="480"/> | <img src="https://user-images.githubusercontent.com/48058062/159230901-42658b61-88a4-4451-8139-088c250d5860.png" width="270" height="480"/> | <img src="https://user-images.githubusercontent.com/48058062/159230975-3bb4a868-9e85-4e85-afad-b5382483ad7f.png" width="270" height="480"/> |
 
-|**Details Laufplan** | | |
-| :---: | :---: | :---: | 
+|                                                     **Details of running plan**                                                     | |
+|:-------------------------------------------------------------------------------------------------------------------------------------------:| :---: | 
 | <img src="https://user-images.githubusercontent.com/48058062/159231070-c5fea648-cc87-4493-b562-3b19f4fd6285.png" width="270" height="480"/> | <img src="https://user-images.githubusercontent.com/48058062/159231123-4fdbaa20-5915-4db7-831b-cd6fcb22e716.png" width="270" height="480"/> |
 
 
 ## Links
 
-[Laufpläne von Herrn Zangl](https://lauftipps.ch/kostenlose-trainingsplaene/)
+[Running plans from Mr. Zangl](https://lauftipps.ch/kostenlose-trainingsplaene/)
 
-[Weitere Informationen zur App](https://www.hirola.de/s/laufplan-runningplan/)
+[More information about the app (only in German)](https://www.hirola.de/s/laufplan-runningplan/)
 
-[Mein XING-Profil](https://www.xing.com/profile/Michael_Schmidt2350/cv) <image src="https://user-images.githubusercontent.com/48058062/152635585-d82a0f6d-1c4b-42c5-831f-eaf3caba1bd8.png" width="20" height="20">
+[My XING-Profile](https://www.xing.com/profile/Michael_Schmidt2350/cv) <image src="https://user-images.githubusercontent.com/48058062/152635585-d82a0f6d-1c4b-42c5-831f-eaf3caba1bd8.png" width="20" height="20">
