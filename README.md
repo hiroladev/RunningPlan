@@ -110,8 +110,8 @@ müssten mir einfach vertrauen.
 | :---: | :---: | :---: |
 | <img src="https://user-images.githubusercontent.com/48058062/159230830-dd74e050-c3b4-4d10-a65e-9cb44da2dd30.png" width="270" height="480"/> | <img src="https://user-images.githubusercontent.com/48058062/159230901-42658b61-88a4-4451-8139-088c250d5860.png" width="270" height="480"/> | <img src="https://user-images.githubusercontent.com/48058062/159230975-3bb4a868-9e85-4e85-afad-b5382483ad7f.png" width="270" height="480"/> |
 
-|**Details Laufplan** | |
-| :---: | :---: | 
+|**Details Laufplan** | | |
+| :---: | :---: | :---: | 
 | <img src="https://user-images.githubusercontent.com/48058062/159231070-c5fea648-cc87-4493-b562-3b19f4fd6285.png" width="270" height="480"/> | <img src="https://user-images.githubusercontent.com/48058062/159231123-4fdbaa20-5915-4db7-831b-cd6fcb22e716.png" width="270" height="480"/> |
 
 
