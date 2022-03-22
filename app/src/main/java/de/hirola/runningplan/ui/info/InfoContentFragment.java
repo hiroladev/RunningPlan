@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
+import de.hirola.runningplan.ui.info.log.InfoLogsFragment;
 import de.hirola.runningplan.ui.info.menu.InfoMenuItemRecyclerView;
 import de.hirola.runningplan.ui.info.menu.MenuItem;
 import de.hirola.runningplan.ui.info.tracks.InfoTracksFragment;
@@ -44,11 +45,12 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
                              ViewGroup container, Bundle savedInstanceState) {
         View infoView = inflater.inflate(R.layout.fragment_info_content, container, false);
         // build the menu item map
-        menuItemMap = new HashMap<>(4);
+        menuItemMap = new HashMap<>(5);
         menuItemMap.putIfAbsent(0, new MenuItem(R.drawable.baseline_info_black_36, R.string.menu_item_info, new InfoAboutFragment()));
         menuItemMap.putIfAbsent(1, new MenuItem(R.drawable.baseline_list_black_36, R.string.menu_item_license, new InfoLicenseFragment()));
         menuItemMap.putIfAbsent(2, new MenuItem(R.drawable.baseline_help_black_36, R.string.menu_item_help, new InfoHelpFragment()));
         menuItemMap.putIfAbsent(3, new MenuItem(R.drawable.baseline_route_black_24, R.string.menu_item_track, new InfoTracksFragment()));
+        menuItemMap.putIfAbsent(4, new MenuItem(R.drawable.outline_adb_black_36, R.string.menu_item_track, new InfoLogsFragment()));
         InfoMenuItemRecyclerView listAdapter = new InfoMenuItemRecyclerView(requireContext(), menuItemMap);
         // menu fragments on click
         listAdapter.setOnClickListener(this);

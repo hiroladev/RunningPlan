@@ -153,4 +153,9 @@
     <string name="enable_debug_mode_summary_off" translatable="false">No logs are generated.</string>
     <string name="send_debug_logs_summary_on" translatable="false">Errors can be reported.</string>
     <string name="send_debug_logs_summary_off" translatable="false">Errors cannot be reported.</string>
+    <string name="menu_item_logs">Debug logs</string>
+    <string name="clear_all_logs">Clear all logs</string>
+    <string name="ask_before_clear_all_logs">Do you want to delete all logs?</string>
+    <string name="ask_before_send_log">Should the error log be sent?</string>
+    <string name="sending_failed">Sending failed.</string>
 </resources>

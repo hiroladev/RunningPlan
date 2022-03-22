@@ -29,7 +29,7 @@ public class InfoTrackRecyclerViewHolder extends RecyclerView.ViewHolder {
 
     public InfoTrackRecyclerViewHolder(@NonNull @NotNull View itemView) {
         super(itemView);
-        nameTextView = itemView.findViewById(R.id.running_entry_simple_row_date_label);
+        nameTextView = itemView.findViewById(R.id.track_row_name_label);
         dateTextView = itemView.findViewById(R.id.track_row_date_label);
         startTimeTextView = itemView.findViewById(R.id.track_row_start_time_label);
         stopTimeTextView = itemView.findViewById(R.id.track_row_stop_time_label);

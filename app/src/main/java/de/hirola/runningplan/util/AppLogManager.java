@@ -8,9 +8,12 @@ import de.hirola.runningplan.R;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.util.Logger;
 
+import java.nio.file.Path;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -37,7 +40,7 @@ public class AppLogManager {
     }
 
     public void log(@NonNull String source, @Nullable String logMessage, @Nullable Exception exception) {
-        //TODO: logging to file use SportsLibrary
+        //TODO: logging to file using SportsLibrary
         if (exception != null) {
             exception.printStackTrace();
         }
@@ -77,6 +80,10 @@ public class AppLogManager {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    public String getLogContent() {
+        return "";
     }
 
     private AppLogManager(Context context) {

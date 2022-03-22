@@ -38,6 +38,7 @@
     <string name="menu_item_license">Lizenzen / Bibliotheken</string>
     <string name="menu_item_help">Hilfe</string>
     <string name="menu_item_track">Aufzeichnungen</string>
+    <string name="menu_item_logs">Fehlerlogs</string>
 
     <!-- Alerts -->
     <string name="ok" translatable="false">OK</string>
@@ -60,7 +61,10 @@
     <string name="ask_before_delete_running_plan">Soll der Laufplan wirklich gelöscht werden?</string>
     <string name="recorded_track_not_found">Die Aufzeichnung des Trainings wurde nicht gefunden.</string>
     <string name="ask_before_clear_all_tracks">Sollen alle Tracks gelöscht werden?</string>
+    <string name="ask_before_clear_all_logs">Sollen alle Logs gelöscht werden?</string>
     <string name="deleting_failed">Das Löschen ist fehlgeschlagen.</string>
+    <string name="ask_before_send_log">Soll das Fehler-Log gesendet werden?</string>
+    <string name="sending_failed">Das Senden ist fehlgeschlagen.</string>
 
     <!-- Common -->
     <string name="no_remarks">Keine Anmerkungen vorhanden.</string>
@@ -92,6 +96,7 @@
     <string name="import_failed">Der Import ist fehlgeschlagen.</string>
     <string name="import_succeed">Import erfolgreich</string>
     <string name="clear_all_tracks">Alle Tracks löschen</string>
+    <string name="clear_all_logs">Alle Logs löschen</string>
 
     <!-- Infos -->
     <string name="banner_content_description">Laufen im Wald …</string>
