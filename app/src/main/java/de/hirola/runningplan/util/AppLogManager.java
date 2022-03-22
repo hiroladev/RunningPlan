@@ -8,13 +8,6 @@ import de.hirola.runningplan.R;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.util.Logger;
 
-import java.nio.file.Path;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
  * This software us licensed under the AGPL-3.0 or later.
@@ -29,7 +22,7 @@ public class AppLogManager {
     private static AppLogManager instance = null;
     private final Logger logger;
     private final boolean debugMode;
-    private final boolean sendDebugLog;
+    private final boolean canSendDebugLog;
 
     public static AppLogManager getInstance(@NonNull Context context) {
 
@@ -39,29 +32,36 @@ public class AppLogManager {
         return instance;
     }
 
-    public void log(@NonNull String source, @Nullable String logMessage, @Nullable Exception exception) {
-        //TODO: logging to file using SportsLibrary
-        if (exception != null) {
-            exception.printStackTrace();
+    public void debug(@NonNull String source, @Nullable String logMessage, @Nullable Exception exception) {
+        if (logMessage == null && exception == null) {
+            return;
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        // Instant representing a moment on the timeline in UTC with a resolution of nanoseconds
-        // to format an Instant a time-zone is required.
-        String logDateTime = formatter
-                .withZone( ZoneId.of("UTC"))
-                .format(Instant.now());
-        String messagePrefix = logDateTime + " - " + source + " : ";
         if (logMessage == null) {
-            System.out.println(messagePrefix.concat("No log message available."));
-        } else {
-            System.out.println(messagePrefix.concat(logMessage));
+            logMessage = "No debug message available.";
         }
+        logger.log(Logger.DEBUG, source, logMessage, exception);
     }
 
-    public void debug(boolean logToRemote, @Nullable Exception exception, @NonNull String logMessage) {
-        //TODO: logging to file / remote
-        if (logToRemote) {
-            System.out.println("Not implemented yet.");
+    /**
+     * Create a log entry. For severity use the flags from Logger.
+     *
+     * @param severity  of log entry
+     * @param source of log entry
+     * @param logMessage of log entry
+     * @param exception source of log entry
+     * @see Logger
+     */
+    public void log(int severity, @NonNull String source, @Nullable String logMessage, @Nullable Exception exception) {
+        if (logMessage == null && exception == null) {
+            return;
+        }
+        if (logMessage == null) {
+            logMessage = "No debug message available.";
+        }
+        switch (severity) {
+            case Logger.INFO: logger.log(Logger.INFO, source, logMessage, exception); return;
+            case Logger.WARNING: logger.log(Logger.WARNING, source, logMessage, exception); return;
+            case Logger.ERROR: logger.log(Logger.ERROR, source, logMessage, exception);
         }
     }
 
@@ -74,8 +74,8 @@ public class AppLogManager {
         return debugMode;
     }
 
-    public boolean isSendDebugLog() {
-        return sendDebugLog;
+    public boolean canSendDebugLog() {
+        return canSendDebugLog;
     }
 
     public Logger getLogger() {
@@ -83,7 +83,7 @@ public class AppLogManager {
     }
 
     public String getLogContent() {
-        return "";
+        return logger.getLogContent();
     }
 
     private AppLogManager(Context context) {
@@ -91,6 +91,6 @@ public class AppLogManager {
         SharedPreferences sharedPreferences =
                 context.getSharedPreferences(context.getString(R.string.preference_file), Context.MODE_PRIVATE);
         debugMode = Global.APP_DEBUG_MODE || sharedPreferences.getBoolean(Global.PreferencesKeys.debugMode, false);
-        sendDebugLog = sharedPreferences.getBoolean(Global.PreferencesKeys.sendDebugLog, false);
+        canSendDebugLog = sharedPreferences.getBoolean(Global.PreferencesKeys.sendDebugLog, false);
     }
 }

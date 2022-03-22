@@ -72,11 +72,11 @@ public class RunningPlanViewModel {
             try {
                 runningPlans.add((RunningPlan) object);
             } catch (ClassCastException exception) {
-                // we do not add this to the list and make a  log entry
+                // we do not add this to the list and make a  debug entry
                 String errorMessage = "List of running plans contains an object from type "
                         + object.getClass().getSimpleName();
                 if (appLogger.isDebugMode()) {
-                    appLogger.log(TAG, errorMessage, exception);
+                    appLogger.debug(TAG, errorMessage, exception);
                 }
             }
         }
@@ -101,11 +101,11 @@ public class RunningPlanViewModel {
             try {
                 trainings.add((Training) object);
             } catch (ClassCastException exception) {
-                // we do not add this to the list and make a  log entry
+                // we do not add this to the list and make a  debug entry
                 String errorMessage = "List of trainings contains an object from type "
                         + object.getClass().getSimpleName();
                 if (appLogger.isDebugMode()) {
-                    appLogger.log(TAG, errorMessage, exception);
+                    appLogger.debug(TAG, errorMessage, exception);
                 }
             }
         }
@@ -126,7 +126,7 @@ public class RunningPlanViewModel {
             return true;
         } catch (SportsLibraryException exception) {
             if (appLogger.isDebugMode()) {
-                appLogger.log(TAG, "Adding an object failed.", exception);
+                appLogger.debug(TAG, "Adding an object failed.", exception);
             }
         }
         return false;
@@ -144,7 +144,7 @@ public class RunningPlanViewModel {
             return true;
         } catch (SportsLibraryException exception) {
             if (appLogger.isDebugMode()) {
-                appLogger.log(TAG, "Updating an object failed.", exception);
+                appLogger.debug(TAG, "Updating an object failed.", exception);
             }
         }
         return false;
@@ -162,7 +162,7 @@ public class RunningPlanViewModel {
             return true;
         } catch (SportsLibraryException exception) {
             if (appLogger.isDebugMode()) {
-                appLogger.log(TAG, "Deleting an object failed.", exception);
+                appLogger.debug(TAG, "Deleting an object failed.", exception);
             }
         }
         return false;

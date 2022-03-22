@@ -75,7 +75,7 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
                 }
             } catch (Resources.NotFoundException exception) {
                 if (logManager.isDebugMode()) {
-                    logManager.log(TAG, null, exception);
+                    logManager.debug(TAG, null, exception);
                 }
             }
             // training date
@@ -146,7 +146,7 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
                 } catch (Resources.NotFoundException exception) {
                     unitsAsString.append(key).append("\n");
                     if (logManager.isDebugMode()) {
-                        logManager.log(TAG, "Movement type resource not found,", exception);
+                        logManager.debug(TAG, "Movement type resource not found,", exception);
                     }
                 }
             } else {
@@ -155,7 +155,7 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
                 } catch (Resources.NotFoundException exception) {
                     unitsAsString.append(key);
                     if (logManager.isDebugMode()) {
-                        logManager.log(TAG, "Movement type resource not found,", exception);
+                        logManager.debug(TAG, "Movement type resource not found,", exception);
                     }
                 }
             }

@@ -56,7 +56,7 @@ public class InfoMenuItemRecyclerView extends RecyclerView.Adapter<RecyclerView.
                     viewHolder.menuItemTextView.setText(menuItem.getTextResourceId());
                 } catch (Exception exception) {
                     if (logManager.isDebugMode()) {
-                        logManager.log(TAG, null, exception);
+                        logManager.debug(TAG, null, exception);
                     }
                 }
             }

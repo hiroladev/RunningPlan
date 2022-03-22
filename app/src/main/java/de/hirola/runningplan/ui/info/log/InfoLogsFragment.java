@@ -36,7 +36,6 @@ import java.util.List;
 public class InfoLogsFragment extends Fragment implements View.OnClickListener {
 
     private AppLogManager logManager;
-    private SharedPreferences sharedPreferences;
     private TextView logContentTextView;
     private Button sendLogButton;
 
@@ -44,9 +43,6 @@ public class InfoLogsFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         logManager = AppLogManager.getInstance(requireContext());
-        // preferences - sending debug log?
-        sharedPreferences = requireContext()
-                .getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE);
     }
 
     @Override
@@ -93,8 +89,7 @@ public class InfoLogsFragment extends Fragment implements View.OnClickListener {
     private void loadLogContent() {
         String logContentString = logManager.getLogContent();
         logContentTextView.setText(logContentString);
-        if (!logContentString.isEmpty() &&
-                sharedPreferences.getBoolean(Global.PreferencesKeys.sendDebugLog, false)) {
+        if (!logContentString.isEmpty() && logManager.canSendDebugLog()) {
             sendLogButton.setEnabled(true);
         }
     }

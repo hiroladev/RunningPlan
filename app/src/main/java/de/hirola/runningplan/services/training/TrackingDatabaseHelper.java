@@ -114,7 +114,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.close();
         if (updatedRows > 1) {
             if (logManager.isDebugMode()) {
-                logManager.log(TAG, "More as one rows are updated.", null);
+                logManager.debug(TAG, "More as one rows are updated.", null);
             }
         }
     }
@@ -214,7 +214,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 return null;
             } catch (IllegalArgumentException exception) {
                 if (logManager.isDebugMode()) {
-                    logManager.log(TAG, "Column (index) does not exists", exception);
+                    logManager.debug(TAG, "Column (index) does not exists", exception);
                 }
                 return null;
             }
@@ -239,7 +239,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             int deletedTrackLocationRows = sqLiteDatabase.delete(TrackLocationColumns.TABLE_NAME, trackLocationsSelection, trackLocationsSelectionArgs);
             if (logManager.isDebugMode()) {
                 String logMessage = "There have been " + deletedTrackLocationRows + " location rows deleted";
-                logManager.log(TAG, logMessage, null);
+                logManager.debug(TAG, logMessage, null);
             }
             // now delete the track
             // Define 'where' part of query.
@@ -250,7 +250,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             int deletedTrackRows = sqLiteDatabase.delete(TrackLocationColumns.TABLE_NAME, trackSelection, trackSelectionArgs);
             if (logManager.isDebugMode()) {
                 String logMessage = "There have been " +  deletedTrackRows + " track rows deleted";
-                logManager.log(TAG, logMessage, null);
+                logManager.debug(TAG, logMessage, null);
             }
             sqLiteDatabase.close();
             return true;
@@ -297,7 +297,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             return trackIds;
         } catch (IllegalArgumentException exception) {
             if (logManager.isDebugMode()) {
-                logManager.log(TAG, "Column (index) does not exists", exception);
+                logManager.debug(TAG, "Column (index) does not exists", exception);
             }
             return null;
         }
@@ -334,7 +334,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.close();
         if (logManager.isDebugMode()) {
             String message = String.format("%s track states was set to false.", updatedTracks);
-            logManager.log(TAG, message, null);
+            logManager.debug(TAG, message, null);
         }
     }
 
@@ -362,7 +362,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         if (logManager.isDebugMode()) {
             String message = String.format("%s locations and %s tracks deleted.",
                     deletedLocations, deletedTracks);
-            logManager.log(TAG, message, null);
+            logManager.debug(TAG, message, null);
         }
         sqLiteDatabase.close();
         return deletedTracks;
@@ -445,7 +445,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 return locations;
             } catch (IllegalArgumentException exception) {
                 if (logManager.isDebugMode()) {
-                    logManager.log(TAG, "Column (index) does not exists", exception);
+                    logManager.debug(TAG, "Column (index) does not exists", exception);
                 }
                 return null;
             }

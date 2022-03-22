@@ -1,10 +1,12 @@
 package de.hirola.runningplan.services.training;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.R;
+import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.model.Track;
 
 import java.time.*;
@@ -24,12 +26,16 @@ import java.util.List;
  */
 public class TrackManager {
 
+    private final static String TAG = TrackManager.class.getSimpleName();
+
+    private AppLogManager logManager;
     private List<Track.Id> trackIds; // query the list to avoid get from sqlite
     private final Context context;
     private final TrackingDatabaseHelper databaseHelper;
     private TrackPoint trackPoint;
 
     public TrackManager(@NonNull Context context) {
+        logManager = AppLogManager.getInstance(context);
         this.context = context;
         databaseHelper = new TrackingDatabaseHelper(context);
         trackIds = databaseHelper.getTrackIds();
@@ -67,7 +73,20 @@ public class TrackManager {
                 trackPoint = new TrackPoint(location);
             } else {
                 // update the point of the track with the start time of track
+                if (logManager.isDebugMode()) {
+                    if (location.hasSpeed()) {
+                        String message = "Location speed: " + location.getSpeed();
+                        logManager.debug(TAG, message, null);
+                    }
+                }
                 trackPoint.setActualLocation(location);
+                if (logManager.isDebugMode()) {
+                    if (location.hasSpeed()) {
+                        @SuppressLint("DefaultLocale")
+                        String message = String.format("Distance is now: %,.2f%s", trackPoint.getActualDistance(), " m");
+                        logManager.debug(TAG, message, null);
+                    }
+                }
                 databaseHelper.updateTrack(trackId, trackPoint);
             }
             return databaseHelper.insertLocationForTrack(trackId, trackPoint);

@@ -84,14 +84,14 @@ public class TrainingService extends Service implements LocationListener {
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"RunningPlan:wakelock");
         if (logManager.isDebugMode()) {
-            logManager.log(TAG, "The training service was created.", null);
+            logManager.debug(TAG, "The training service was created.", null);
         }
     }
 
     @Override
     public void onDestroy() {
         if (logManager.isDebugMode()) {
-            logManager.log(TAG, "The training service will be destroyed", null);
+            logManager.debug(TAG, "The training service will be destroyed", null);
         }
         // set all recorded tracks as finished
         trackManager.clearRecordingStates();
@@ -134,7 +134,7 @@ public class TrainingService extends Service implements LocationListener {
         if (provider.equalsIgnoreCase(LocationManager.GPS_PROVIDER)) {
             gpsAvailable = true;
             if (logManager.isDebugMode()) {
-                logManager.log(TAG, provider + " enabled", null);
+                logManager.debug(TAG, provider + " enabled", null);
             }
         }
     }
@@ -145,7 +145,7 @@ public class TrainingService extends Service implements LocationListener {
         if (provider.equalsIgnoreCase(LocationManager.GPS_PROVIDER)) {
             gpsAvailable = false;
             if (logManager.isDebugMode()) {
-                logManager.log(TAG, provider + " disabled", null);
+                logManager.debug(TAG, provider + " disabled", null);
             }
         }
     }
@@ -156,7 +156,7 @@ public class TrainingService extends Service implements LocationListener {
         if (!trackManager.insertLocationForTrack(trackId, location)) {
             // TODO: callback, if location not added
             if (logManager.isDebugMode()) {
-                logManager.log(TAG, "Location not added!", null);
+                logManager.debug(TAG, "Location not added!", null);
             }
         }
     }
@@ -185,7 +185,7 @@ public class TrainingService extends Service implements LocationListener {
                 }
             } catch (SecurityException exception) {
                 if (logManager.isDebugMode()) {
-                    logManager.log(TAG, "Error while getting the last known location.", exception);
+                    logManager.debug(TAG, "Error while getting the last known location.", exception);
                 }
             }
         }
@@ -194,7 +194,7 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingActive = true;
         handler.postDelayed(secondsInTraining, TIME_INTERVAL_IN_MILLI);
         if (logManager.isDebugMode()) {
-            logManager.log(TAG, "The training with track id " + trackId + " was started.", null);
+            logManager.debug(TAG, "The training with track id " + trackId + " was started.", null);
         }
         // track of current training
         return trackId;
@@ -206,7 +206,7 @@ public class TrainingService extends Service implements LocationListener {
         // stop location tracking
         stopLocationUpdates();
         if (logManager.isDebugMode()) {
-            logManager.log(TAG, "The training with track id " + trackId + " was paused.", null);
+            logManager.debug(TAG, "The training with track id " + trackId + " was paused.", null);
         }
     }
 
@@ -227,7 +227,7 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingPaused = false;
         handler.postDelayed(secondsInTraining, TIME_INTERVAL_IN_MILLI);
         if (logManager.isDebugMode()) {
-            logManager.log(TAG, "The training with track id " + trackId + " was resumed.", null);
+            logManager.debug(TAG, "The training with track id " + trackId + " was resumed.", null);
         }
     }
 
@@ -239,14 +239,14 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingPaused = false;
         isTrainingActive = false;
         if (logManager.isDebugMode()) {
-            logManager.log(TAG, "The training with track id " + trackId + " was stopped.", null);
+            logManager.debug(TAG, "The training with track id " + trackId + " was stopped.", null);
         }
         // completed the recorded track
         // in further versions we qualify the location updates
         if (withLocationTracking) {
             if (!trackManager.completeTrack(trackId)) {
                 if (logManager.isDebugMode()) {
-                    logManager.log(TAG, "The track with id " + trackId + " couldn't completed.", null);
+                    logManager.debug(TAG, "The track with id " + trackId + " couldn't completed.", null);
                 }
             }
         }
@@ -260,12 +260,12 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingPaused = false;
         isTrainingActive = false;
         if (logManager.isDebugMode()) {
-            logManager.log(TAG, "The Training with track id " + trackId + " was canceled.", null);
+            logManager.debug(TAG, "The Training with track id " + trackId + " was canceled.", null);
         }
         if (!trackManager.removeTrack(trackId)) {
             if (logManager.isDebugMode()) {
                 if (withLocationTracking) {
-                    logManager.log(TAG, "The track with id " + trackId + " couldn't removed.", null);
+                    logManager.debug(TAG, "The track with id " + trackId + " couldn't removed.", null);
                 }
             }
         }
@@ -303,8 +303,6 @@ public class TrainingService extends Service implements LocationListener {
     }
 
     private void initializeGPSLocationManager() {
-        // start location updates
-        // get location manager
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         gpsAvailable = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
@@ -319,9 +317,6 @@ public class TrainingService extends Service implements LocationListener {
 
     private void startLocationUpdates() {
         if (withLocationTracking) {
-            // locationServicesAllowed is true, if gps available
-            // minimal time between update = 5 sec
-            // minimal distance = 10 m
             try {
                 locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER,
@@ -331,7 +326,7 @@ public class TrainingService extends Service implements LocationListener {
             } catch (SecurityException exception) {
                 gpsAvailable = false;
                 if (logManager.isDebugMode()) {
-                    logManager.log(TAG, "Could not determine the status of GPS.", exception);
+                    logManager.debug(TAG, "Could not determine the status of GPS.", exception);
                 }
             }
         }

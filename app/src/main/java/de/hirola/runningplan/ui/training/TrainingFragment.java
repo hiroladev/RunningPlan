@@ -281,7 +281,7 @@ public class TrainingFragment extends Fragment
     public void onServiceErrorOccurred(String errorMessage) {
         //TODO: alert to user
         if (logManager.isDebugMode()) {
-            logManager.log(TAG, errorMessage, null);
+            logManager.debug(TAG, errorMessage, null);
         }
     }
 
@@ -299,7 +299,7 @@ public class TrainingFragment extends Fragment
             }
         }
         if (logManager.isDebugMode()) {
-            logManager.log(TAG, "Location updates are allowed: " + locationServicesAvailable, null);
+            logManager.debug(TAG, "Location updates are allowed: " + locationServicesAvailable, null);
         }
     }
 
@@ -309,7 +309,7 @@ public class TrainingFragment extends Fragment
         locationServicesAvailable =
                 locationServicesAvailable  && manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (logManager.isDebugMode()) {
-            logManager.log(TAG, "GPS are enabled: " + locationServicesAvailable, null);
+            logManager.debug(TAG, "GPS are enabled: " + locationServicesAvailable, null);
         }
     }
 
@@ -320,7 +320,7 @@ public class TrainingFragment extends Fragment
         if (isTrainingPossible && ! isTrainingServiceConnected) {
             trainingServiceConnection.bindAndStartService(requireActivity().getApplicationContext());
             if (logManager.isDebugMode()) {
-                logManager.log(TAG, "Service bind and start.", null);
+                logManager.debug(TAG, "Service bind and start.", null);
             }
         }
     }
@@ -516,7 +516,7 @@ public class TrainingFragment extends Fragment
                 if (!viewModel.updateObject(runningPlan)) {
                     // TODO: alert to user
                     if (logManager.isDebugMode()) {
-                        logManager.log(TAG, "A running unit couldn't set as completed.", null);
+                        logManager.debug(TAG, "A running unit couldn't set as completed.", null);
                     }
                 }
                 // more units of the training section available
@@ -792,7 +792,7 @@ public class TrainingFragment extends Fragment
             } else {
                 // TODO: info to the user
                 if (logManager.isDebugMode()) {
-                    logManager.log(TAG, "Could not reset running plan.", null);
+                    logManager.debug(TAG, "Could not reset running plan.", null);
                 }
             }
         }
@@ -868,7 +868,7 @@ public class TrainingFragment extends Fragment
                     } catch (Resources.NotFoundException exception) {
                         unitsAsString.append(R.string.movement_type_not_found);
                         if (logManager.isDebugMode()) {
-                            logManager.log(TAG, null, exception);
+                            logManager.debug(TAG, null, exception);
                         }
                     }
                     // running unit duration

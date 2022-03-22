@@ -50,7 +50,7 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
         menuItemMap.putIfAbsent(1, new MenuItem(R.drawable.baseline_list_black_36, R.string.menu_item_license, new InfoLicenseFragment()));
         menuItemMap.putIfAbsent(2, new MenuItem(R.drawable.baseline_help_black_36, R.string.menu_item_help, new InfoHelpFragment()));
         menuItemMap.putIfAbsent(3, new MenuItem(R.drawable.baseline_route_black_24, R.string.menu_item_track, new InfoTracksFragment()));
-        menuItemMap.putIfAbsent(4, new MenuItem(R.drawable.outline_adb_black_36, R.string.menu_item_track, new InfoLogsFragment()));
+        menuItemMap.putIfAbsent(4, new MenuItem(R.drawable.outline_adb_black_36, R.string.menu_item_logs, new InfoLogsFragment()));
         InfoMenuItemRecyclerView listAdapter = new InfoMenuItemRecyclerView(requireContext(), menuItemMap);
         // menu fragments on click
         listAdapter.setOnClickListener(this);

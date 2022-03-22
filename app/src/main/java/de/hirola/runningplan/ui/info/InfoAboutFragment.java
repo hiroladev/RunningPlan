@@ -51,7 +51,7 @@ public class InfoAboutFragment extends Fragment {
             aboutString = IOUtils.toString(is, StandardCharsets.UTF_8);
         } catch (Exception exception) {
             if (logManager.isDebugMode()) {
-                logManager.log(TAG, null, exception);
+                logManager.debug(TAG, null, exception);
             }
         }
         aboutTextView.setText(aboutString);

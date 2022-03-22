@@ -219,7 +219,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     getString(R.string.save_data_error),
                     getString(R.string.ok));
             if (logManager.isDebugMode()) {
-                logManager.log(TAG, "Error while saving settings.", null);
+                logManager.debug(TAG, "Error while saving settings.", null);
             }
             return false;
         }
@@ -260,7 +260,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     } catch (ClassCastException exception) {
                         ((SwitchPreferenceCompat) preference).setChecked(false);
                         if (logManager.isDebugMode()) {
-                            logManager.log(TAG, null, exception);
+                            logManager.debug(TAG, null, exception);
                         }
                     }
                 } else if (preference instanceof ListPreference) {
@@ -284,7 +284,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 } catch (Resources.NotFoundException exception) {
                                     entry = getString(R.string.preference_not_found);
                                     if (logManager.isDebugMode()) {
-                                        logManager.log(TAG, null, exception);
+                                        logManager.debug(TAG, null, exception);
                                     }
                                 }
                             }
@@ -320,7 +320,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 } catch (Resources.NotFoundException exception) {
                                     entry = getString(R.string.preference_not_found);
                                     if (logManager.isDebugMode()) {
-                                        logManager.log(TAG, null, exception);
+                                        logManager.debug(TAG, null, exception);
                                     }
                                 }
                             }
@@ -367,7 +367,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     } catch (ClassCastException exception) {
                         ((EditTextPreference) preference).setText("");
                         if (logManager.isDebugMode()) {
-                            logManager.log(TAG, null, exception);
+                            logManager.debug(TAG, null, exception);
                         }
                     }
                 }
@@ -430,7 +430,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     getString(R.string.save_data_error),
                     getString(R.string.ok));
             if (logManager.isDebugMode()) {
-                logManager.log(TAG, "Error while saving user data.", null);
+                logManager.debug(TAG, "Error while saving user data.", null);
             }
         }
 

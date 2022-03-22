@@ -279,7 +279,7 @@ public class RunningPlanDetailsFragment extends Fragment
                 } catch (Resources.NotFoundException exception) {
                     runningPlanRemarksTextView.setText(R.string.no_remarks);
                     if (appLogManager.isDebugMode()) {
-                        appLogManager.log(TAG, null, exception);
+                        appLogManager.debug(TAG, null, exception);
                     }
                 }
             } else {

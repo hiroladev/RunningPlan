@@ -199,7 +199,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
                     }
                 } catch (SportsLibraryException exception) {
                     if (appLogManager.isDebugMode()) {
-                        appLogManager.log(TAG, "Import of running plan template failed.", exception);
+                        appLogManager.debug(TAG, "Import of running plan template failed.", exception);
                     }
                 }
             }

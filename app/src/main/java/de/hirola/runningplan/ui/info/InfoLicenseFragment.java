@@ -51,7 +51,7 @@ public class InfoLicenseFragment extends Fragment {
             licenseString = IOUtils.toString(is, StandardCharsets.UTF_8);
         } catch (Exception exception) {
             if (logManager.isDebugMode()) {
-                logManager.log(TAG, null, exception);
+                logManager.debug(TAG, null, exception);
             }
         }
         licenseTextView.setText(licenseString);
