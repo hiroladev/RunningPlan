@@ -29,8 +29,8 @@ public class TrainingService extends Service implements LocationListener {
     private final static String TAG = TrainingService.class.getSimpleName();
 
     private final static long TIME_INTERVAL_IN_MILLI = 1000; // timer interval (tick) in milliseconds
-    private final static long LOCATION_UPDATE_INTERVAL_IN_MILLI = 5000; // location updates every
-    private final static long LOCATION_UPDATE_MIN_DISTANCE = 10; // min distance for location updates in m
+    private final static long LOCATION_UPDATE_INTERVAL_IN_MILLI = 3000; // location updates every
+    private final static long LOCATION_UPDATE_MIN_DISTANCE = 2; // min distance for location updates in m
 
     private Handler handler;
     private AppLogManager logManager;
