@@ -220,6 +220,9 @@ public class TrainingFragment extends Fragment
         if (isTrainingRunning) {
             // view running image
             trainingInfoImageView.setImageResource(R.drawable.baseline_directions_run_black_24);
+        } else {
+            // view infos from last training
+            showLastTraining();
         }
     }
 
@@ -569,24 +572,7 @@ public class TrainingFragment extends Fragment
                             getString(R.string.ok));
                 } else {
                     // show training infos
-                    StringBuilder trainingTrackInfoString = new StringBuilder(getString(R.string.training_completed) + "\n");
-                    trainingTrackInfoString.append(getString(R.string.distance));
-                    trainingTrackInfoString.append(": ");
-                    double runningDistance = recordedTrack.getDistance();
-                    if (runningDistance < 999.99) {
-                        //  distance in m
-                        trainingTrackInfoString.append(String.format("%,.2f%s",runningDistance, " m"));
-                    } else {
-                        //  distance in km
-                        trainingTrackInfoString.append(String.format("%,.2f%s",runningDistance / 1000, " km"));
-                    }
-                    trainingTrackInfoString.append("\n");
-                    //  average speed in km/h
-                    double averageSpeed = recordedTrack.getAverageSpeed();
-                    trainingTrackInfoString.append(getString(R.string.speed));
-                    trainingTrackInfoString.append(": ");
-                    trainingTrackInfoString.append(String.format("%,.2f%s",averageSpeed, " km/h"));
-                    trainingInfolabel.setText(trainingTrackInfoString);
+                    showLastTraining();
                     // save training
                     boolean saveTrainings = sharedPreferences.getBoolean(Global.PreferencesKeys.saveTrainings, false);
                     if (saveTrainings) {
@@ -601,7 +587,6 @@ public class TrainingFragment extends Fragment
                     }
                 }
             }
-
             // elements can be operated again
             trainingDaysSpinner.setEnabled(true);
             trainingUnitsSpinner.setEnabled(true);
@@ -938,6 +923,35 @@ public class TrainingFragment extends Fragment
 
             vibrator.vibrate(VibrationEffect.createWaveform(vibratePattern, START));
 
+        }
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void showLastTraining() {
+        if (trackId != null) {
+            // get the recorded data
+            Track recordedTrack = trainingServiceConnection.getRecordedTrack(trackId);
+            if (recordedTrack != null) {
+                // show training infos
+                StringBuilder trainingTrackInfoString = new StringBuilder(getString(R.string.training_completed) + "\n");
+                trainingTrackInfoString.append(getString(R.string.distance));
+                trainingTrackInfoString.append(": ");
+                double runningDistance = recordedTrack.getDistance();
+                if (runningDistance < 999.99) {
+                    //  distance in m
+                    trainingTrackInfoString.append(String.format("%,.2f%s",runningDistance, " m"));
+                } else {
+                    //  distance in km
+                    trainingTrackInfoString.append(String.format("%,.2f%s",runningDistance / 1000, " km"));
+                }
+                trainingTrackInfoString.append("\n");
+                //  average speed in km/h
+                double averageSpeed = recordedTrack.getAverageSpeed();
+                trainingTrackInfoString.append(getString(R.string.speed));
+                trainingTrackInfoString.append(": ");
+                trainingTrackInfoString.append(String.format("%,.2f%s",averageSpeed, " km/h"));
+                trainingInfolabel.setText(trainingTrackInfoString);
+            }
         }
     }
 }
