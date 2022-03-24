@@ -101,20 +101,22 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
      * @param trackPoint with updates for the track
      */
     public void updateTrack(Track.Id trackId, TrackPoint trackPoint) {
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        // map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        // distance
-        values.put(TrackColumns.DISTANCE, trackPoint.getActualDistance());
-        // update the track, returning the primary key value of the new row
-        long updatedRows = sqLiteDatabase.update(TrackColumns.TABLE_NAME,
-                values,
-                "rowid = ?",
-                new String[]{String.valueOf(trackId.getId())});
-        sqLiteDatabase.close();
-        if (updatedRows > 1) {
-            if (logManager.isDebugMode()) {
-                logManager.debug(TAG, "More as one rows are updated.", null);
+        if (trackExist(trackId)) {
+            SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+            // map of values, where column names are the keys
+            ContentValues values = new ContentValues();
+            // distance
+            values.put(TrackColumns.DISTANCE, trackPoint.getActualDistance());
+            // update the track, returning the primary key value of the new row
+            long updatedRows = sqLiteDatabase.update(TrackColumns.TABLE_NAME,
+                    values,
+                    "rowid = ?",
+                    new String[]{String.valueOf(trackId.getId())});
+            sqLiteDatabase.close();
+            if (updatedRows > 1) {
+                if (logManager.isDebugMode()) {
+                    logManager.debug(TAG, "More as one rows are updated.", null);
+                }
             }
         }
     }

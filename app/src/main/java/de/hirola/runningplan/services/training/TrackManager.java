@@ -87,8 +87,10 @@ public class TrackManager {
                         logManager.debug(TAG, message, null);
                     }
                 }
+                // update track data, e.g. distance
                 databaseHelper.updateTrack(trackId, trackPoint);
             }
+            // insert the new location
             return databaseHelper.insertLocationForTrack(trackId, trackPoint);
         }
         return false;

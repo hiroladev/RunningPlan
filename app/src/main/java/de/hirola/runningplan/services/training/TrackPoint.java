@@ -18,8 +18,6 @@ import java.time.ZoneId;
  */
 public class TrackPoint {
 
-    private final static float MIN_DISTANCE_SPEED = 0.55f; // min speed for calculating distance
-
     private final long startTime; // start time of recorded track
     private double actualDistance; // distance of all previous locations
     private Location location; // the actual location of recorded track
@@ -32,14 +30,14 @@ public class TrackPoint {
         startTime = Instant.now(Clock.system(ZoneId.systemDefault())).toEpochMilli();
     }
 
-    public void setActualLocation(@NotNull Location location) {
+    public void setActualLocation(@NotNull Location actualLocation) {
         // calculate the distance
-        if (location.hasSpeed() && location.getSpeed() > MIN_DISTANCE_SPEED) {
-            double distance = this.location.distanceTo(location);
+        if (actualLocation.getSpeed() > 0.0f) {
+            double distance = actualLocation.distanceTo(location);
             actualDistance += distance;
         }
         // add the last location
-        this.location = location;
+        this.location = actualLocation;
     }
 
     public Location getLocation() {
