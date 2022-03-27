@@ -158,4 +158,5 @@
     <string name="ask_before_clear_all_logs">Do you want to delete all logs?</string>
     <string name="ask_before_send_log">Should the error log be sent?</string>
     <string name="sending_failed">Sending failed.</string>
+    <string name="recorded_track_not_completed">The track could not be completed.</string>
 </resources>

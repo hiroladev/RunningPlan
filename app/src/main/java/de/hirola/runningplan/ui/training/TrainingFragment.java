@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.RunningPlanApplication;
 import de.hirola.runningplan.model.RunningPlanViewModel;
+import de.hirola.runningplan.services.training.TrackManager;
 import de.hirola.runningplan.services.training.TrainingServiceCallback;
 import de.hirola.runningplan.services.training.TrainingServiceConnection;
 import de.hirola.runningplan.ui.runningplans.RunningPlansFragment;
@@ -90,7 +91,10 @@ public class TrainingFragment extends Fragment
     private ImageView trainingInfoImageView;
 
     // training data
-    private long timeToRun = 0; // remaining time of running unit
+    private long unitTimeToRun = 0L; // remaining time of running unit in seconds
+    private long trainingTime = 0L; // actual time in training in seconds
+    private long countOfCompletedUnits = 0L; // number of completed units for entry
+
     private final TrainingServiceConnection trainingServiceConnection =
             new TrainingServiceConnection(this); // trainings service for timer and location updates
     private ActivityResultLauncher<String[]> locationPermissionRequest = null; // must be initialized in onCreate
@@ -101,13 +105,70 @@ public class TrainingFragment extends Fragment
     private final BroadcastReceiver backgroundTimeReceiver = new BroadcastReceiver() { // training time from service
         @Override
         public void onReceive(Context context, Intent intent) {
-            timeToRun = intent
+            unitTimeToRun = intent
                     .getExtras()
                     .getLong(TrainingServiceCallback.SERVICE_RECEIVER_INTENT_ACTUAL_DURATION, 0L);
             // refresh the time label
             updateTimerLabel();
             // check the training state
             monitoringTraining();
+        }
+    };
+    private final BroadcastReceiver trackManagerReceiver = new BroadcastReceiver() { // track updates from track manager
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // show actual track infos
+            if (intent.getAction().equals(TrackManager.LOCATION_UPDATE_ACTION)) {
+                // get the values
+                double distance = intent
+                        .getExtras()
+                        .getDouble(TrackManager.RECEIVER_INTENT_TRACK_DISTANCE, 0.0);
+                // show the values in view
+                showTrackInfos(distance);
+                return;
+            }
+            // inform the user, show training infos, save training
+            if (intent.getAction().equals(TrackManager.TRACK_COMPLETED_ACTION)) {
+                // get the state
+                boolean isCompleted = intent
+                        .getExtras()
+                        .getBoolean(TrackManager.RECEIVER_INTENT_COMPLETE_STATE, false);
+                if (!isCompleted) {
+                    ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                            requireContext(),
+                            getString(R.string.error),
+                            getString(R.string.recorded_track_not_completed),
+                            getString(R.string.ok));
+                    return;
+                }
+                if (locationServicesAvailable) {
+                    // get the recorded data
+                    Track recordedTrack = trainingServiceConnection.getRecordedTrack(trackId);
+                    if (recordedTrack == null) {
+                        ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                                requireContext(),
+                                getString(R.string.error),
+                                getString(R.string.recorded_track_not_found),
+                                getString(R.string.ok));
+                    } else {
+                        // show training infos
+                        showLastTraining();
+                        // save training
+                        boolean saveTrainings = sharedPreferences.getBoolean(Global.PreferencesKeys.saveTrainings, false);
+                        if (saveTrainings) {
+                            if (!saveTraining(recordedTrack)) {
+                                // error while saving the training
+                                ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
+                                        requireContext(),
+                                        getString(R.string.error),
+                                        getString(R.string.error_saving_training),
+                                        getString(R.string.ok));
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     };
 
@@ -153,6 +214,12 @@ public class TrainingFragment extends Fragment
         // register receiver for timer
         requireActivity().registerReceiver(backgroundTimeReceiver,
                 new IntentFilter(TrainingServiceCallback.SERVICE_RECEIVER_ACTION));
+        // register receiver for track updates
+        // with filters for different actions
+        IntentFilter locationUpdateAction = new IntentFilter(TrackManager.LOCATION_UPDATE_ACTION);
+        IntentFilter completeAction = new IntentFilter(TrackManager.TRACK_COMPLETED_ACTION);
+        requireActivity().registerReceiver(trackManagerReceiver,locationUpdateAction);
+        requireActivity().registerReceiver(trackManagerReceiver,completeAction);
 
         // check permissions for locations services
         checkLocationPermissions();
@@ -230,6 +297,7 @@ public class TrainingFragment extends Fragment
     public void onDestroy() {
         notificationManager = null;
         requireActivity().unregisterReceiver(backgroundTimeReceiver);
+        requireActivity().unregisterReceiver(trackManagerReceiver);
         if (!trainingServiceConnection.isTrainingActive()) {
             // unbind service connections only if no training active
             trainingServiceConnection.stopAndUnbindService(requireActivity().getApplicationContext());
@@ -259,7 +327,7 @@ public class TrainingFragment extends Fragment
                     // set the selected running unit
                     runningUnit = runningUnits.get(position);
                     // set the new training time
-                    timeToRun = runningUnit.getDuration();
+                    unitTimeToRun = runningUnit.getDuration();
                 }
             }
         }
@@ -414,8 +482,7 @@ public class TrainingFragment extends Fragment
             trainingUnitsSpinnerArrayAdapter.clear();
             trainingUnitsSpinnerArrayAdapter.addAll(getTrainingUnitsAsStrings());
             // show the complete training time
-            long duration = runningPlanEntry.getDuration();
-            String durationString = buildStringForDuration(duration);
+            String durationString = buildStringForDuration(runningPlanEntry.getDuration());
             trainingInfolabel.setText(durationString);
             // display state by image
             if (runningPlanEntry.isCompleted()) {
@@ -443,17 +510,18 @@ public class TrainingFragment extends Fragment
             startButton.setEnabled(false);
             stopButton.setEnabled(true);
             pauseButton.setEnabled(true);
+            trainingInfolabel.setText(R.string.training_is_running);
             trainingInfoImageView.setImageResource(R.drawable.baseline_directions_run_black_24);
             // set value for countdown
-            timeToRun = runningUnit.getDuration() * 60;
+            unitTimeToRun = runningUnit.getDuration() * 60;
             if (isTrainingRunning) {
                 //  resume the training, track id can be null
                 trainingInfolabel.setText(R.string.continue_training);
-                trainingServiceConnection.resumeTraining(timeToRun, trackId);
+                trainingServiceConnection.resumeTraining(unitTimeToRun, trackId);
             } else {
                 // start a new training
                 trainingInfolabel.setText(R.string.start_training);
-                trackId = trainingServiceConnection.startTraining(timeToRun, locationServicesAvailable);
+                trackId = trainingServiceConnection.startTraining(unitTimeToRun, locationServicesAvailable);
                 isTrainingRunning = true;
             }
         }
@@ -489,7 +557,9 @@ public class TrainingFragment extends Fragment
                                 trainingServiceConnection.cancelTraining();
                                 trainingInfolabel.setText(R.string.cancel_training);
                                 trainingInfoImageView.setImageResource(R.drawable.baseline_self_improvement_black_24);
-                                timeToRun = 0;
+                                unitTimeToRun = 0L;
+                                trainingTime = 0L;
+                                countOfCompletedUnits = 0;
                                 updateTimerLabel();
                                 isTrainingRunning = false;
                                 isTrainingPaused = false;
@@ -508,9 +578,7 @@ public class TrainingFragment extends Fragment
     //  Training "überwachen"
     private void monitoringTraining() {
         if (isTrainingServiceConnected) {
-            // show info
-            trainingInfolabel.setText(R.string.training_is_running);
-            if (timeToRun == 0) {
+            if (unitTimeToRun == 0) {
                 // paused the training, maybe there is another one unit
                 pauseTraining();
                 // unit completed, add the state
@@ -526,6 +594,8 @@ public class TrainingFragment extends Fragment
                 // than continue the training
                 // TODO: next unit
                 if (nextUnit()) {
+                    // increase the completed units
+                    countOfCompletedUnits++;
                     // send notification
                     showNotificationForNextUnit();
                     trainingInfolabel.setText(R.string.new_training_unit_starts);
@@ -548,7 +618,9 @@ public class TrainingFragment extends Fragment
             trainingServiceConnection.endTraining();
             // update values / flags
             isTrainingRunning = false;
-            timeToRun = 0L;
+            unitTimeToRun = 0L;
+            trainingTime = 0L;
+            countOfCompletedUnits = 0;
             // refresh timer label
             updateTimerLabel();
             // display infos
@@ -561,32 +633,7 @@ public class TrainingFragment extends Fragment
                 trainingInfolabel.setText(R.string.training_completed);
             }
             trainingInfoImageView.setImageResource(R.drawable.baseline_done_black_24);
-            if (locationServicesAvailable) {
-                // get the recorded data
-                Track recordedTrack = trainingServiceConnection.getRecordedTrack(trackId);
-                if (recordedTrack == null) {
-                    ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
-                            requireContext(),
-                            getString(R.string.error),
-                            getString(R.string.recorded_track_not_found),
-                            getString(R.string.ok));
-                } else {
-                    // show training infos
-                    showLastTraining();
-                    // save training
-                    boolean saveTrainings = sharedPreferences.getBoolean(Global.PreferencesKeys.saveTrainings, false);
-                    if (saveTrainings) {
-                        if (!saveTraining(recordedTrack)) {
-                            // error while saving the training
-                            ModalOptionDialog.showMessageDialog(ModalOptionDialog.DialogStyle.WARNING,
-                                    requireContext(),
-                                    getString(R.string.error),
-                                    getString(R.string.error_saving_training),
-                                    getString(R.string.ok));
-                        }
-                    }
-                }
-            }
+
             // elements can be operated again
             trainingDaysSpinner.setEnabled(true);
             trainingUnitsSpinner.setEnabled(true);
@@ -705,11 +752,11 @@ public class TrainingFragment extends Fragment
         if (index > -1) {
             trainingUnitsSpinner.setSelection(index);
             // set the training time
-            timeToRun = runningUnit.getDuration();
+            unitTimeToRun = runningUnit.getDuration();
             // update training info label
             // show the training time for the unit
             if (isTrainingRunning) {
-                String durationString = getString(R.string.unit_time) + ": " + buildStringForDuration(timeToRun);
+                String durationString = getString(R.string.unit_time) + ": " + buildStringForDuration(unitTimeToRun);
                 trainingInfolabel.setText(durationString);
             }
         }
@@ -872,12 +919,27 @@ public class TrainingFragment extends Fragment
     }
 
     // format the time and refresh the label
+    private void showTrackInfos(double distance) {
+        if (isTrainingRunning) {
+            double averageSpeed = 0.0d;
+            if (distance > 0.0) {
+                trainingTime = (countOfCompletedUnits * 60) + (runningUnit.getDuration() * 60 - unitTimeToRun);
+                averageSpeed = distance / trainingTime;
+            }
+            StringBuilder builder = new StringBuilder(getString(R.string.training_is_running));
+            builder.append("\n");
+            builder.append(String.format(Locale.getDefault(), "%,.2f%s%,.2f%s", averageSpeed * 3.6," km/h, ", distance, " m"));
+            trainingInfolabel.setText(builder);
+        }
+    }
+
+    // format the time and refresh the label
     private void updateTimerLabel() {
         // duration in seconds
         // 00:00:00 (hh:mm:ss)
-        long hh= timeToRun / 3600;
-        long mm = (timeToRun % 3600) / 60;
-        long ss = timeToRun % 60;
+        long hh= unitTimeToRun / 3600;
+        long mm = (unitTimeToRun % 3600) / 60;
+        long ss = unitTimeToRun % 60;
         timerLabel.setText(String.format(Locale.ENGLISH, "%02d:%02d:%02d", hh, mm, ss));
     }
 

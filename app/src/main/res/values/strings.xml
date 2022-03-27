@@ -65,6 +65,7 @@
     <string name="deleting_failed">Das Löschen ist fehlgeschlagen.</string>
     <string name="ask_before_send_log">Soll das Fehler-Log gesendet werden?</string>
     <string name="sending_failed">Das Senden ist fehlgeschlagen.</string>
+    <string name="recorded_track_not_completed">Der Track konnte nicht abgeschlossen werden.</string>
 
     <!-- Common -->
     <string name="no_remarks">Keine Anmerkungen vorhanden.</string>
