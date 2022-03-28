@@ -74,6 +74,7 @@ public class TrainingNotificationManager {
         notificationBuilder = new NotificationCompat.Builder(context, CHANNEL_ID);
         notificationBuilder
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
                 .setOnlyAlertOnce(false)
                 .setOngoing(true)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -87,6 +88,7 @@ public class TrainingNotificationManager {
         serviceNotificationBuilder
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setSilent(true)
+                .setAutoCancel(true)
                 .setOnlyAlertOnce(true)
                 .setOngoing(false)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
