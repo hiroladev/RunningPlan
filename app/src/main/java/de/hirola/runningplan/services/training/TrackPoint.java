@@ -19,33 +19,39 @@ import java.time.ZoneId;
 public class TrackPoint {
 
     private final long startTime; // start time of recorded track
+    private long lastLocationTimestamp; // the system timestamp for the actual location
     private double actualDistance; // distance of all previous locations
-    private Location location; // the actual location of recorded track
+    private Location lastLocation; // the actual location of recorded track
 
     public TrackPoint(@NotNull Location location) {
-        this.location = location;
+        this.lastLocation = location;
         // the track starts
         actualDistance = 0.0;
         // add the start time
         startTime = Instant.now(Clock.system(ZoneId.systemDefault())).toEpochMilli();
+        lastLocationTimestamp = startTime;
     }
 
     public void setActualLocation(@NotNull Location actualLocation) {
-        // calculate the distance
-        if (actualLocation.getSpeed() > 0.0f) {
-            double distance = actualLocation.distanceTo(location);
+            // use the timestamp from system
+            lastLocationTimestamp = Instant.now(Clock.system(ZoneId.systemDefault())).toEpochMilli();
+            // calculate the distance
+            double distance = actualLocation.distanceTo(lastLocation);
             actualDistance += distance;
-        }
-        // add the last location
-        this.location = actualLocation;
+            // save the last location
+            this.lastLocation = actualLocation;
     }
 
-    public Location getLocation() {
-        return location;
+    public Location getLastLocation() {
+        return lastLocation;
     }
 
     public long getStartTime() {
         return startTime;
+    }
+
+    public long getLastLocationTimestamp() {
+        return lastLocationTimestamp;
     }
 
     public double getActualDistance() {

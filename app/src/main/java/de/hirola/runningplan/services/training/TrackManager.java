@@ -31,7 +31,7 @@ public class TrackManager {
     public static final String LOCATION_UPDATE_ACTION
             = "RunningPlan_Track_Manager_Receiver_Location_Update_Action";
     public static final String TRACK_COMPLETED_ACTION
-            = "RunningPlan_Track_Manager_Receiver_Location_Update_Action";
+            = "RunningPlan_Track_Manager_Receiver_Track_Completed_Action";
     public static final String RECEIVER_INTENT_TRACK_DISTANCE = "distance";
     public static final String RECEIVER_INTENT_COMPLETE_STATE = "completeState";
 
@@ -232,11 +232,9 @@ public class TrackManager {
                     case TrackUpdateTask.ADD_LOCATION_TASK:
                         // add the location to database and send actual track values to fragment
                         databaseHelper.insertLocationForTrack(trackUpdateTask.trackId, trackUpdateTask.trackPoint);
-                        if (trackPoint.getLocation().getSpeed() > 0.0) {
-                            Intent locationUpdateIntent = new Intent(LOCATION_UPDATE_ACTION);
-                            locationUpdateIntent.putExtra(RECEIVER_INTENT_TRACK_DISTANCE, trackPoint.getActualDistance());
-                            context.sendBroadcast(locationUpdateIntent);
-                        }
+                        Intent locationUpdateIntent = new Intent(LOCATION_UPDATE_ACTION);
+                        locationUpdateIntent.putExtra(RECEIVER_INTENT_TRACK_DISTANCE, trackPoint.getActualDistance());
+                        context.sendBroadcast(locationUpdateIntent);
                         break;
                     case TrackUpdateTask.COMPLETE_TRACK_TASK:
                         // complete the track and send the result to the fragment

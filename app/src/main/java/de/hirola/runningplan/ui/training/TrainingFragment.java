@@ -217,9 +217,9 @@ public class TrainingFragment extends Fragment
         // register receiver for track updates
         // with filters for different actions
         IntentFilter locationUpdateAction = new IntentFilter(TrackManager.LOCATION_UPDATE_ACTION);
-        IntentFilter completeAction = new IntentFilter(TrackManager.TRACK_COMPLETED_ACTION);
+        IntentFilter completedAction = new IntentFilter(TrackManager.TRACK_COMPLETED_ACTION);
         requireActivity().registerReceiver(trackManagerReceiver,locationUpdateAction);
-        requireActivity().registerReceiver(trackManagerReceiver,completeAction);
+        requireActivity().registerReceiver(trackManagerReceiver,completedAction);
 
         // check permissions for locations services
         checkLocationPermissions();

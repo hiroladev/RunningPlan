@@ -131,13 +131,13 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         if (trackExist(trackId)) {
             SQLiteDatabase sqLiteDatabase = getWritableDatabase();
             // insert the location
-            Location location = trackPoint.getLocation();
+            Location location = trackPoint.getLastLocation();
             // map of values, where column names are the keys
             ContentValues values = new ContentValues();
             // track id
             values.put(TrackLocationColumns.TRACK_ID, trackId.getId());
-            // timestamp, UTC
-            values.put(TrackLocationColumns.TIME_STAMP, location.getTime());
+            // system timestamp
+            values.put(TrackLocationColumns.TIME_STAMP, trackPoint.getLastLocationTimestamp());
             // latitude
             values.put(TrackLocationColumns.LATITUDE, location.getLatitude());
             // longitude
