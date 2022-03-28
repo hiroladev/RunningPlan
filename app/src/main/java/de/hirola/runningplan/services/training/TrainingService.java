@@ -93,8 +93,7 @@ public class TrainingService extends Service implements LocationListener {
         if (logManager.isDebugMode()) {
             logManager.debug(TAG, "The training service will be destroyed", null);
         }
-        // set all recorded tracks as finished
-        trackManager.clearRecordingStates();
+        trackManager.end();
         handler.removeCallbacks(secondsInTraining);
         handler = null;
         notificationManager = null;
@@ -153,14 +152,10 @@ public class TrainingService extends Service implements LocationListener {
     @Override
     public void onLocationChanged(@NonNull Location location) {
         // insert location to local tracking database
-        if (!trackManager.insertLocationForTrack(trackId, location)) {
-            // TODO: callback, if location not added
-            if (logManager.isDebugMode()) {
-                logManager.debug(TAG, "Location not added!", null);
-            }
-        }
+        trackManager.insertLocationForTrack(trackId, location);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     // want to change in future releases
     // https://stackoverflow.com/questions/64638260/android-locationlistener-abstractmethoderror-on-onstatuschanged-and-onproviderd
@@ -242,7 +237,6 @@ public class TrainingService extends Service implements LocationListener {
             logManager.debug(TAG, "The training with track id " + trackId + " was stopped.", null);
         }
         // completed the recorded track
-        // in further versions we qualify the location updates
         if (withLocationTracking) {
             if (!trackManager.completeTrack(trackId)) {
                 if (logManager.isDebugMode()) {

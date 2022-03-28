@@ -126,9 +126,8 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
      *
      * @param trackId id for the track, where the location to be added
      * @param trackPoint the point of track to be added
-     * @return 0 if the location is added or -1 if an error occurred or the track does not exist
      */
-    public boolean insertLocationForTrack(Track.Id trackId, @NonNull TrackPoint trackPoint) {
+    public void insertLocationForTrack(Track.Id trackId, @NonNull TrackPoint trackPoint) {
         if (trackExist(trackId)) {
             SQLiteDatabase sqLiteDatabase = getWritableDatabase();
             // insert the location
@@ -148,11 +147,8 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             // altitude
             values.put(TrackLocationColumns.ALTITUDE, location.getAltitude());
             // insert the new location (row), returning the primary key value of the new location
-            long numberOfInsertedRows = sqLiteDatabase.insert(TrackLocationColumns.TABLE_NAME, null, values);
-            sqLiteDatabase.close();
-            return numberOfInsertedRows > 0;
+            sqLiteDatabase.insert(TrackLocationColumns.TABLE_NAME, null, values);sqLiteDatabase.close();
         }
-        return false;
     }
 
     public boolean completeTrack(@NonNull Track.Id trackId, @Nullable TrackPoint trackPoint) {
