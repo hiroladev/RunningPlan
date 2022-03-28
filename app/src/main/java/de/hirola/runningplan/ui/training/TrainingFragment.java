@@ -93,7 +93,6 @@ public class TrainingFragment extends Fragment
     // training data
     private long unitTimeToRun = 0L; // remaining time of running unit in seconds
     private long trainingTime = 0L; // actual time in training in seconds
-    private long countOfCompletedUnits = 0L; // number of completed units for entry
 
     private final TrainingServiceConnection trainingServiceConnection =
             new TrainingServiceConnection(this); // trainings service for timer and location updates
@@ -184,6 +183,7 @@ public class TrainingFragment extends Fragment
             }
             isTrainingRunning = savedInstanceState.getBoolean("isTrainingRunning", false);
             isTrainingPaused = savedInstanceState.getBoolean("isTrainingPaused", false);
+            trainingTime = savedInstanceState.getLong("trainingTime", 0);
         }
 
         // app logger
@@ -260,6 +260,7 @@ public class TrainingFragment extends Fragment
         // add training state
         savedInstanceState.putBoolean("isTrainingRunning", isTrainingRunning);
         savedInstanceState.putBoolean("isTrainingPaused", isTrainingPaused);
+        savedInstanceState.putLong("trainingTime", trainingTime);
     }
 
     @Override
@@ -273,6 +274,7 @@ public class TrainingFragment extends Fragment
             }
             isTrainingRunning = savedInstanceState.getBoolean("isTrainingRunning", false);
             isTrainingPaused = savedInstanceState.getBoolean("isTrainingPaused", false);
+            trainingTime = savedInstanceState.getLong("trainingTime", 0);
         }
     }
 
@@ -559,7 +561,6 @@ public class TrainingFragment extends Fragment
                                 trainingInfoImageView.setImageResource(R.drawable.baseline_self_improvement_black_24);
                                 unitTimeToRun = 0L;
                                 trainingTime = 0L;
-                                countOfCompletedUnits = 0;
                                 updateTimerLabel();
                                 isTrainingRunning = false;
                                 isTrainingPaused = false;
@@ -594,8 +595,6 @@ public class TrainingFragment extends Fragment
                 // than continue the training
                 // TODO: next unit
                 if (nextUnit()) {
-                    // increase the completed units
-                    countOfCompletedUnits++;
                     // send notification
                     showNotificationForNextUnit();
                     trainingInfolabel.setText(R.string.new_training_unit_starts);
@@ -620,7 +619,6 @@ public class TrainingFragment extends Fragment
             isTrainingRunning = false;
             unitTimeToRun = 0L;
             trainingTime = 0L;
-            countOfCompletedUnits = 0;
             // refresh timer label
             updateTimerLabel();
             // display infos
@@ -923,7 +921,8 @@ public class TrainingFragment extends Fragment
         if (isTrainingRunning) {
             double averageSpeed = 0.0d;
             if (distance > 0.0) {
-                trainingTime = (countOfCompletedUnits * 60) + (runningUnit.getDuration() * 60 - unitTimeToRun);
+                long duration = runningUnit.getDuration() * 60 - unitTimeToRun;
+                trainingTime += duration;
                 averageSpeed = distance / trainingTime;
             }
             StringBuilder builder = new StringBuilder(getString(R.string.training_is_running));
