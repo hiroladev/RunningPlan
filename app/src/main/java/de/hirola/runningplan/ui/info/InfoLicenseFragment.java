@@ -50,7 +50,7 @@ public class InfoLicenseFragment extends Fragment {
             InputStream is = getResources().openRawResource(R.raw.licenses);
             licenseString = IOUtils.toString(is, StandardCharsets.UTF_8);
         } catch (Exception exception) {
-            if (logManager.isDebugMode()) {
+            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                 logManager.debug(TAG, null, exception);
             }
         }

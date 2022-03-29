@@ -353,7 +353,7 @@ public class TrainingFragment extends Fragment
     @Override
     public void onServiceErrorOccurred(String errorMessage) {
         //TODO: alert to user
-        if (logManager.isDebugMode()) {
+        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
             logManager.debug(TAG, errorMessage, null);
         }
     }
@@ -371,7 +371,7 @@ public class TrainingFragment extends Fragment
                 });
             }
         }
-        if (logManager.isDebugMode()) {
+        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
             logManager.debug(TAG, "Location updates are allowed: " + locationServicesAvailable, null);
         }
     }
@@ -381,7 +381,7 @@ public class TrainingFragment extends Fragment
         LocationManager manager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE );
         locationServicesAvailable =
                 locationServicesAvailable  && manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (logManager.isDebugMode()) {
+        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
             logManager.debug(TAG, "GPS are enabled: " + locationServicesAvailable, null);
         }
     }
@@ -392,7 +392,7 @@ public class TrainingFragment extends Fragment
         // on fragment the service is destroyed when switching to another fragment
         if (isTrainingPossible && ! isTrainingServiceConnected) {
             trainingServiceConnection.bindAndStartService(requireActivity().getApplicationContext());
-            if (logManager.isDebugMode()) {
+            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                 logManager.debug(TAG, "Service bind and start.", null);
             }
         }
@@ -587,7 +587,7 @@ public class TrainingFragment extends Fragment
                 runningPlan.completeUnit(runningUnit);
                 if (!viewModel.updateObject(runningPlan)) {
                     // TODO: alert to user
-                    if (logManager.isDebugMode()) {
+                    if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                         logManager.debug(TAG, "A running unit couldn't set as completed.", null);
                     }
                 }
@@ -821,7 +821,7 @@ public class TrainingFragment extends Fragment
                 setTrainingData();
             } else {
                 // TODO: info to the user
-                if (logManager.isDebugMode()) {
+                if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                     logManager.debug(TAG, "Could not reset running plan.", null);
                 }
             }
@@ -897,7 +897,7 @@ public class TrainingFragment extends Fragment
                         }
                     } catch (Resources.NotFoundException exception) {
                         unitsAsString.append(R.string.movement_type_not_found);
-                        if (logManager.isDebugMode()) {
+                        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                             logManager.debug(TAG, null, exception);
                         }
                     }

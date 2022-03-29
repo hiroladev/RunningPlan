@@ -70,7 +70,7 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
                     viewHolder.statusImageView.setImageResource(R.drawable.baseline_self_improvement_black_24);
                 }
             } catch (Resources.NotFoundException exception) {
-                if (logManager.isDebugMode()) {
+                if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                     logManager.debug(TAG, null, exception);
                 }
             }
@@ -97,7 +97,7 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
                             unitsAsString.append(context.getString(movementTypeResourceStringId)).append("\n");
                         } catch (Resources.NotFoundException exception) {
                             unitsAsString.append(key).append("\n");
-                            if (logManager.isDebugMode()) {
+                            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                                 logManager.debug(TAG, "Movement type resource not found,", exception);
                             }
                         }
@@ -106,7 +106,7 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
                             unitsAsString.append(context.getString(movementTypeResourceStringId));
                         } catch (Resources.NotFoundException exception) {
                             unitsAsString.append(key);
-                            if (logManager.isDebugMode()) {
+                            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                                 logManager.debug(TAG, "Movement type resource not found,", exception);
                             }
                         }

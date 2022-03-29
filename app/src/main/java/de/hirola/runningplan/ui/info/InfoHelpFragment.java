@@ -50,7 +50,7 @@ public class InfoHelpFragment extends Fragment {
             InputStream is = getResources().openRawResource(R.raw.help);
             helpString = IOUtils.toString(is, StandardCharsets.UTF_8);
         } catch (Exception exception) {
-            if (logManager.isDebugMode()) {
+            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                 logManager.debug(TAG, null, exception);
             }
         }

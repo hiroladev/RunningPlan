@@ -114,7 +114,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                     new String[]{String.valueOf(trackId.getId())});
             sqLiteDatabase.close();
             if (updatedRows > 1) {
-                if (logManager.isDebugMode()) {
+                if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                     logManager.debug(TAG, "More as one rows are updated.", null);
                 }
             }
@@ -211,7 +211,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 }
                 return null;
             } catch (IllegalArgumentException exception) {
-                if (logManager.isDebugMode()) {
+                if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                     logManager.debug(TAG, "Column (index) does not exists", exception);
                 }
                 return null;
@@ -235,7 +235,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             String[] trackLocationsSelectionArgs = { String.valueOf(trackId.getId()) };
             // Issue SQL statement.
             int deletedTrackLocationRows = sqLiteDatabase.delete(TrackLocationColumns.TABLE_NAME, trackLocationsSelection, trackLocationsSelectionArgs);
-            if (logManager.isDebugMode()) {
+            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                 String logMessage = "There have been " + deletedTrackLocationRows + " location rows deleted";
                 logManager.debug(TAG, logMessage, null);
             }
@@ -246,7 +246,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             String[] trackSelectionArgs = { String.valueOf(trackId.getId()) };
             // Issue SQL statement.
             int deletedTrackRows = sqLiteDatabase.delete(TrackLocationColumns.TABLE_NAME, trackSelection, trackSelectionArgs);
-            if (logManager.isDebugMode()) {
+            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                 String logMessage = "There have been " +  deletedTrackRows + " track rows deleted";
                 logManager.debug(TAG, logMessage, null);
             }
@@ -294,7 +294,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             }
             return trackIds;
         } catch (IllegalArgumentException exception) {
-            if (logManager.isDebugMode()) {
+            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                 logManager.debug(TAG, "Column (index) does not exists", exception);
             }
             return null;
@@ -330,7 +330,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         long updatedTracks = sqLiteDatabase.update(TrackColumns.TABLE_NAME, values,
                 whereClauseTracks, whereClauseTracksArgs);
         sqLiteDatabase.close();
-        if (logManager.isDebugMode()) {
+        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
             String message = String.format("%s track states was set to false.", updatedTracks);
             logManager.debug(TAG, message, null);
         }
@@ -357,7 +357,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 + ")";
         int deletedLocations = sqLiteDatabase.delete(TrackLocationColumns.TABLE_NAME,whereClauseLocations, null);
         sqLiteDatabase.close();
-        if (logManager.isDebugMode()) {
+        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
             String message = String.format("%s locations and %s tracks deleted.",
                     deletedLocations, deletedTracks);
             logManager.debug(TAG, message, null);
@@ -442,7 +442,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 }
                 return locations;
             } catch (IllegalArgumentException exception) {
-                if (logManager.isDebugMode()) {
+                if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                     logManager.debug(TAG, "Column (index) does not exists", exception);
                 }
                 return null;

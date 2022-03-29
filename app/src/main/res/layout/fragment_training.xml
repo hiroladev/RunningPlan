@@ -5,7 +5,7 @@ This software us licensed under the AGPL-3.0 or later.
 </copyright-->
 <LinearLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:android="http://schemas.android.com/apk/res/android">

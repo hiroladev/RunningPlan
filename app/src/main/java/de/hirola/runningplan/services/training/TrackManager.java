@@ -218,7 +218,7 @@ public class TrackManager {
                     // waits until the next update is available
                     trackUpdateTask = databaseOperationsBlockingQueue.take();
                 } catch (InterruptedException exception) {
-                    if (logManager.isDebugMode()) {
+                    if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
                         logManager.debug(TAG, "Error while waiting for track update in queue.", exception);
                     }
                     return;

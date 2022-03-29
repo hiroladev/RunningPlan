@@ -1,8 +1,5 @@
 package de.hirola.runningplan.ui.info.log;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
@@ -11,18 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.runningplan.util.ModalOptionDialog;
-import de.hirola.sportslibrary.Global;
-import org.apache.commons.io.IOUtils;
-
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.List;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
