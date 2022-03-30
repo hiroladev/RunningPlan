@@ -1,7 +1,7 @@
 package de.hirola.runningplan;
 
 import android.app.Application;
-import de.hirola.sportslibrary.Global;
+import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.SportsLibraryApplication;
 import de.hirola.sportslibrary.SportsLibraryException;
@@ -21,6 +21,7 @@ import java.io.InputStream;
  */
 public class RunningPlanApplication extends Application implements SportsLibraryApplication {
 
+    private AppLogManager appLogManager;
     private SportsLibrary sportsLibrary;
 
     @Override
@@ -29,7 +30,10 @@ public class RunningPlanApplication extends Application implements SportsLibrary
         try {
             // initialize the SportsLibrary, e.g. local datastore and logging,
             // import the templates on first start
-            sportsLibrary = new SportsLibrary(getPackageName(), this);
+            appLogManager = AppLogManager.getInstance(getApplicationContext());
+            sportsLibrary = new SportsLibrary(getPackageName(),
+                    this,
+                    appLogManager.getLogManager());
         } catch (SportsLibraryException exception) {
             throw new RuntimeException("An exception occurred while initialize the app: "
                     + exception);
@@ -52,7 +56,7 @@ public class RunningPlanApplication extends Application implements SportsLibrary
         inputStreams[0] = getResources().openRawResource(R.raw.start);
         inputStreams[1] = getResources().openRawResource(R.raw.start60);
         inputStreams[2] = getResources().openRawResource(R.raw.start90);
-        if (Global.APP_DEBUG_MODE) {
+        if (appLogManager.isDeveloperVersion()) {
             inputStreams[3] = getResources().openRawResource(R.raw.start_test);
         }
         return inputStreams;

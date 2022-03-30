@@ -1,16 +1,11 @@
 package de.hirola.runningplan.util;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import de.hirola.runningplan.R;
 import de.hirola.sportslibrary.Global;
-import org.tinylog.Logger;
-import org.tinylog.configuration.Configuration;
-
-import java.io.File;
+import de.hirola.sportslibrary.util.LogManager;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -24,9 +19,9 @@ import java.io.File;
 public class AppLogManager {
 
     private static AppLogManager instance = null;
-    private final boolean isLoggingEnabled;
-    private final boolean debugMode;
+    private final LogManager logManager;
     private final boolean canSendDebugLog;
+    private final boolean isDeveloperVersion;
 
     public static AppLogManager getInstance(@NonNull Context context) {
 
@@ -36,8 +31,12 @@ public class AppLogManager {
         return instance;
     }
 
+    public LogManager getLogManager() {
+        return logManager;
+    }
+
     public boolean isLoggingEnabled() {
-        return isLoggingEnabled;
+        return logManager.isLoggingEnabled();
     }
 
     public boolean sendDebugLog() {
@@ -46,7 +45,7 @@ public class AppLogManager {
     }
 
     public boolean isDebugMode() {
-        return debugMode;
+        return logManager.isDebugMode();
     }
 
     public boolean canSendDebugLog() {
@@ -54,20 +53,20 @@ public class AppLogManager {
     }
 
     public String getLogContent() {
-        return "";
+        return logManager.getLogContent();
+    }
+
+    public boolean isDeveloperVersion() {
+        return isDeveloperVersion;
     }
 
     private AppLogManager(Context context) {
-        String logDirString = "/data/data"
-                + File.separatorChar
-                + context.getPackageName();
-        // set the property for the rolling file logger
-        System.setProperty("tinylog.directory", logDirString);
         // initialize the attributes
         SharedPreferences sharedPreferences =
                 context.getSharedPreferences(context.getString(R.string.preference_file), Context.MODE_PRIVATE);
-        debugMode = Global.APP_DEBUG_MODE && sharedPreferences.getBoolean(Global.PreferencesKeys.debugMode, false);
         canSendDebugLog = sharedPreferences.getBoolean(Global.PreferencesKeys.sendDebugLog, false);
-        isLoggingEnabled = true;
+        isDeveloperVersion = context.getString(R.string.developerVersion).equals("TRUE");
+        logManager = LogManager.getInstance(context.getPackageName(),
+                sharedPreferences.getBoolean(Global.PreferencesKeys.debugMode, false));
     }
 }

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.util.AppLogManager;
+import org.tinylog.Logger;
 
 import java.util.*;
 
@@ -22,15 +23,13 @@ import java.util.*;
  */
 public class InfoMenuItemRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final static String TAG = InfoMenuItemRecyclerView.class.getSimpleName();
-
-    private final AppLogManager logManager;
+    private final AppLogManager appLogManager;
     private View.OnClickListener onClickListener;
     private final Map<Integer, MenuItem> menuItemMap;
 
     public InfoMenuItemRecyclerView(Context context, @NonNull Map<Integer, MenuItem> menuItemMap) {
         this.menuItemMap = menuItemMap;
-        logManager = AppLogManager.getInstance(context);
+        appLogManager = AppLogManager.getInstance(context);
     }
 
     @NonNull
@@ -55,8 +54,8 @@ public class InfoMenuItemRecyclerView extends RecyclerView.Adapter<RecyclerView.
                     // menu item text
                     viewHolder.menuItemTextView.setText(menuItem.getTextResourceId());
                 } catch (Exception exception) {
-                    if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                        logManager.debug(TAG, null, exception);
+                    if (appLogManager.isDebugMode()) {
+                        Logger.debug(null, exception);
                     }
                 }
             }

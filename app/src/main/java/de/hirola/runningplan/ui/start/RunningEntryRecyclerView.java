@@ -13,6 +13,7 @@ import de.hirola.sportslibrary.model.MovementType;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.model.RunningPlanEntry;
 import de.hirola.sportslibrary.model.RunningUnit;
+import org.tinylog.Logger;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -33,10 +34,8 @@ import java.util.Locale;
  */
 public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final static String TAG = RunningEntryRecyclerView.class.getSimpleName();
-
     private final Context context;
-    private final AppLogManager logManager;
+    private final AppLogManager appLogManager;
     private final RunningPlan runningPlan;
     private final List<RunningPlanEntry> runningPlanEntries;
     private final List<String> trainingDaysAsString;
@@ -46,7 +45,7 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
         this.runningPlan = runningPlan;
         this.runningPlanEntries = runningPlan.getEntries();
         trainingDaysAsString = getTrainingDaysAsStrings();
-        logManager = AppLogManager.getInstance(context);
+        appLogManager = AppLogManager.getInstance(context);
     }
 
     @NonNull
@@ -70,8 +69,8 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
                     viewHolder.statusImageView.setImageResource(R.drawable.baseline_self_improvement_black_24);
                 }
             } catch (Resources.NotFoundException exception) {
-                if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                    logManager.debug(TAG, null, exception);
+                if (appLogManager.isDebugMode()) {
+                    Logger.debug(null, exception);
                 }
             }
             // training date
@@ -97,8 +96,8 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
                             unitsAsString.append(context.getString(movementTypeResourceStringId)).append("\n");
                         } catch (Resources.NotFoundException exception) {
                             unitsAsString.append(key).append("\n");
-                            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                                logManager.debug(TAG, "Movement type resource not found,", exception);
+                            if (appLogManager.isDebugMode()) {
+                                Logger.debug("Movement type resource not found,", exception);
                             }
                         }
                     } else {
@@ -106,8 +105,8 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
                             unitsAsString.append(context.getString(movementTypeResourceStringId));
                         } catch (Resources.NotFoundException exception) {
                             unitsAsString.append(key);
-                            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                                logManager.debug(TAG, "Movement type resource not found,", exception);
+                            if (appLogManager.isDebugMode()) {
+                                Logger.debug("Movement type resource not found,", exception);
                             }
                         }
                     }

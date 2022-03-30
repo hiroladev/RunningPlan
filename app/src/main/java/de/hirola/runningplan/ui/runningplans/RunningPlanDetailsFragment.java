@@ -20,6 +20,7 @@ import de.hirola.sportslibrary.model.UUID;
 import de.hirola.sportslibrary.model.User;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import org.jetbrains.annotations.NotNull;
+import org.tinylog.Logger;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -38,8 +39,6 @@ import java.util.List;
  */
 public class RunningPlanDetailsFragment extends Fragment
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-
-    private final static String TAG = RunningPlanDetailsFragment.class.getSimpleName();
 
     private AppLogManager appLogManager;
     private RunningPlanViewModel viewModel;
@@ -279,7 +278,7 @@ public class RunningPlanDetailsFragment extends Fragment
                 } catch (Resources.NotFoundException exception) {
                     runningPlanRemarksTextView.setText(R.string.no_remarks);
                     if (appLogManager.isDebugMode()) {
-                        appLogManager.debug(TAG, null, exception);
+                        Logger.debug(null, exception);
                     }
                 }
             } else {

@@ -14,6 +14,7 @@ import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.model.User;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import org.jetbrains.annotations.NotNull;
+import org.tinylog.Logger;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -33,9 +34,7 @@ import java.util.Map;
 public class SettingsFragment extends PreferenceFragmentCompat
         implements Preference.OnPreferenceChangeListener, EditTextPreference.OnBindEditTextListener {
 
-    private final static String TAG = SettingsFragment.class.getSimpleName();
-
-    private AppLogManager logManager;
+    private AppLogManager appLogManager;
     private RunningPlanViewModel viewModel;
     private User appUser;
     private SharedPreferences sharedPreferences;
@@ -43,7 +42,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // app logger
-        logManager = AppLogManager.getInstance(requireContext());
+        appLogManager = AppLogManager.getInstance(requireContext());
         // set the preference ui elements
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         // get the view model for data handling
@@ -120,8 +119,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 try {
                     Integer.parseInt(maxPulse);
                 } catch (NumberFormatException exception) {
-                    if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                        exception.printStackTrace();
+                    if (appLogManager.isDebugMode()) {
+                        Logger.debug(exception);
                     }
                     return false;
                 }
@@ -155,7 +154,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 "",
                                 getString(R.string.preferences_not_set),
                                 getString(R.string.ok));
-                        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
+                        if (appLogManager.isDebugMode()) {
                             exception.printStackTrace();
                         }
                         return false;
@@ -174,7 +173,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 getString(R.string.warning),
                                 getString(R.string.preferences_not_set),
                                 getString(R.string.ok));
-                        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
+                        if (appLogManager.isDebugMode()) {
                             exception.printStackTrace();
                         }
                         return false;
@@ -201,7 +200,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 getString(R.string.warning),
                                 getString(R.string.preferences_not_set),
                                 getString(R.string.ok));
-                        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
+                        if (appLogManager.isDebugMode()) {
                             System.out.println(exception.getMessage());
                         }
                         return false;
@@ -218,8 +217,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     getString(R.string.error),
                     getString(R.string.save_data_error),
                     getString(R.string.ok));
-            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                logManager.debug(TAG, "Error while saving settings.", null);
+            if (appLogManager.isDebugMode()) {
+                Logger.debug("Error while saving settings.");
             }
             return false;
         }
@@ -259,8 +258,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 .setChecked(sharedPreferences.getBoolean(key, false));
                     } catch (ClassCastException exception) {
                         ((SwitchPreferenceCompat) preference).setChecked(false);
-                        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                            logManager.debug(TAG, null, exception);
+                        if (appLogManager.isDebugMode()) {
+                            Logger.debug(null, exception);
                         }
                     }
                 } else if (preference instanceof ListPreference) {
@@ -283,8 +282,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                     entry = requireContext().getString(resourceStringId);
                                 } catch (Resources.NotFoundException exception) {
                                     entry = getString(R.string.preference_not_found);
-                                    if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                                        logManager.debug(TAG, null, exception);
+                                    if (appLogManager.isDebugMode()) {
+                                        Logger.debug(null, exception);
                                     }
                                 }
                             }
@@ -319,8 +318,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                     entry = requireContext().getString(resourceStringId);
                                 } catch (Resources.NotFoundException exception) {
                                     entry = getString(R.string.preference_not_found);
-                                    if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                                        logManager.debug(TAG, null, exception);
+                                    if (appLogManager.isDebugMode()) {
+                                        Logger.debug(null, exception);
                                     }
                                 }
                             }
@@ -366,8 +365,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                         }
                     } catch (ClassCastException exception) {
                         ((EditTextPreference) preference).setText("");
-                        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                            logManager.debug(TAG, null, exception);
+                        if (appLogManager.isDebugMode()) {
+                            Logger.debug(null, exception);
                         }
                     }
                 }
@@ -429,8 +428,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     getString(R.string.error),
                     getString(R.string.save_data_error),
                     getString(R.string.ok));
-            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                logManager.debug(TAG, "Error while saving user data.", null);
+            if (appLogManager.isDebugMode()) {
+                Logger.debug("Error while saving user data.");
             }
         }
 

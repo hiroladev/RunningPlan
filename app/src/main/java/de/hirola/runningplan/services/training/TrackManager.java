@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.model.Track;
+import org.tinylog.Logger;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -35,9 +36,7 @@ public class TrackManager {
     public static final String RECEIVER_INTENT_TRACK_DISTANCE = "distance";
     public static final String RECEIVER_INTENT_COMPLETE_STATE = "completeState";
 
-    private final static String TAG = TrackManager.class.getSimpleName();
-
-    private final AppLogManager logManager;
+    private final AppLogManager appLogManager;
     private List<Track.Id> trackIds; // query the list to avoid get from sqlite
     private final Context context;
     private final TrackingDatabaseHelper databaseHelper;
@@ -48,7 +47,7 @@ public class TrackManager {
 
     public TrackManager(@NonNull Context context) {
 
-        logManager = AppLogManager.getInstance(context);
+        appLogManager = AppLogManager.getInstance(context);
         this.context = context;
         databaseHelper = new TrackingDatabaseHelper(context);
         trackIds = databaseHelper.getTrackIds();
@@ -218,8 +217,8 @@ public class TrackManager {
                     // waits until the next update is available
                     trackUpdateTask = databaseOperationsBlockingQueue.take();
                 } catch (InterruptedException exception) {
-                    if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                        logManager.debug(TAG, "Error while waiting for track update in queue.", exception);
+                    if (appLogManager.isDebugMode()) {
+                        Logger.debug("Error while waiting for track update in queue.", exception);
                     }
                     return;
                 }

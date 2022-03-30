@@ -23,14 +23,14 @@ import de.hirola.runningplan.util.ModalOptionDialog;
  */
 public class InfoLogsFragment extends Fragment implements View.OnClickListener {
 
-    private AppLogManager logManager;
+    private AppLogManager appLogManager;
     private TextView logContentTextView;
     private Button sendLogButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        logManager = AppLogManager.getInstance(requireContext());
+        appLogManager = AppLogManager.getInstance(requireContext());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class InfoLogsFragment extends Fragment implements View.OnClickListener {
                     getString(R.string.ok), getString(R.string.cancel),
                     button -> {
                         if (button == ModalOptionDialog.Button.OK) {
-                            if (!logManager.sendDebugLog()) {
+                            if (!appLogManager.sendDebugLog()) {
                                 ModalOptionDialog.showMessageDialog(
                                         ModalOptionDialog.DialogStyle.WARNING,
                                         requireContext(),null,
@@ -75,9 +75,9 @@ public class InfoLogsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void loadLogContent() {
-        String logContentString = logManager.getLogContent();
+        String logContentString = appLogManager.getLogContent();
         logContentTextView.setText(logContentString);
-        if (!logContentString.isEmpty() && logManager.canSendDebugLog()) {
+        if (!logContentString.isEmpty() && appLogManager.canSendDebugLog()) {
             sendLogButton.setEnabled(true);
         }
     }

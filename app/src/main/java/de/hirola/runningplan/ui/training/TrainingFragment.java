@@ -33,6 +33,7 @@ import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.model.UUID;
 import de.hirola.sportslibrary.model.*;
 import org.jetbrains.annotations.NotNull;
+import org.tinylog.Logger;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -51,9 +52,7 @@ import java.util.*;
 public class TrainingFragment extends Fragment
         implements AdapterView.OnItemSelectedListener, TrainingServiceCallback {
 
-    private final static String TAG = TrainingFragment.class.getSimpleName();
-
-    private AppLogManager logManager; // app logging
+    private AppLogManager appLogManager; // app logging
     private SharedPreferences sharedPreferences; // user and app preferences
     private boolean useNotifications;
     private TrainingNotificationManager notificationManager; // sends notification to user
@@ -187,7 +186,7 @@ public class TrainingFragment extends Fragment
         }
 
         // app logger
-        logManager = AppLogManager.getInstance(requireContext());// enable notification for training infos
+        appLogManager = AppLogManager.getInstance(requireContext());// enable notification for training infos
         notificationManager = new TrainingNotificationManager(requireActivity().getApplicationContext());
 
         // app preferences
@@ -353,8 +352,8 @@ public class TrainingFragment extends Fragment
     @Override
     public void onServiceErrorOccurred(String errorMessage) {
         //TODO: alert to user
-        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-            logManager.debug(TAG, errorMessage, null);
+        if (appLogManager.isDebugMode()) {
+            Logger.debug(errorMessage);
         }
     }
 
@@ -371,8 +370,8 @@ public class TrainingFragment extends Fragment
                 });
             }
         }
-        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-            logManager.debug(TAG, "Location updates are allowed: " + locationServicesAvailable, null);
+        if (appLogManager.isDebugMode()) {
+            Logger.debug("Location updates are allowed: " + locationServicesAvailable);
         }
     }
 
@@ -381,8 +380,8 @@ public class TrainingFragment extends Fragment
         LocationManager manager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE );
         locationServicesAvailable =
                 locationServicesAvailable  && manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-            logManager.debug(TAG, "GPS are enabled: " + locationServicesAvailable, null);
+        if (appLogManager.isDebugMode()) {
+            Logger.debug("GPS are enabled: " + locationServicesAvailable);
         }
     }
 
@@ -392,8 +391,8 @@ public class TrainingFragment extends Fragment
         // on fragment the service is destroyed when switching to another fragment
         if (isTrainingPossible && ! isTrainingServiceConnected) {
             trainingServiceConnection.bindAndStartService(requireActivity().getApplicationContext());
-            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                logManager.debug(TAG, "Service bind and start.", null);
+            if (appLogManager.isDebugMode()) {
+                Logger.debug("Service bind and start.");
             }
         }
     }
@@ -436,11 +435,11 @@ public class TrainingFragment extends Fragment
         trainingInfolabel = trainingView.findViewById(R.id.fgmt_training_infos_edit_text);
         // Button listener
         startButton = trainingView.findViewById(R.id.fgmt_training_start_button);
-        startButton.setOnClickListener(this::startButtonClicked);
+        startButton.setOnClickListener(view1 -> startButtonClicked());
         stopButton = trainingView.findViewById(R.id.fgmt_training_stop_button);
-        stopButton.setOnClickListener(this::stopButtonClicked);
+        stopButton.setOnClickListener(view1 -> stopButtonClicked());
         pauseButton = trainingView.findViewById(R.id.fgmt_training_pause_button);
-        pauseButton.setOnClickListener(this::pauseButtonClicked);
+        pauseButton.setOnClickListener(view -> pauseButtonClicked());
         showRunningPlanInView();
         showRunningPlanEntryInView();
     }
@@ -587,8 +586,8 @@ public class TrainingFragment extends Fragment
                 runningPlan.completeUnit(runningUnit);
                 if (!viewModel.updateObject(runningPlan)) {
                     // TODO: alert to user
-                    if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                        logManager.debug(TAG, "A running unit couldn't set as completed.", null);
+                    if (appLogManager.isDebugMode()) {
+                        Logger.debug("A running unit couldn't set as completed.");
                     }
                 }
                 // more units of the training section available
@@ -670,15 +669,15 @@ public class TrainingFragment extends Fragment
         return false;
     }
 
-    private void startButtonClicked(View view) {
+    private void startButtonClicked() {
         startTraining();
     }
 
-    private void pauseButtonClicked(View view) {
+    private void pauseButtonClicked() {
         pauseTraining();
     }
 
-    private void stopButtonClicked(View view) {
+    private void stopButtonClicked() {
         cancelTraining();
     }
 
@@ -821,8 +820,8 @@ public class TrainingFragment extends Fragment
                 setTrainingData();
             } else {
                 // TODO: info to the user
-                if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                    logManager.debug(TAG, "Could not reset running plan.", null);
+                if (appLogManager.isDebugMode()) {
+                    Logger.debug("Could not reset running plan.");
                 }
             }
         }
@@ -897,8 +896,8 @@ public class TrainingFragment extends Fragment
                         }
                     } catch (Resources.NotFoundException exception) {
                         unitsAsString.append(R.string.movement_type_not_found);
-                        if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                            logManager.debug(TAG, null, exception);
+                        if (appLogManager.isDebugMode()) {
+                            Logger.debug(null, exception);
                         }
                     }
                     // running unit duration

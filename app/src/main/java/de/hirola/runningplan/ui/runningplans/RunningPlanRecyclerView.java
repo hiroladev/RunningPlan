@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import org.jetbrains.annotations.NotNull;
+import org.tinylog.Logger;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -26,8 +27,6 @@ import java.util.List;
  * @since 0.1
  */
 public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private final static String TAG = RunningPlanRecyclerView.class.getSimpleName();
 
     private final AppLogManager appLogManager;
     private final Context context;
@@ -73,7 +72,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
                 //}
             } catch (Resources.NotFoundException exception) {
                 if (appLogManager.isDebugMode()) {
-                    appLogManager.debug(TAG, null, exception);
+                    Logger.debug(exception);
                 }
             }
             viewHolder.nameTextView.setText(runningPlan.getName());
@@ -92,7 +91,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
                 } catch (Resources.NotFoundException exception) {
                     viewHolder.remarksTextView.setText(R.string.no_remarks);
                     if (appLogManager.isDebugMode()) {
-                        appLogManager.debug(TAG, null, exception);
+                        Logger.debug(null, exception);
                     }
                 }
             } else {

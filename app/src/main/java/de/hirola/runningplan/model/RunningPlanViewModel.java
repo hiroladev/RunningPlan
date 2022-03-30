@@ -12,6 +12,7 @@ import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.*;
 import android.app.Application;
+import org.tinylog.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,15 +31,13 @@ import java.util.List;
  */
 public class RunningPlanViewModel {
 
-    private final static String TAG = RunningPlanViewModel.class.getSimpleName();
-
-    private final AppLogManager appLogger;
+    private final AppLogManager appLogManager;
     private final SportsLibrary sportsLibrary;
     private final DataRepository dataRepository; // the datastore layer
 
     public RunningPlanViewModel(@NonNull Application application, @Nullable DatastoreDelegate delegate)  {
         // initialize attributes
-        appLogger = AppLogManager.getInstance(application.getApplicationContext());
+        appLogManager = AppLogManager.getInstance(application.getApplicationContext());
         sportsLibrary = ((RunningPlanApplication) application).getSportsLibrary();
         if (delegate != null) {
             sportsLibrary.addDelegate(delegate);
@@ -75,8 +74,8 @@ public class RunningPlanViewModel {
                 // we do not add this to the list and make a  debug entry
                 String errorMessage = "List of running plans contains an object from type "
                         + object.getClass().getSimpleName();
-                if (appLogger.isDebugMode()) {
-                    appLogger.debug(TAG, errorMessage, exception);
+                if (appLogManager.isDebugMode()) {
+                    Logger.debug(errorMessage, exception);
                 }
             }
         }
@@ -104,8 +103,8 @@ public class RunningPlanViewModel {
                 // we do not add this to the list and make a  debug entry
                 String errorMessage = "List of trainings contains an object from type "
                         + object.getClass().getSimpleName();
-                if (appLogger.isDebugMode()) {
-                    appLogger.debug(TAG, errorMessage, exception);
+                if (appLogManager.isDebugMode()) {
+                    Logger.debug(errorMessage, exception);
                 }
             }
         }
@@ -125,8 +124,8 @@ public class RunningPlanViewModel {
             dataRepository.add(persistentObject);
             return true;
         } catch (SportsLibraryException exception) {
-            if (appLogger.isDebugMode()) {
-                appLogger.debug(TAG, "Adding an object failed.", exception);
+            if (appLogManager.isDebugMode()) {
+                Logger.debug("Adding an object failed.", exception);
             }
         }
         return false;
@@ -143,8 +142,8 @@ public class RunningPlanViewModel {
             dataRepository.update(persistentObject);
             return true;
         } catch (SportsLibraryException exception) {
-            if (appLogger.isDebugMode()) {
-                appLogger.debug(TAG, "Updating an object failed.", exception);
+            if (appLogManager.isDebugMode()) {
+                Logger.debug("Updating an object failed.", exception);
             }
         }
         return false;
@@ -161,8 +160,8 @@ public class RunningPlanViewModel {
             dataRepository.delete(persistentObject);
             return true;
         } catch (SportsLibraryException exception) {
-            if (appLogger.isDebugMode()) {
-                appLogger.debug(TAG, "Deleting an object failed.", exception);
+            if (appLogManager.isDebugMode()) {
+                Logger.debug("Deleting an object failed.", exception);
             }
         }
         return false;

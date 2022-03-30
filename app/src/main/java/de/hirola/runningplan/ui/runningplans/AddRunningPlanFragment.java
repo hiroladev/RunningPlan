@@ -23,6 +23,7 @@ import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.sportslibrary.util.RunningPlanTemplate;
 import de.hirola.sportslibrary.util.TemplateLoader;
+import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -37,8 +38,6 @@ import java.io.InputStream;
  * @since 0.1
  */
 public class AddRunningPlanFragment extends Fragment implements View.OnClickListener {
-
-    private final static String TAG = AddRunningPlanFragment.class.getSimpleName();
 
     private AppLogManager appLogManager;
     private RunningPlanViewModel viewModel; // view model
@@ -126,7 +125,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
                 InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
                 RunningPlanApplication runningPlanApplication = ((RunningPlanApplication) requireActivity().getApplication());
                 DataRepository dataRepository = runningPlanApplication.getSportsLibrary().getDataRepository();
-                TemplateLoader templateLoader = new TemplateLoader(dataRepository, appLogManager.getLogger());
+                TemplateLoader templateLoader = new TemplateLoader(dataRepository, appLogManager.getLogManager());
                 importFileNameLabel.setText(getString(R.string.loading_file_succeed));
                 // load the template from json
                 runningPlanTemplate = templateLoader.loadRunningPlanTemplateFromJSON(inputStream);
@@ -163,7 +162,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
                 try {
                     RunningPlanApplication runningPlanApplication = ((RunningPlanApplication) requireActivity().getApplication());
                     DataRepository dataRepository = runningPlanApplication.getSportsLibrary().getDataRepository();
-                    TemplateLoader templateLoader = new TemplateLoader(dataRepository, runningPlanApplication, appLogManager.getLogger());
+                    TemplateLoader templateLoader = new TemplateLoader(dataRepository, runningPlanApplication, appLogManager.getLogManager());
                     // create an updated template from import
                     RunningPlanTemplate runningPlanTemplateToImport = new RunningPlanTemplate(title, remarks,
                             runningPlanTemplate.orderNumber,
@@ -199,7 +198,7 @@ public class AddRunningPlanFragment extends Fragment implements View.OnClickList
                     }
                 } catch (SportsLibraryException exception) {
                     if (appLogManager.isDebugMode()) {
-                        appLogManager.debug(TAG, "Import of running plan template failed.", exception);
+                        Logger.debug("Import of running plan template failed.", exception);
                     }
                 }
             }

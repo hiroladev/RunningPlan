@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.util.AppLogManager;
 import org.apache.commons.io.IOUtils;
+import org.tinylog.Logger;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -25,15 +26,13 @@ import java.nio.charset.StandardCharsets;
  */
 public class InfoLicenseFragment extends Fragment {
 
-    private final static String TAG = InfoLicenseFragment.class.getSimpleName();
-
-    private AppLogManager logManager; // app logger
+    private AppLogManager appLogManager; // app logger
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // app logger
-        logManager = AppLogManager.getInstance(requireContext());
+        appLogManager = AppLogManager.getInstance(requireContext());
     }
 
     @Override
@@ -50,8 +49,8 @@ public class InfoLicenseFragment extends Fragment {
             InputStream is = getResources().openRawResource(R.raw.licenses);
             licenseString = IOUtils.toString(is, StandardCharsets.UTF_8);
         } catch (Exception exception) {
-            if (logManager.isDebugMode() && logManager.isLoggingEnabled()) {
-                logManager.debug(TAG, null, exception);
+            if (appLogManager.isDebugMode()) {
+                Logger.debug(null, exception);
             }
         }
         licenseTextView.setText(licenseString);
