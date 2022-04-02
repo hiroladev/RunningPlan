@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="developerVersion" translatable="false">TRUE</string>
+    <string name="app_logo" translatable="false">Logo</string>
+    <string name="app_version" translatable="false">v.0.1</string>
+    <string name="app_copyright" translatable="false">(c) Michael Schmidt 2021 - 2022\nFree Software License: AGPL
+        Version 3
+    </string>
+    <string name="isDeveloperVersion" translatable="false">TRUE</string>
+    <string name="preference_file" translatable="false">de.hirola.runningplan_preferences</string>
 </resources>

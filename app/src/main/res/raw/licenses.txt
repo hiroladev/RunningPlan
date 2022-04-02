@@ -11,6 +11,9 @@ https://lauftipps.ch
 Nitrite Database - Java embedded nosql document store
 https://github.com/nitrite/nitrite-java/blob/develop/LICENSE.md
 
+tinylog - Simplify your logging with tinylog
+https://github.com/tinylog-org/tinylog/blob/v2.5/license.txt
+
 Simple Logging Facade for Java (SLF4J)
 https://www.slf4j.org/license.html
 

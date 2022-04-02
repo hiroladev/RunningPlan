@@ -65,7 +65,7 @@ public class AppLogManager {
         SharedPreferences sharedPreferences =
                 context.getSharedPreferences(context.getString(R.string.preference_file), Context.MODE_PRIVATE);
         canSendDebugLog = sharedPreferences.getBoolean(Global.PreferencesKeys.sendDebugLog, false);
-        isDeveloperVersion = context.getString(R.string.developerVersion).equals("TRUE");
+        isDeveloperVersion = context.getString(R.string.isDeveloperVersion).equals("TRUE");
         logManager = LogManager.getInstance(context.getPackageName(),
                 sharedPreferences.getBoolean(Global.PreferencesKeys.debugMode, false));
     }

@@ -104,7 +104,6 @@
     <string name="FL">Fast Running</string>
     <string name="SL">Speedy Running</string>
     <string name="SSL">More speedy Running</string>
-    <string name="hello_blank_fragment">PLACEHOLDER</string>
     <string name="movement_type_summary">Types of movement during running training</string>
     <string name="R">Race</string>
     <string name="clear_all_tracks">Clear all tracks</string>
@@ -159,4 +158,5 @@
     <string name="ask_before_send_log">Should the error log be sent?</string>
     <string name="sending_failed">Sending failed.</string>
     <string name="recorded_track_not_completed">The track could not be completed.</string>
+    <string name="developer_version">Developer Version</string>
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -14,6 +15,7 @@ import de.hirola.runningplan.ui.info.log.InfoLogsFragment;
 import de.hirola.runningplan.ui.info.menu.InfoMenuItemRecyclerView;
 import de.hirola.runningplan.ui.info.menu.MenuItem;
 import de.hirola.runningplan.ui.info.tracks.InfoTracksFragment;
+import de.hirola.runningplan.util.AppLogManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +46,12 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View infoView = inflater.inflate(R.layout.fragment_info_content, container, false);
+        // show app version infos
+        AppLogManager appLogManager = AppLogManager.getInstance(requireContext());
+        if (appLogManager.isDeveloperVersion()) {
+            TextView devVersionTextView = infoView.findViewById(R.id.fgmt_info_content_app_dev_version_textview);
+            devVersionTextView.setText(getText(R.string.developer_version));
+        }
         // build the menu item map
         menuItemMap = new HashMap<>(5);
         menuItemMap.putIfAbsent(0, new MenuItem(R.drawable.baseline_info_black_36, R.string.menu_item_info, new InfoAboutFragment()));

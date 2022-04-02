@@ -40,6 +40,7 @@ This software us licensed under the AGPL-3.0 or later.
             app:layout_constraintBottom_toBottomOf="@+id/fgmt_info_content_app_logo_imageview"/>
 
     <TextView
+            android:id="@+id/fgmt_info_content_app_version_textview"
             android:inputType="none"
             android:text="@string/app_version"
             android:importantForAutofill="no"
@@ -52,7 +53,24 @@ This software us licensed under the AGPL-3.0 or later.
             app:layout_constraintBottom_toBottomOf="@+id/fgmt_info_content_app_logo_imageview"
             app:layout_constraintVertical_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/fgmt_info_content_app_name_textview"
-            android:layout_marginStart="20dp"/>
+            android:layout_marginStart="10dp"/>
+
+    <TextView
+            android:id="@+id/fgmt_info_content_app_dev_version_textview"
+            android:inputType="none"
+            android:text="@string/isDeveloperVersion"
+            android:importantForAutofill="no"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/fgmt_info_content_app_logo_imageview"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/fgmt_info_content_app_version_textview"
+            android:layout_marginStart="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="20dp"/>
 
     <TextView
             android:id="@+id/fgmt_info_content_app_copyright_textview"

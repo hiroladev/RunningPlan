@@ -920,13 +920,21 @@ public class TrainingFragment extends Fragment
         if (isTrainingRunning) {
             double averageSpeed = 0.0d;
             if (distance > 0.0) {
+                // duration from unit in minutes
                 long duration = runningUnit.getDuration() * 60 - unitTimeToRun;
                 trainingTime += duration;
                 averageSpeed = distance / trainingTime;
             }
             StringBuilder builder = new StringBuilder(getString(R.string.training_is_running));
             builder.append("\n");
-            builder.append(String.format(Locale.getDefault(), "%,.2f%s%,.2f%s", averageSpeed * 3.6," km/h, ", distance, " m"));
+            if (distance < 999) {
+                builder.append(String.format(Locale.getDefault(), "%,.2f%s%,.2f%s", averageSpeed * 3.6," km/h, ", distance, " m"));
+            } else {
+                // value in km
+                distance = distance / 1000;
+                builder.append(String.format(Locale.getDefault(), "%,.2f%s%,.2f%s", averageSpeed * 3.6," km/h, ", distance, " km"));
+            }
+
             trainingInfolabel.setText(builder);
         }
     }
@@ -988,7 +996,7 @@ public class TrainingFragment extends Fragment
 
     @SuppressLint("DefaultLocale")
     private void showLastTraining() {
-        if (trackId != null) {
+        if (trackId != null && isTrainingServiceConnected) {
             // get the recorded data
             Track recordedTrack = trainingServiceConnection.getRecordedTrack(trackId);
             if (recordedTrack != null) {

@@ -100,11 +100,15 @@ public class TrackManager {
                 trackPoint = new TrackPoint(location);
                 trackUpdateTask.trackPoint = trackPoint;
             } else {
-                // update the track in database in a thread
-                trackPoint.setActualLocation(location);
-                trackUpdateTask.trackPoint = trackPoint;
-                trackUpdateTask.task = TrackUpdateTask.UPDATE_TRACK_TASK;
-                databaseOperationsBlockingQueue.add(trackUpdateTask);
+                // validate the location data
+                // during the first few seconds, no valid data was often supplied in the test
+                if (validLocation(trackPoint.getLastLocation(), location)) {
+                    // update the track in database in a thread
+                    trackPoint.setActualLocation(location);
+                    trackUpdateTask.trackPoint = trackPoint;
+                    trackUpdateTask.task = TrackUpdateTask.UPDATE_TRACK_TASK;
+                    databaseOperationsBlockingQueue.add(trackUpdateTask);
+                }
             }
             // add location to database in a thread
             trackUpdateTask.task = TrackUpdateTask.ADD_LOCATION_TASK;
@@ -151,6 +155,44 @@ public class TrackManager {
             }
         }
         return false;
+    }
+
+    // @see https://stackoverflow.com/questions/37485887/how-to-get-accurate-current-location-in-android
+    private boolean validLocation(Location lastLocation, Location actualLocation) {
+        if (actualLocation == null) {
+            return false;
+        }
+
+        // Check whether the new location fix is newer or older
+        long timeDelta = actualLocation.getElapsedRealtimeNanos() - lastLocation.getElapsedRealtimeNanos();
+        boolean isSignificantlyNewer = timeDelta > TrainingService.LOCATION_UPDATE_INTERVAL_IN_MILLI;
+        boolean isSignificantlyOlder = timeDelta < -TrainingService.LOCATION_UPDATE_INTERVAL_IN_MILLI;
+        boolean isNewer = timeDelta > 0;
+
+        // If it's been more than two minutes since the current location, use the new location
+        // because the user has likely moved
+        if (isSignificantlyNewer) {
+            return true;
+            // If the new location is more than two minutes older, it must be worse
+        } else if (isSignificantlyOlder) {
+            return false;
+        }
+
+        // Check whether the new location fix is more or less accurate
+        int accuracyDelta = (int) (actualLocation.getAccuracy() - lastLocation.getAccuracy());
+        boolean isLessAccurate = accuracyDelta > 0;
+        boolean isMoreAccurate = accuracyDelta < 0;
+        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+        // Check if the old and new location are from the same provider
+        boolean isFromSameProvider = actualLocation.getProvider().equals(lastLocation.getProvider());
+
+        // Determine location quality using a combination of timeliness and accuracy
+        if (isMoreAccurate) {
+            return true;
+        } else if (isNewer && !isLessAccurate) {
+            return true;
+        } else return isNewer && !isSignificantlyLessAccurate && isFromSameProvider;
     }
 
     public void end() {

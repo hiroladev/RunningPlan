@@ -45,7 +45,8 @@
         <!-- training service for timer and location -->
         <service
                 android:name=".services.training.TrainingService"
-                android:enabled="true"/>
+                android:enabled="true"
+                android:foregroundServiceType="location"/>
     </application>
 
 </manifest>

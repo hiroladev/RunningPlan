@@ -27,8 +27,9 @@ import org.tinylog.Logger;
  */
 public class TrainingService extends Service implements LocationListener {
 
+    public final static long LOCATION_UPDATE_INTERVAL_IN_MILLI = 2000; // location updates every 2 seconds
+
     private final static long TIME_INTERVAL_IN_MILLI = 1000; // timer interval (tick) in milliseconds
-    private final static long LOCATION_UPDATE_INTERVAL_IN_MILLI = 1000; // location updates every
     private final static long LOCATION_UPDATE_MIN_DISTANCE = 2; // min distance for location updates in m
 
     private Handler handler;
@@ -39,6 +40,7 @@ public class TrainingService extends Service implements LocationListener {
     private TrackManager trackManager;
     private Track.Id trackId = null; // actual recording track
     private LocationManager locationManager; // location manager
+    private int numberOfStabilizationSamples = 2; // ignore the first location updates
     private boolean withLocationTracking = false;
     private boolean gpsAvailable = false; // (gps) tracking available?
     private long trainingDuration = 0L;
@@ -150,8 +152,13 @@ public class TrainingService extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        // insert location to local tracking database
-        trackManager.insertLocationForTrack(trackId, location);
+        // ignore the first location updates
+        if (numberOfStabilizationSamples == 0) {
+            // insert location to local tracking database
+            trackManager.insertLocationForTrack(trackId, location);
+        } else {
+            numberOfStabilizationSamples--;
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -169,19 +176,6 @@ public class TrainingService extends Service implements LocationListener {
         this.withLocationTracking = withLocationTracking;
         if (withLocationTracking) {
             trackId = trackManager.addNewTrack();
-            // try to get the actual position from last known location,
-            // this is the fastest way to get a location fix
-            String provider = LocationManager.NETWORK_PROVIDER;
-            try {
-               Location location = locationManager.getLastKnownLocation(provider);
-                if (location != null) {
-                    trackManager.insertLocationForTrack(trackId, location);
-                }
-            } catch (SecurityException exception) {
-                if (appLogManager.isDebugMode()) {
-                    Logger.debug("Error while getting the last known location.", exception);
-                }
-            }
         }
         this.trainingDuration = duration;
         isTrainingPaused = false;
