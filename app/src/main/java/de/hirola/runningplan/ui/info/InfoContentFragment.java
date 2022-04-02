@@ -52,13 +52,15 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
             TextView devVersionTextView = infoView.findViewById(R.id.fgmt_info_content_app_dev_version_textview);
             devVersionTextView.setText(getText(R.string.developer_version));
         }
+        // TODO: dynamically or global
         // build the menu item map
-        menuItemMap = new HashMap<>(5);
-        menuItemMap.putIfAbsent(0, new MenuItem(R.drawable.baseline_info_black_36, R.string.menu_item_info, new InfoAboutFragment()));
-        menuItemMap.putIfAbsent(1, new MenuItem(R.drawable.baseline_list_black_36, R.string.menu_item_license, new InfoLicenseFragment()));
-        menuItemMap.putIfAbsent(2, new MenuItem(R.drawable.baseline_help_black_36, R.string.menu_item_help, new InfoHelpFragment()));
-        menuItemMap.putIfAbsent(3, new MenuItem(R.drawable.baseline_route_black_24, R.string.menu_item_track, new InfoTracksFragment()));
-        menuItemMap.putIfAbsent(4, new MenuItem(R.drawable.outline_adb_black_36, R.string.menu_item_logs, new InfoLogsFragment()));
+        menuItemMap = new HashMap<>(6);
+        menuItemMap.putIfAbsent(0, new MenuItem(R.drawable.baseline_info_black_36, R.string.about_link, null));
+        menuItemMap.putIfAbsent(1, new MenuItem(R.drawable.baseline_help_black_36, R.string.help_link, null));
+        menuItemMap.putIfAbsent(2, new MenuItem(R.drawable.baseline_help_black_36, R.string.faq_link, null));
+        menuItemMap.putIfAbsent(3, new MenuItem(R.drawable.baseline_list_black_36, R.string.licenses_link, null));
+        menuItemMap.putIfAbsent(4, new MenuItem(R.drawable.baseline_route_black_24, R.string.menu_item_track, new InfoTracksFragment()));
+        menuItemMap.putIfAbsent(5, new MenuItem(R.drawable.outline_adb_black_36, R.string.menu_item_logs, new InfoLogsFragment()));
         InfoMenuItemRecyclerView listAdapter = new InfoMenuItemRecyclerView(requireContext(), menuItemMap);
         // menu fragments on click
         listAdapter.setOnClickListener(this);

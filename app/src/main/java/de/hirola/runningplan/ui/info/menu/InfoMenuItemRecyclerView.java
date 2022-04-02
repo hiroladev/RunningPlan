@@ -1,6 +1,7 @@
 package de.hirola.runningplan.ui.info.menu;
 
 import android.content.Context;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,10 @@ public class InfoMenuItemRecyclerView extends RecyclerView.Adapter<RecyclerView.
                     viewHolder.menuItemImageView.setImageResource(menuItem.getImageResourceId());
                     // menu item text
                     viewHolder.menuItemTextView.setText(menuItem.getTextResourceId());
+                    // if fragment is null, the text view should contain a link
+                    if (menuItem.getContentFragment() == null) {
+                        viewHolder.menuItemTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                    }
                 } catch (Exception exception) {
                     if (appLogManager.isDebugMode()) {
                         Logger.debug(null, exception);

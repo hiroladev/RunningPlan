@@ -159,4 +159,10 @@
     <string name="sending_failed">Sending failed.</string>
     <string name="recorded_track_not_completed">The track could not be completed.</string>
     <string name="developer_version">Developer Version</string>
+    <string name="help_link">
+        <a href="https://github.com/hiroladev/RunningPlan/wiki/Help">Help</a>
+    </string>
+    <string name="licenses_link">
+        <a href="https://github.com/hiroladev/RunningPlan/wiki/Licenses">Licenses / Libraries</a>
+    </string>
 </resources>

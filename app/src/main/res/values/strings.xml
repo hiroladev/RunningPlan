@@ -26,11 +26,14 @@
 
     <!-- Menu -->
     <string name="menu_image_alt_text">Menu</string>
-    <string name="menu_item_info">Info</string>
-    <string name="menu_item_license">Lizenzen / Bibliotheken</string>
-    <string name="menu_item_help">Hilfe</string>
     <string name="menu_item_track">Aufzeichnungen</string>
     <string name="menu_item_logs">Fehlerlogs</string>
+
+    <!-- Links -->
+    <string name="about_link" translatable="false"><a href="https://github.com/hiroladev/RunningPlan">Info</a></string>
+    <string name="licenses_link"><a href="https://github.com/hiroladev/RunningPlan/wiki/Licenses">Lizenzen / Bibliotheken</a></string>
+    <string name="faq_link" translatable="false"><a href="https://github.com/hiroladev/RunningPlan/wiki/FAQ">FAQ</a></string>
+    <string name="help_link"><a href="https://github.com/hiroladev/RunningPlan/wiki/Help">Hilfe</a></string>
 
     <!-- Alerts -->
     <string name="ok" translatable="false">OK</string>
