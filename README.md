@@ -76,7 +76,7 @@ The running plans offered by Mr. Zangl were put into a format required for use i
 The templates can be adapted or you can create your own plans.
 
 
-## What can't the "Laufplan" app do?
+## What can't the "RunningPlan" app do?
 
 The app cannot and should not meet the demands of professional runners. There are no "social media" features such as sharing runs.
 There are enough apps for that. I am also not a running professional and the app accordingly does not offer any professional support or claim to be technically correct.
