@@ -55,12 +55,48 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
         // TODO: dynamically or global
         // build the menu item map
         menuItemMap = new HashMap<>(6);
-        menuItemMap.putIfAbsent(0, new MenuItem(R.drawable.baseline_info_black_36, R.string.about_link, null));
-        menuItemMap.putIfAbsent(1, new MenuItem(R.drawable.baseline_help_black_36, R.string.help_link, null));
-        menuItemMap.putIfAbsent(2, new MenuItem(R.drawable.baseline_help_black_36, R.string.faq_link, null));
-        menuItemMap.putIfAbsent(3, new MenuItem(R.drawable.baseline_list_black_36, R.string.licenses_link, null));
-        menuItemMap.putIfAbsent(4, new MenuItem(R.drawable.baseline_route_black_24, R.string.menu_item_track, new InfoTracksFragment()));
-        menuItemMap.putIfAbsent(5, new MenuItem(R.drawable.outline_adb_black_36, R.string.menu_item_logs, new InfoLogsFragment()));
+        menuItemMap.putIfAbsent(0,
+                new MenuItem(requireContext(),
+                        R.drawable.baseline_info_black_36,
+                        R.string.about_link,
+                        "https://github.com/hiroladev/RunningPlan" ,
+                        null));
+        menuItemMap.putIfAbsent(1,
+                new MenuItem(requireContext(),
+                        R.drawable.baseline_help_black_36,
+                        R.string.help_link,
+                        "https://github.com/hiroladev/RunningPlan/wiki/Help",
+                        null));
+        menuItemMap.putIfAbsent(2,
+                new MenuItem(requireContext(),
+                        R.drawable.baseline_quiz_black_36,
+                        R.string.faq_link,
+                        "https://github.com/hiroladev/RunningPlan/wiki/FAQ",
+                        null));
+        menuItemMap.putIfAbsent(3,
+                new MenuItem(requireContext(),
+                        R.drawable.baseline_list_black_36,
+                        R.string.licenses_link,
+                        "https://github.com/hiroladev/RunningPlan/wiki/Licenses",
+                        null));
+        menuItemMap.putIfAbsent(4,
+                new MenuItem(requireContext(),
+                        R.drawable.baseline_bug_report_black_36,
+                        R.string.issues_link,
+                        "https://github.com/hiroladev/RunningPlan/issues",
+                        null));
+        menuItemMap.putIfAbsent(5,
+                new MenuItem(requireContext(),
+                        R.drawable.baseline_route_black_36,
+                        R.string.menu_item_track,
+                        null,
+                        new InfoTracksFragment()));
+        menuItemMap.putIfAbsent(6,
+                new MenuItem(requireContext(),
+                        R.drawable.outline_adb_black_36,
+                        R.string.menu_item_logs,
+                        null,
+                        new InfoLogsFragment()));
         InfoMenuItemRecyclerView listAdapter = new InfoMenuItemRecyclerView(requireContext(), menuItemMap);
         // menu fragments on click
         listAdapter.setOnClickListener(this);
@@ -105,4 +141,5 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
 }

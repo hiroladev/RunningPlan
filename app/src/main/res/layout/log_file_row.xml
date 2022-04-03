@@ -10,7 +10,7 @@ This software us licensed under the AGPL-3.0 or later.
         android:layout_height="wrap_content">
 
     <ImageView
-            android:id="@+id/running_entry_simple_row_imageview"
+            android:id="@+id/log_file_row_imageview"
             app:srcCompat="@drawable/unused20x20"
             android:contentDescription="@string/state"
             android:layout_width="24dp"
@@ -22,7 +22,7 @@ This software us licensed under the AGPL-3.0 or later.
             android:layout_marginStart="10dp"/>
 
     <TextView
-            android:id="@+id/running_entry_simple_row_name_label"
+            android:id="@+id/log_file_row_date_label"
             android:layout_width="0dp"
             android:layout_height="24dp"
             android:ems="10"
@@ -32,21 +32,10 @@ This software us licensed under the AGPL-3.0 or later.
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="10dp"
-            app:layout_constraintStart_toEndOf="@+id/running_entry_simple_row_imageview"
+            app:layout_constraintStart_toEndOf="@+id/log_file_row_imageview"
             android:layout_marginStart="5dp"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="15dp"
             app:layout_constraintHorizontal_bias="1.0"/>
-
-    <TextView
-            android:id="@+id/running_entry_row_duration_textview"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintEnd_toEndOf="@+id/running_entry_simple_row_name_label"
-            app:layout_constraintStart_toStartOf="@+id/running_entry_simple_row_imageview"
-            app:layout_constraintTop_toBottomOf="@+id/running_entry_simple_row_name_label"
-            android:layout_marginTop="5dp"
-            app:layout_constraintHorizontal_bias="0.0"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

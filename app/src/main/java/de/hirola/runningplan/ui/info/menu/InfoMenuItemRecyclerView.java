@@ -24,11 +24,13 @@ import java.util.*;
  */
 public class InfoMenuItemRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final Context context;
     private final AppLogManager appLogManager;
     private View.OnClickListener onClickListener;
     private final Map<Integer, MenuItem> menuItemMap;
 
-    public InfoMenuItemRecyclerView(Context context, @NonNull Map<Integer, MenuItem> menuItemMap) {
+    public InfoMenuItemRecyclerView(@NonNull Context context, @NonNull Map<Integer, MenuItem> menuItemMap) {
+        this.context = context;
         this.menuItemMap = menuItemMap;
         appLogManager = AppLogManager.getInstance(context);
     }
@@ -53,14 +55,17 @@ public class InfoMenuItemRecyclerView extends RecyclerView.Adapter<RecyclerView.
                     // load menu image resource
                     viewHolder.menuItemImageView.setImageResource(menuItem.getImageResourceId());
                     // menu item text
-                    viewHolder.menuItemTextView.setText(menuItem.getTextResourceId());
                     // if fragment is null, the text view should contain a link
-                    if (menuItem.getContentFragment() == null) {
+                    if (menuItem.getContentFragment() != null) {
+                        viewHolder.menuItemTextView.setText(menuItem.getMenuItemText());
+                    } else {
+                        viewHolder.menuItemTextView.setClickable(true);
+                        viewHolder.menuItemTextView.setText(menuItem.getMenuItemLinkText());
                         viewHolder.menuItemTextView.setMovementMethod(LinkMovementMethod.getInstance());
                     }
                 } catch (Exception exception) {
                     if (appLogManager.isDebugMode()) {
-                        Logger.debug(null, exception);
+                        Logger.debug(exception);
                     }
                 }
             }

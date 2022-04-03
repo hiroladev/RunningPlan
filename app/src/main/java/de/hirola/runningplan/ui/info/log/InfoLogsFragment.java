@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
+import de.hirola.runningplan.ui.info.menu.InfoMenuItemRecyclerView;
 import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.runningplan.util.ModalOptionDialog;
 
@@ -24,7 +27,7 @@ import de.hirola.runningplan.util.ModalOptionDialog;
 public class InfoLogsFragment extends Fragment implements View.OnClickListener {
 
     private AppLogManager appLogManager;
-    private TextView logContentTextView;
+    private RecyclerView recyclerView; // recycler view list adapter
     private Button sendLogButton;
 
     @Override
@@ -38,19 +41,25 @@ public class InfoLogsFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View infoLogView = inflater.inflate(R.layout.fragment_info_log, container, false);
+        // send debug logs
         sendLogButton = infoLogView.findViewById(R.id.fgmt_info_log_send_button);
         sendLogButton.setOnClickListener(this);
+        //TODO: button on debug and if list not empty
         sendLogButton.setEnabled(false);
-        logContentTextView = infoLogView.findViewById(R.id.fgmt_info_log_content_textview);
-        logContentTextView.setMovementMethod(new ScrollingMovementMethod());
-        loadLogContent();
+        // show log files
+        AppLogManager appLogManager = AppLogManager.getInstance(requireContext());
+        InfoLogsFileRecyclerView listAdapter = new InfoLogsFileRecyclerView(requireContext(),
+                appLogManager.getLogContent());
+        listAdapter.setOnClickListener(this); // view log file content on click
+        recyclerView = infoLogView.findViewById(R.id.fgmt_info_log_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setAdapter(listAdapter);
         return infoLogView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        loadLogContent();
     }
 
     @Override
@@ -74,11 +83,4 @@ public class InfoLogsFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void loadLogContent() {
-        String logContentString = appLogManager.getLogContent();
-        logContentTextView.setText(logContentString);
-        if (!logContentString.isEmpty() && appLogManager.canSendDebugLog()) {
-            sendLogButton.setEnabled(true);
-        }
-    }
 }

@@ -528,7 +528,6 @@ public class TrainingFragment extends Fragment
         }
     }
 
-    // paused the training
     private void pauseTraining() {
         if (isTrainingServiceConnected) {
             if (isTrainingRunning) {
@@ -543,7 +542,6 @@ public class TrainingFragment extends Fragment
         }
     }
 
-    //  Trainingsabbruch
     private void cancelTraining() {
         if (isTrainingServiceConnected) {
             if (isTrainingRunning) {
@@ -575,7 +573,6 @@ public class TrainingFragment extends Fragment
         }
     }
 
-    //  Training "überwachen"
     private void monitoringTraining() {
         if (isTrainingServiceConnected) {
             if (unitTimeToRun == 0) {

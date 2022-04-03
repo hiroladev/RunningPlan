@@ -1,5 +1,13 @@
 package de.hirola.runningplan.ui.info.menu;
 
+import android.content.Context;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.style.URLSpan;
+import android.text.style.UnderlineSpan;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -17,14 +25,18 @@ import androidx.fragment.app.Fragment;
  */
 public class MenuItem {
 
+    private final Context context;
     private final int imageResourceId;
     private final int textResourceId;
+    private final String urlString;
     private final Fragment contentFragment;
 
-
-    public MenuItem(int imageResourceId, int textResourceId, @Nullable Fragment contentFragment) {
+    public MenuItem(@NonNull Context context, int imageResourceId, int textResourceId,
+                    @Nullable String urlString, @Nullable Fragment contentFragment) {
+        this.context = context;
         this.imageResourceId = imageResourceId;
         this.textResourceId = textResourceId;
+        this.urlString = urlString;
         this.contentFragment = contentFragment;
     }
 
@@ -32,8 +44,31 @@ public class MenuItem {
         return imageResourceId;
     }
 
-    public int getTextResourceId() {
-        return textResourceId;
+    public String getMenuItemText() {
+        return context.getString(textResourceId);
+    }
+
+    /**
+     * Get a menu item text with a link and without underline.
+     *
+     * @return A text for the menu item with a link
+     */
+    public Spannable getMenuItemLinkText() {
+        // build the menu item text with given url
+        String menuItemText = "<a href=\"" +
+                urlString +
+                "\">" +
+                context.getString(textResourceId) +
+                "</a>";
+        Spannable spannableString = (Spannable) Html.fromHtml(menuItemText, Html.FROM_HTML_MODE_LEGACY);
+        for (URLSpan u: spannableString.getSpans(0, spannableString.length(), URLSpan.class)) {
+            spannableString.setSpan(new UnderlineSpan() {
+                public void updateDrawState(TextPaint textPaint) {
+                    textPaint.setUnderlineText(false);
+                }
+            }, spannableString.getSpanStart(u), spannableString.getSpanEnd(u), 0);
+        }
+        return spannableString;
     }
 
     @Nullable

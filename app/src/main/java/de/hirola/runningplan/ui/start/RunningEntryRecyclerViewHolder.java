@@ -26,7 +26,7 @@ public class RunningEntryRecyclerViewHolder extends RecyclerView.ViewHolder {
     public RunningEntryRecyclerViewHolder(@NonNull @NotNull View itemView) {
         super(itemView);
         statusImageView = itemView.findViewById(R.id.running_entry_simple_row_imageview);
-        dateTextView = itemView.findViewById(R.id.track_row_name_label);
+        dateTextView = itemView.findViewById(R.id.running_entry_simple_row_name_label);
         unitsTextView = itemView.findViewById(R.id.running_entry_row_duration_textview);
     }
 }

@@ -7,6 +7,8 @@ import de.hirola.runningplan.R;
 import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.util.LogManager;
 
+import java.util.List;
+
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
  * This software us licensed under the AGPL-3.0 or later.
@@ -52,7 +54,7 @@ public class AppLogManager {
         return canSendDebugLog;
     }
 
-    public String getLogContent() {
+    public List<LogManager.LogContent> getLogContent() {
         return logManager.getLogContent();
     }
 
