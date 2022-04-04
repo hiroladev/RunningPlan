@@ -1,19 +1,18 @@
 package de.hirola.runningplan.ui.info.log;
 
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.ui.info.menu.InfoMenuItemRecyclerView;
 import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.runningplan.util.ModalOptionDialog;
+import de.hirola.sportslibrary.util.LogManager;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -27,8 +26,7 @@ import de.hirola.runningplan.util.ModalOptionDialog;
 public class InfoLogsFragment extends Fragment implements View.OnClickListener {
 
     private AppLogManager appLogManager;
-    private RecyclerView recyclerView; // recycler view list adapter
-    private Button sendLogButton;
+    private InfoLogsFileRecyclerView listAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,45 +39,52 @@ public class InfoLogsFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View infoLogView = inflater.inflate(R.layout.fragment_info_log, container, false);
-        // send debug logs
-        sendLogButton = infoLogView.findViewById(R.id.fgmt_info_log_send_button);
-        sendLogButton.setOnClickListener(this);
-        //TODO: button on debug and if list not empty
-        sendLogButton.setEnabled(false);
-        // show log files
+        // show list of all log files
         AppLogManager appLogManager = AppLogManager.getInstance(requireContext());
-        InfoLogsFileRecyclerView listAdapter = new InfoLogsFileRecyclerView(requireContext(),
-                appLogManager.getLogContent());
+        listAdapter = new InfoLogsFileRecyclerView(requireContext(), appLogManager.getLogContent());
         listAdapter.setOnClickListener(this); // view log file content on click
-        recyclerView = infoLogView.findViewById(R.id.fgmt_info_log_recyclerview);
+        // recycler view list adapter
+        RecyclerView recyclerView = infoLogView.findViewById(R.id.fgmt_info_log_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(listAdapter);
         return infoLogView;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v instanceof Button) {
-            ModalOptionDialog.showYesNoDialog(
-                    requireContext(),
-                    getString(R.string.question), getString(R.string.ask_before_send_log),
-                    getString(R.string.ok), getString(R.string.cancel),
-                    button -> {
-                        if (button == ModalOptionDialog.Button.OK) {
-                            if (!appLogManager.sendDebugLog()) {
-                                ModalOptionDialog.showMessageDialog(
-                                        ModalOptionDialog.DialogStyle.WARNING,
-                                        requireContext(),null,
-                                        getString(R.string.sending_failed),
-                                        null);
+    public void onClick(View view) {
+        if (view instanceof Button) {
+            // view the content of the selected log file
+            if (view.getId() == R.id.log_file_row_button) {
+                // get the selected log content
+                LogManager.LogContent logContent = listAdapter.getSelectedLogContent();
+                // open in new fragment
+                InfoLogContentFragment infoLogContentFragment = new InfoLogContentFragment(logContent);
+                // hide this fragment
+                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+                fragmentTransaction.hide(this);
+                // starts the fragment
+                fragmentTransaction.replace(R.id.fragment_info_container, infoLogContentFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+            // send the log file
+            if (view.getId() == R.id.fgmt_info_log_content_send_button) {
+                ModalOptionDialog.showYesNoDialog(
+                        requireContext(),
+                        getString(R.string.question), getString(R.string.ask_before_send_log),
+                        getString(R.string.ok), getString(R.string.cancel),
+                        button -> {
+                            if (button == ModalOptionDialog.Button.OK) {
+                                if (!appLogManager.sendDebugLog()) {
+                                    ModalOptionDialog.showMessageDialog(
+                                            ModalOptionDialog.DialogStyle.WARNING,
+                                            requireContext(), null,
+                                            getString(R.string.sending_failed),
+                                            null);
+                                }
                             }
-                        }
-                    });
+                        });
+            }
         }
     }
 

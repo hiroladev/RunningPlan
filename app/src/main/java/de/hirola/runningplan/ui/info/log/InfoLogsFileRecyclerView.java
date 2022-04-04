@@ -6,19 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
-import de.hirola.sportslibrary.model.Track;
 import de.hirola.sportslibrary.util.LogManager;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -32,10 +27,12 @@ import java.util.Map;
 public class InfoLogsFileRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private View.OnClickListener onClickListener;
-    List<LogManager.LogContent> logContentList;
+    final List<LogManager.LogContent> logContentList;
+    LogManager.LogContent selectedLogContent;
 
     public InfoLogsFileRecyclerView(Context context, @NonNull List<LogManager.LogContent> logContentList) {
         this.logContentList = logContentList;
+        selectedLogContent = null;
     }
 
     @NonNull
@@ -50,8 +47,15 @@ public class InfoLogsFileRecyclerView extends RecyclerView.Adapter<RecyclerView.
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof InfoLogsRecyclerViewHolder) {
-            InfoLogsRecyclerViewHolder viewHolder = (InfoLogsRecyclerViewHolder) holder;
-            viewHolder.dateTextView.setText(String.valueOf(logContentList.get(position).creationDate));
+            if (logContentList.size() > position) {
+                selectedLogContent = logContentList.get(position);
+                InfoLogsRecyclerViewHolder viewHolder = (InfoLogsRecyclerViewHolder) holder;
+                // view the date of log file
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);
+                viewHolder.dateTextView.setText(dateTimeFormatter.format(selectedLogContent.creationDate));
+                // add click listener to viewing details
+                viewHolder.detailsButton.setOnClickListener(onClickListener);
+            }
         }
     }
 
@@ -64,7 +68,8 @@ public class InfoLogsFileRecyclerView extends RecyclerView.Adapter<RecyclerView.
         this.onClickListener = onClickListener;
     }
 
-    /*public void submitList(@NonNull List<Track> tracks) {
-        this.tracks = tracks;
-    }*/
+    @Nullable
+    public LogManager.LogContent getSelectedLogContent() {
+        return selectedLogContent;
+    }
 }

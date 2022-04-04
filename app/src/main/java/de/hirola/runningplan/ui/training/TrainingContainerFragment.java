@@ -26,8 +26,8 @@ public class TrainingContainerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            TrainingFragment trainingContentFragment1 = new TrainingFragment();
-            getChildFragmentManager().beginTransaction().add(R.id.fragment_training_container, trainingContentFragment1).commit();
+            TrainingFragment trainingContentFragment = new TrainingFragment();
+            getChildFragmentManager().beginTransaction().add(R.id.fragment_training_container, trainingContentFragment).commit();
         }
     }
 
