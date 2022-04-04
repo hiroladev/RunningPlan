@@ -84,6 +84,7 @@
     <string name="stop">Stopp</string>
     <string name="save">Speichern</string>
     <string name="reset">Zurücksetzen</string>
+    <string name="details" translatable="false">Details</string>
     <string name="import_running_plan">Importieren</string>
     <string name="select_import_file">Importdatei auswählen</string>
     <string name="loading_file_succeed">Einlesen der Datei erfolgreich</string>
