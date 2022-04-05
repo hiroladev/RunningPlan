@@ -17,7 +17,7 @@ import de.hirola.sportslibrary.util.LogManager;
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
  * This software us licensed under the AGPL-3.0 or later.
  *
- * Fragment to view the content of a log file.
+ * Fragment to show the content of a log file.
  *
  * @author Michael Schmidt (Hirola)
  * @since 1.1.1
@@ -40,7 +40,7 @@ public class InfoLogContentFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View logContentView = inflater.inflate(R.layout.fragment_info_log_content, container, false);
-        // view the log file content
+        // show the log file content
         TextView logContentTextView = logContentView.findViewById(R.id.fgmt_info_log_content_textview);
         // enable button only if sending allowed
         Button sendDebugLogButton = logContentView.findViewById(R.id.fgmt_info_log_content_send_button);

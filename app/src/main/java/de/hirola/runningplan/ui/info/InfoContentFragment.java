@@ -54,7 +54,7 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
         }
         // TODO: dynamically or global
         // build the menu item map
-        menuItemMap = new HashMap<>(6);
+        menuItemMap = new HashMap<>();
         menuItemMap.putIfAbsent(0,
                 new MenuItem(requireContext(),
                         R.drawable.baseline_info_black_36,
@@ -91,12 +91,15 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
                         R.string.menu_item_track,
                         null,
                         new InfoTracksFragment()));
-        menuItemMap.putIfAbsent(6,
-                new MenuItem(requireContext(),
-                        R.drawable.outline_adb_black_36,
-                        R.string.menu_item_logs,
-                        null,
-                        new InfoLogsFragment()));
+        // show only if debug mode enabled
+        if (appLogManager.isDebugMode()) {
+            menuItemMap.putIfAbsent(6,
+                    new MenuItem(requireContext(),
+                            R.drawable.outline_adb_black_36,
+                            R.string.menu_item_logs,
+                            null,
+                            new InfoLogsFragment()));
+        }
         InfoMenuItemRecyclerView listAdapter = new InfoMenuItemRecyclerView(requireContext(), menuItemMap);
         // menu fragments on click
         listAdapter.setOnClickListener(this);
