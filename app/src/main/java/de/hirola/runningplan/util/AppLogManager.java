@@ -18,11 +18,12 @@ import java.util.List;
  * @author Michael Schmidt (Hirola)
  * @since 0.1
  */
-public class AppLogManager {
+public class AppLogManager implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static AppLogManager instance = null;
     private final LogManager logManager;
-    private final boolean canSendDebugLog;
+    private boolean isDebugMode;
+    private boolean canSendDebugLog;
     private final boolean isDeveloperVersion;
 
     public static AppLogManager getInstance(@NonNull Context context) {
@@ -47,7 +48,7 @@ public class AppLogManager {
     }
 
     public boolean isDebugMode() {
-        return logManager.isDebugMode();
+        return logManager.isDebugMode() && isDebugMode;
     }
 
     public boolean canSendDebugLog() {
@@ -62,13 +63,21 @@ public class AppLogManager {
         return isDeveloperVersion;
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        // has debug mode changed?
+        isDebugMode = sharedPreferences.getBoolean(Global.PreferencesKeys.debugMode, false);
+        canSendDebugLog = sharedPreferences.getBoolean(Global.PreferencesKeys.sendDebugLog, false);
+    }
+
     private AppLogManager(Context context) {
         // initialize the attributes
         SharedPreferences sharedPreferences =
                 context.getSharedPreferences(context.getString(R.string.preference_file), Context.MODE_PRIVATE);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this); // listen for debug mode changes
         canSendDebugLog = sharedPreferences.getBoolean(Global.PreferencesKeys.sendDebugLog, false);
         isDeveloperVersion = context.getString(R.string.isDeveloperVersion).equals("TRUE");
-        logManager = LogManager.getInstance(context.getPackageName(),
-                sharedPreferences.getBoolean(Global.PreferencesKeys.debugMode, false));
+        isDebugMode = sharedPreferences.getBoolean(Global.PreferencesKeys.debugMode, false);
+        logManager = LogManager.getInstance(context.getPackageName(), isDebugMode);
     }
 }
