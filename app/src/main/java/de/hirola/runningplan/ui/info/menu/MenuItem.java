@@ -3,7 +3,6 @@ package de.hirola.runningplan.ui.info.menu;
 import android.content.Context;
 import android.text.Html;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;

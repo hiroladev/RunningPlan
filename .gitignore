@@ -86,3 +86,4 @@ lint/tmp/
 /.idea/
 /libs/
 /app/lib/
+/target/maven-status/maven-compiler-plugin/compile/default-cli/inputFiles.lst

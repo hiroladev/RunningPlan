@@ -24,13 +24,11 @@ import java.util.*;
  */
 public class InfoMenuItemRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final Context context;
     private final AppLogManager appLogManager;
     private View.OnClickListener onClickListener;
     private final Map<Integer, MenuItem> menuItemMap;
 
     public InfoMenuItemRecyclerView(@NonNull Context context, @NonNull Map<Integer, MenuItem> menuItemMap) {
-        this.context = context;
         this.menuItemMap = menuItemMap;
         appLogManager = AppLogManager.getInstance(context);
     }
