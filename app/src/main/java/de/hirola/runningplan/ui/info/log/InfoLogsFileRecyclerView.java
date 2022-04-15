@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
-import de.hirola.sportslibrary.util.LogManager;
+import de.hirola.sportslibrary.util.LogContent;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -27,10 +27,10 @@ import java.util.List;
 public class InfoLogsFileRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private View.OnClickListener onClickListener;
-    final List<LogManager.LogContent> logContentList;
-    LogManager.LogContent selectedLogContent;
+    final List<LogContent> logContentList;
+    LogContent selectedLogContent;
 
-    public InfoLogsFileRecyclerView(Context context, @NonNull List<LogManager.LogContent> logContentList) {
+    public InfoLogsFileRecyclerView(Context context, @NonNull List<LogContent> logContentList) {
         this.logContentList = logContentList;
         selectedLogContent = null;
     }
@@ -69,7 +69,7 @@ public class InfoLogsFileRecyclerView extends RecyclerView.Adapter<RecyclerView.
     }
 
     @Nullable
-    public LogManager.LogContent getSelectedLogContent() {
+    public LogContent getSelectedLogContent() {
         return selectedLogContent;
     }
 }

@@ -3,19 +3,13 @@ package de.hirola.runningplan.model;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.RunningPlanApplication;
-
-import de.hirola.runningplan.util.AppLogManager;
-import de.hirola.sportslibrary.database.DataRepository;
 import de.hirola.sportslibrary.database.DatastoreDelegate;
 import de.hirola.sportslibrary.database.PersistentObject;
 import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.SportsLibraryException;
 import de.hirola.sportslibrary.model.*;
 import android.app.Application;
-import org.tinylog.Logger;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,18 +25,14 @@ import java.util.List;
  */
 public class RunningPlanViewModel {
 
-    private final AppLogManager appLogManager;
     private final SportsLibrary sportsLibrary;
-    private final DataRepository dataRepository; // the datastore layer
 
     public RunningPlanViewModel(@NonNull Application application, @Nullable DatastoreDelegate delegate)  {
         // initialize attributes
-        appLogManager = AppLogManager.getInstance(application.getApplicationContext());
         sportsLibrary = ((RunningPlanApplication) application).getSportsLibrary();
         if (delegate != null) {
             sportsLibrary.addDelegate(delegate);
         }
-        dataRepository = sportsLibrary.getDataRepository();
     }
 
     @NonNull
@@ -52,7 +42,7 @@ public class RunningPlanViewModel {
 
     @Nullable
     public RunningPlan getRunningPlanByUUID(@NonNull UUID uuid) {
-        return (RunningPlan) dataRepository.findByUUID(RunningPlan.class, uuid);
+        return (RunningPlan) sportsLibrary.findByUUID(RunningPlan.class, uuid);
     }
 
     /**
@@ -62,26 +52,7 @@ public class RunningPlanViewModel {
      * @return A list of running plans, sorted by order number.
      */
     public List<RunningPlan> getRunningPlans() {
-        List<RunningPlan> runningPlans = new ArrayList<>();
-        List<? extends PersistentObject> persistentObjects = dataRepository.findAll(RunningPlan.class);
-        if (persistentObjects.isEmpty()) {
-            return runningPlans; // return an empty list
-        }
-        for (PersistentObject object : persistentObjects) {
-            try {
-                runningPlans.add((RunningPlan) object);
-            } catch (ClassCastException exception) {
-                // we do not add this to the list and make a  debug entry
-                String errorMessage = "List of running plans contains an object from type "
-                        + object.getClass().getSimpleName();
-                if (appLogManager.isDebugMode()) {
-                    Logger.debug(errorMessage, exception);
-                }
-            }
-        }
-        // sort the plans
-        Collections.sort(runningPlans);
-        return runningPlans;
+        return sportsLibrary.getRunningPlans();
     }
 
     /**
@@ -91,26 +62,7 @@ public class RunningPlanViewModel {
      * @return A list of trainings, sorted by training date.
      */
     public List<Training> getTrainings() {
-        List<Training> trainings = new ArrayList<>();
-        List<? extends PersistentObject> persistentObjects = dataRepository.findAll(Training.class);
-        if (persistentObjects.isEmpty()) {
-            return trainings; // return an empty list
-        }
-        for (PersistentObject object : persistentObjects) {
-            try {
-                trainings.add((Training) object);
-            } catch (ClassCastException exception) {
-                // we do not add this to the list and make a  debug entry
-                String errorMessage = "List of trainings contains an object from type "
-                        + object.getClass().getSimpleName();
-                if (appLogManager.isDebugMode()) {
-                    Logger.debug(errorMessage, exception);
-                }
-            }
-        }
-        // sort the training by date
-        Collections.sort(trainings);
-        return trainings;
+        return sportsLibrary.getTrainings();
     }
 
     /**
@@ -121,11 +73,11 @@ public class RunningPlanViewModel {
      */
     public boolean addObject(PersistentObject persistentObject)  {
         try {
-            dataRepository.add(persistentObject);
+            sportsLibrary.add(persistentObject);
             return true;
         } catch (SportsLibraryException exception) {
-            if (appLogManager.isDebugMode()) {
-                Logger.debug("Adding an object failed.", exception);
+            if (sportsLibrary.isDebugMode()) {
+                sportsLibrary.debug("Adding an object failed.", exception);
             }
         }
         return false;
@@ -139,11 +91,11 @@ public class RunningPlanViewModel {
      */
     public boolean updateObject(PersistentObject persistentObject) {
         try {
-            dataRepository.update(persistentObject);
+            sportsLibrary.update(persistentObject);
             return true;
         } catch (SportsLibraryException exception) {
-            if (appLogManager.isDebugMode()) {
-                Logger.debug("Updating an object failed.", exception);
+            if (sportsLibrary.isDebugMode()) {
+                sportsLibrary.debug("Updating an object failed.", exception);
             }
         }
         return false;
@@ -157,11 +109,11 @@ public class RunningPlanViewModel {
      */
     public boolean deleteObject(PersistentObject persistentObject) {
         try {
-            dataRepository.delete(persistentObject);
+            sportsLibrary.delete(persistentObject);
             return true;
         } catch (SportsLibraryException exception) {
-            if (appLogManager.isDebugMode()) {
-                Logger.debug("Deleting an object failed.", exception);
+            if (sportsLibrary.isDebugMode()) {
+                sportsLibrary.debug("Deleting an object failed.", exception);
             }
         }
         return false;

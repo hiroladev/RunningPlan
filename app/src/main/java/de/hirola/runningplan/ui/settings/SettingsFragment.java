@@ -8,9 +8,10 @@ import android.text.InputType;
 import android.widget.EditText;
 import androidx.preference.*;
 import de.hirola.runningplan.R;
+import de.hirola.runningplan.RunningPlanApplication;
 import de.hirola.runningplan.model.RunningPlanViewModel;
-import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
+import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.model.User;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ import java.util.Map;
 public class SettingsFragment extends PreferenceFragmentCompat
         implements Preference.OnPreferenceChangeListener, EditTextPreference.OnBindEditTextListener {
 
-    private AppLogManager appLogManager;
+    private SportsLibrary sportsLibrary;
     private RunningPlanViewModel viewModel;
     private User appUser;
     private SharedPreferences sharedPreferences;
@@ -42,7 +43,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // app logger
-        appLogManager = AppLogManager.getInstance(requireContext());
+        sportsLibrary = ((RunningPlanApplication) requireActivity().getApplication()).getSportsLibrary();
         // set the preference ui elements
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         // get the view model for data handling
@@ -119,7 +120,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 try {
                     Integer.parseInt(maxPulse);
                 } catch (NumberFormatException exception) {
-                    if (appLogManager.isDebugMode()) {
+                    if (sportsLibrary.isDebugMode()) {
                         Logger.debug(exception);
                     }
                     return false;
@@ -154,7 +155,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 "",
                                 getString(R.string.preferences_not_set),
                                 getString(R.string.ok));
-                        if (appLogManager.isDebugMode()) {
+                        if (sportsLibrary.isDebugMode()) {
                             exception.printStackTrace();
                         }
                         return false;
@@ -173,7 +174,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 getString(R.string.warning),
                                 getString(R.string.preferences_not_set),
                                 getString(R.string.ok));
-                        if (appLogManager.isDebugMode()) {
+                        if (sportsLibrary.isDebugMode()) {
                             exception.printStackTrace();
                         }
                         return false;
@@ -200,7 +201,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 getString(R.string.warning),
                                 getString(R.string.preferences_not_set),
                                 getString(R.string.ok));
-                        if (appLogManager.isDebugMode()) {
+                        if (sportsLibrary.isDebugMode()) {
                             System.out.println(exception.getMessage());
                         }
                         return false;
@@ -217,7 +218,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     getString(R.string.error),
                     getString(R.string.save_data_error),
                     getString(R.string.ok));
-            if (appLogManager.isDebugMode()) {
+            if (sportsLibrary.isDebugMode()) {
                 Logger.debug("Error while saving settings.");
             }
             return false;
@@ -258,7 +259,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                 .setChecked(sharedPreferences.getBoolean(key, false));
                     } catch (ClassCastException exception) {
                         ((SwitchPreferenceCompat) preference).setChecked(false);
-                        if (appLogManager.isDebugMode()) {
+                        if (sportsLibrary.isDebugMode()) {
                             Logger.debug(null, exception);
                         }
                     }
@@ -282,7 +283,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                     entry = requireContext().getString(resourceStringId);
                                 } catch (Resources.NotFoundException exception) {
                                     entry = getString(R.string.preference_not_found);
-                                    if (appLogManager.isDebugMode()) {
+                                    if (sportsLibrary.isDebugMode()) {
                                         Logger.debug(null, exception);
                                     }
                                 }
@@ -318,7 +319,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                                     entry = requireContext().getString(resourceStringId);
                                 } catch (Resources.NotFoundException exception) {
                                     entry = getString(R.string.preference_not_found);
-                                    if (appLogManager.isDebugMode()) {
+                                    if (sportsLibrary.isDebugMode()) {
                                         Logger.debug(null, exception);
                                     }
                                 }
@@ -365,7 +366,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                         }
                     } catch (ClassCastException exception) {
                         ((EditTextPreference) preference).setText("");
-                        if (appLogManager.isDebugMode()) {
+                        if (sportsLibrary.isDebugMode()) {
                             Logger.debug(null, exception);
                         }
                     }
@@ -428,7 +429,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     getString(R.string.error),
                     getString(R.string.save_data_error),
                     getString(R.string.ok));
-            if (appLogManager.isDebugMode()) {
+            if (sportsLibrary.isDebugMode()) {
                 Logger.debug("Error while saving user data.");
             }
         }

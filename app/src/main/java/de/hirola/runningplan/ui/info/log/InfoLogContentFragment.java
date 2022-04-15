@@ -1,5 +1,7 @@
 package de.hirola.runningplan.ui.info.log;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
@@ -10,8 +12,8 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import de.hirola.runningplan.R;
 
-import de.hirola.runningplan.util.AppLogManager;
-import de.hirola.sportslibrary.util.LogManager;
+import de.hirola.sportslibrary.Global;
+import de.hirola.sportslibrary.util.LogContent;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -24,9 +26,9 @@ import de.hirola.sportslibrary.util.LogManager;
  */
 public class InfoLogContentFragment extends Fragment {
 
-    private final LogManager.LogContent logContent;
+    private final LogContent logContent;
 
-    public InfoLogContentFragment(LogManager.LogContent logContent) {
+    public InfoLogContentFragment(LogContent logContent) {
         this.logContent = logContent;
     }
 
@@ -44,8 +46,10 @@ public class InfoLogContentFragment extends Fragment {
         TextView logContentTextView = logContentView.findViewById(R.id.fgmt_info_log_content_textview);
         // enable button only if sending allowed
         Button sendDebugLogButton = logContentView.findViewById(R.id.fgmt_info_log_content_send_button);
-        AppLogManager appLogManager = AppLogManager.getInstance(requireContext());
-        sendDebugLogButton.setEnabled(appLogManager.canSendDebugLog());
+        SharedPreferences sharedPreferences =
+                requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
+        sendDebugLogButton.setEnabled(sharedPreferences
+                .getBoolean(Global.PreferencesKeys.sendDebugLog, false));
         logContentTextView.setText(logContent.contentString);
         logContentTextView.setMovementMethod(new ScrollingMovementMethod());
         return logContentView;

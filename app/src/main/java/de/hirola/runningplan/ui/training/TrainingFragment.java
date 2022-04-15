@@ -25,7 +25,6 @@ import de.hirola.runningplan.services.training.TrackManager;
 import de.hirola.runningplan.services.training.TrainingServiceCallback;
 import de.hirola.runningplan.services.training.TrainingServiceConnection;
 import de.hirola.runningplan.ui.runningplans.RunningPlansFragment;
-import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.runningplan.util.TrainingNotificationManager;
 import de.hirola.sportslibrary.Global;
@@ -52,7 +51,7 @@ import java.util.*;
 public class TrainingFragment extends Fragment
         implements AdapterView.OnItemSelectedListener, TrainingServiceCallback {
 
-    private AppLogManager appLogManager; // app logging
+    private SportsLibrary sportsLibrary; // app logging
     private SharedPreferences sharedPreferences; // user and app preferences
     private boolean useNotifications;
     private TrainingNotificationManager notificationManager; // sends notification to user
@@ -185,8 +184,8 @@ public class TrainingFragment extends Fragment
             trainingTime = savedInstanceState.getLong("trainingTime", 0);
         }
 
-        // app logger
-        appLogManager = AppLogManager.getInstance(requireContext());// enable notification for training infos
+        sportsLibrary = ((RunningPlanApplication) requireActivity().getApplication()).getSportsLibrary();
+        // enable notification for training infos
         notificationManager = new TrainingNotificationManager(requireActivity().getApplicationContext());
 
         // app preferences
@@ -352,7 +351,7 @@ public class TrainingFragment extends Fragment
     @Override
     public void onServiceErrorOccurred(String errorMessage) {
         //TODO: alert to user
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             Logger.debug(errorMessage);
         }
     }
@@ -370,7 +369,7 @@ public class TrainingFragment extends Fragment
                 });
             }
         }
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             Logger.debug("Location updates are allowed: " + locationServicesAvailable);
         }
     }
@@ -380,7 +379,7 @@ public class TrainingFragment extends Fragment
         LocationManager manager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE );
         locationServicesAvailable =
                 locationServicesAvailable  && manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             Logger.debug("GPS are enabled: " + locationServicesAvailable);
         }
     }
@@ -391,7 +390,7 @@ public class TrainingFragment extends Fragment
         // on fragment the service is destroyed when switching to another fragment
         if (isTrainingPossible && ! isTrainingServiceConnected) {
             trainingServiceConnection.bindAndStartService(requireActivity().getApplicationContext());
-            if (appLogManager.isDebugMode()) {
+            if (sportsLibrary.isDebugMode()) {
                 Logger.debug("Service bind and start.");
             }
         }
@@ -583,7 +582,7 @@ public class TrainingFragment extends Fragment
                 runningPlan.completeUnit(runningUnit);
                 if (!viewModel.updateObject(runningPlan)) {
                     // TODO: alert to user
-                    if (appLogManager.isDebugMode()) {
+                    if (sportsLibrary.isDebugMode()) {
                         Logger.debug("A running unit couldn't set as completed.");
                     }
                 }
@@ -817,7 +816,7 @@ public class TrainingFragment extends Fragment
                 setTrainingData();
             } else {
                 // TODO: info to the user
-                if (appLogManager.isDebugMode()) {
+                if (sportsLibrary.isDebugMode()) {
                     Logger.debug("Could not reset running plan.");
                 }
             }
@@ -893,7 +892,7 @@ public class TrainingFragment extends Fragment
                         }
                     } catch (Resources.NotFoundException exception) {
                         unitsAsString.append(R.string.movement_type_not_found);
-                        if (appLogManager.isDebugMode()) {
+                        if (sportsLibrary.isDebugMode()) {
                             Logger.debug(null, exception);
                         }
                     }

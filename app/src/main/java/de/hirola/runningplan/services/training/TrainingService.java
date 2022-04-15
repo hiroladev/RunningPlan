@@ -11,8 +11,9 @@ import android.os.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.util.AppLogManager;
+import de.hirola.runningplan.RunningPlanApplication;
 import de.hirola.runningplan.util.TrainingNotificationManager;
+import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.model.Track;
 import org.tinylog.Logger;
 
@@ -33,7 +34,7 @@ public class TrainingService extends Service implements LocationListener {
     private final static long LOCATION_UPDATE_MIN_DISTANCE = 2; // min distance for location updates in m
 
     private Handler handler;
-    private AppLogManager appLogManager;
+    private SportsLibrary sportsLibrary;
     private PowerManager.WakeLock wakeLock; // partial wake lock for recording and time
     private TrainingNotificationManager notificationManager;
     private final IBinder serviceBinder = new BackgroundTimerServiceBinder();
@@ -78,20 +79,20 @@ public class TrainingService extends Service implements LocationListener {
     public void onCreate() {
         super.onCreate();
         initializeGPSLocationManager();
-        appLogManager = AppLogManager.getInstance(this);
+        sportsLibrary = ((RunningPlanApplication) getApplication()).getSportsLibrary();
         trackManager = new TrackManager(this);
         notificationManager = new TrainingNotificationManager(this);
         handler = new Handler(Looper.getMainLooper());
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"RunningPlan:wakelock");
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             Logger.debug("The training service was created.");
         }
     }
 
     @Override
     public void onDestroy() {
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             Logger.debug("The training service will be destroyed");
         }
         trackManager.end();
@@ -133,7 +134,7 @@ public class TrainingService extends Service implements LocationListener {
         LocationListener.super.onProviderEnabled(provider);
         if (provider.equalsIgnoreCase(LocationManager.GPS_PROVIDER)) {
             gpsAvailable = true;
-            if (appLogManager.isDebugMode()) {
+            if (sportsLibrary.isDebugMode()) {
                 Logger.debug(provider + " enabled");
             }
         }
@@ -144,7 +145,7 @@ public class TrainingService extends Service implements LocationListener {
         LocationListener.super.onProviderDisabled(provider);
         if (provider.equalsIgnoreCase(LocationManager.GPS_PROVIDER)) {
             gpsAvailable = false;
-            if (appLogManager.isDebugMode()) {
+            if (sportsLibrary.isDebugMode()) {
                 Logger.debug(provider + " disabled");
             }
         }
@@ -181,7 +182,7 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingPaused = false;
         isTrainingActive = true;
         handler.postDelayed(secondsInTraining, TIME_INTERVAL_IN_MILLI);
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             Logger.debug("The training with track id " + trackId + " was started.");
         }
         // track of current training
@@ -193,7 +194,7 @@ public class TrainingService extends Service implements LocationListener {
         isTrainingPaused = true;
         // stop location tracking
         stopLocationUpdates();
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             Logger.debug("The training with track id " + trackId + " was paused.");
         }
     }
@@ -214,7 +215,7 @@ public class TrainingService extends Service implements LocationListener {
         }
         isTrainingPaused = false;
         handler.postDelayed(secondsInTraining, TIME_INTERVAL_IN_MILLI);
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             Logger.debug("The training with track id " + trackId + " was resumed.");
         }
     }
@@ -226,13 +227,13 @@ public class TrainingService extends Service implements LocationListener {
         trainingDuration = 0;
         isTrainingPaused = false;
         isTrainingActive = false;
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             Logger.debug("The training with track id " + trackId + " was stopped.");
         }
         // completed the recorded track
         if (withLocationTracking) {
             if (!trackManager.completeTrack(trackId)) {
-                if (appLogManager.isDebugMode()) {
+                if (sportsLibrary.isDebugMode()) {
                     Logger.debug("The track with id " + trackId + " couldn't completed.");
                 }
             }
@@ -246,11 +247,11 @@ public class TrainingService extends Service implements LocationListener {
         trainingDuration = 0;
         isTrainingPaused = false;
         isTrainingActive = false;
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             Logger.debug("The Training with track id " + trackId + " was canceled.");
         }
         if (!trackManager.removeTrack(trackId)) {
-            if (appLogManager.isDebugMode()) {
+            if (sportsLibrary.isDebugMode()) {
                 if (withLocationTracking) {
                     Logger.debug("The track with id " + trackId + " couldn't removed.");
                 }
@@ -312,7 +313,7 @@ public class TrainingService extends Service implements LocationListener {
                         this);
             } catch (SecurityException exception) {
                 gpsAvailable = false;
-                if (appLogManager.isDebugMode()) {
+                if (sportsLibrary.isDebugMode()) {
                     Logger.debug("Could not determine the status of GPS.", exception);
                 }
             }

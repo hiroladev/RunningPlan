@@ -11,11 +11,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
+import de.hirola.runningplan.RunningPlanApplication;
 import de.hirola.runningplan.ui.info.log.InfoLogsFragment;
 import de.hirola.runningplan.ui.info.menu.InfoMenuItemRecyclerView;
 import de.hirola.runningplan.ui.info.menu.MenuItem;
 import de.hirola.runningplan.ui.info.tracks.InfoTracksFragment;
-import de.hirola.runningplan.util.AppLogManager;
+import de.hirola.sportslibrary.SportsLibrary;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,10 +48,14 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
                              ViewGroup container, Bundle savedInstanceState) {
         View infoView = inflater.inflate(R.layout.fragment_info_content, container, false);
         // show app version infos
-        AppLogManager appLogManager = AppLogManager.getInstance(requireContext());
-        if (appLogManager.isDeveloperVersion()) {
-            TextView devVersionTextView = infoView.findViewById(R.id.fgmt_info_content_app_dev_version_textview);
+        SportsLibrary sportsLibrary = ((RunningPlanApplication) requireActivity()
+                .getApplication()).getSportsLibrary();
+        boolean isDeveloperVersion = getString(R.string.isDeveloperVersion).equalsIgnoreCase("TRUE");
+        TextView devVersionTextView = infoView.findViewById(R.id.fgmt_info_content_app_dev_version_textview);
+        if (isDeveloperVersion) {
             devVersionTextView.setText(getText(R.string.developer_version));
+        } else {
+            devVersionTextView.setText(getText(R.string.empty));
         }
         // TODO: dynamically or global
         // build the menu item map
@@ -92,7 +97,7 @@ public class InfoContentFragment extends Fragment implements View.OnClickListene
                         null,
                         new InfoTracksFragment()));
         // show only if debug mode enabled
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             menuItemMap.putIfAbsent(6,
                     new MenuItem(requireContext(),
                             R.drawable.outline_adb_black_36,

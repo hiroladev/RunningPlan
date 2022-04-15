@@ -62,6 +62,7 @@
     <string name="recorded_track_not_completed">Der Track konnte nicht abgeschlossen werden.</string>
 
     <!-- Common -->
+    <string name="empty" translatable="false"/>
     <string name="no_remarks">Keine Anmerkungen vorhanden.</string>
     <string name="no_content">Die Inhalte konnten nicht geladen werden.</string>
     <string name="remarks">Anmerkungen</string>

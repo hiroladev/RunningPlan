@@ -12,9 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.FragmentTransaction;
 import de.hirola.runningplan.R;
+import de.hirola.runningplan.RunningPlanApplication;
 import de.hirola.runningplan.model.RunningPlanViewModel;
-import de.hirola.runningplan.util.AppLogManager;
 import de.hirola.sportslibrary.Global;
+import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.model.RunningPlan;
 import de.hirola.sportslibrary.model.UUID;
 import de.hirola.sportslibrary.model.User;
@@ -40,7 +41,7 @@ import java.util.List;
 public class RunningPlanDetailsFragment extends Fragment
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    private AppLogManager appLogManager;
+    private SportsLibrary sportsLibrary;
     private RunningPlanViewModel viewModel;
     private User appUser;
     private UUID runningPlanUUID;
@@ -81,9 +82,7 @@ public class RunningPlanDetailsFragment extends Fragment
         } else {
             runningPlanUUID = null;
         }
-
-        // app logger
-        appLogManager = AppLogManager.getInstance(requireContext());
+        sportsLibrary = ((RunningPlanApplication) requireActivity().getApplication()).getSportsLibrary();
 
         // app data
         viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
@@ -277,7 +276,7 @@ public class RunningPlanDetailsFragment extends Fragment
                     }
                 } catch (Resources.NotFoundException exception) {
                     runningPlanRemarksTextView.setText(R.string.no_remarks);
-                    if (appLogManager.isDebugMode()) {
+                    if (sportsLibrary.isDebugMode()) {
                         Logger.debug(null, exception);
                     }
                 }

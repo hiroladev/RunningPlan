@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.util.AppLogManager;
+import de.hirola.runningplan.RunningPlanApplication;
+import de.hirola.sportslibrary.SportsLibrary;
 import org.tinylog.Logger;
 
 import java.util.*;
@@ -24,13 +25,13 @@ import java.util.*;
  */
 public class InfoMenuItemRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final AppLogManager appLogManager;
+    private final SportsLibrary sportsLibrary;
     private View.OnClickListener onClickListener;
     private final Map<Integer, MenuItem> menuItemMap;
 
     public InfoMenuItemRecyclerView(@NonNull Context context, @NonNull Map<Integer, MenuItem> menuItemMap) {
         this.menuItemMap = menuItemMap;
-        appLogManager = AppLogManager.getInstance(context);
+        sportsLibrary = ((RunningPlanApplication) context.getApplicationContext()).getSportsLibrary();
     }
 
     @NonNull
@@ -62,7 +63,7 @@ public class InfoMenuItemRecyclerView extends RecyclerView.Adapter<RecyclerView.
                         viewHolder.menuItemTextView.setMovementMethod(LinkMovementMethod.getInstance());
                     }
                 } catch (Exception exception) {
-                    if (appLogManager.isDebugMode()) {
+                    if (sportsLibrary.isDebugMode()) {
                         Logger.debug(exception);
                     }
                 }

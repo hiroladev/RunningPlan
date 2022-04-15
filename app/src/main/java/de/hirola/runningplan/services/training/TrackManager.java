@@ -6,7 +6,8 @@ import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.util.AppLogManager;
+import de.hirola.runningplan.RunningPlanApplication;
+import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.model.Track;
 import org.tinylog.Logger;
 
@@ -36,7 +37,7 @@ public class TrackManager {
     public static final String RECEIVER_INTENT_TRACK_DISTANCE = "distance";
     public static final String RECEIVER_INTENT_COMPLETE_STATE = "completeState";
 
-    private final AppLogManager appLogManager;
+    private final SportsLibrary sportsLibrary;
     private List<Track.Id> trackIds; // query the list to avoid get from sqlite
     private final Context context;
     private final TrackingDatabaseHelper databaseHelper;
@@ -46,8 +47,7 @@ public class TrackManager {
     private final BlockingQueue<TrackUpdateTask> databaseOperationsBlockingQueue; // FIFO-Queue for database operations
 
     public TrackManager(@NonNull Context context) {
-
-        appLogManager = AppLogManager.getInstance(context);
+        sportsLibrary = ((RunningPlanApplication) context.getApplicationContext()).getSportsLibrary();
         this.context = context;
         databaseHelper = new TrackingDatabaseHelper(context);
         trackIds = databaseHelper.getTrackIds();
@@ -259,7 +259,7 @@ public class TrackManager {
                     // waits until the next update is available
                     trackUpdateTask = databaseOperationsBlockingQueue.take();
                 } catch (InterruptedException exception) {
-                    if (appLogManager.isDebugMode()) {
+                    if (sportsLibrary.isDebugMode()) {
                         Logger.debug("Error while waiting for track update in queue.", exception);
                     }
                     return;

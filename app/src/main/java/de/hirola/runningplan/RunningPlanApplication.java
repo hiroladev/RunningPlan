@@ -1,11 +1,14 @@
 package de.hirola.runningplan;
 
 import android.app.Application;
-import de.hirola.runningplan.util.AppLogManager;
+import android.content.Context;
+import android.content.SharedPreferences;
+import de.hirola.sportslibrary.Global;
 import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.SportsLibraryApplication;
 import de.hirola.sportslibrary.SportsLibraryException;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -19,25 +22,38 @@ import java.io.InputStream;
  * @author Michael Schmidt (Hirola)
  * @since 0.1
  */
-public class RunningPlanApplication extends Application implements SportsLibraryApplication {
+public class RunningPlanApplication extends Application
+        implements SportsLibraryApplication, SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private AppLogManager appLogManager;
     private SportsLibrary sportsLibrary;
+    private boolean debugMode;
+    private boolean canSendDebugLogs;
 
     @Override
     public void onCreate() {
         super.onCreate();
         try {
+            // create or get the app directory
+            File appDirectory = SportsLibrary.initializeAppDirectory(getPackageName());
+            // determine the debug state
+            Context context = getApplicationContext();
+            SharedPreferences sharedPreferences =
+                    context.getSharedPreferences(context.getString(R.string.preference_file), Context.MODE_PRIVATE);
+            debugMode = sharedPreferences.getBoolean(Global.PreferencesKeys.debugMode, false);
+            // while app is using, the user change settings
+            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+            canSendDebugLogs = sharedPreferences.getBoolean(Global.PreferencesKeys.sendDebugLog, false);
             // initialize the SportsLibrary, e.g. local datastore and logging,
             // import the templates on first start
-            appLogManager = AppLogManager.getInstance(getApplicationContext());
-            sportsLibrary = new SportsLibrary(getPackageName(),
-                    this,
-                    appLogManager.getLogManager());
-        } catch (SportsLibraryException exception) {
+            sportsLibrary = SportsLibrary.getInstance(debugMode, appDirectory,this);
+        } catch (SportsLibraryException | InstantiationException exception) {
             throw new RuntimeException("An exception occurred while initialize the app: "
                     + exception);
         }
+    }
+
+    public boolean isCanSendDebugLogs() {
+        return canSendDebugLogs;
     }
 
     @Override
@@ -52,11 +68,17 @@ public class RunningPlanApplication extends Application implements SportsLibrary
 
     @Override
     public InputStream[] getRunningPlanTemplates() {
-        InputStream[] inputStreams = new InputStream[4];
+        boolean isDeveloperVersion = getString(R.string.isDeveloperVersion).equalsIgnoreCase("TRUE");
+        InputStream[] inputStreams;
+        if (isDeveloperVersion) {
+            inputStreams = new InputStream[4];
+        } else {
+            inputStreams = new InputStream[3];
+        }
         inputStreams[0] = getResources().openRawResource(R.raw.start);
         inputStreams[1] = getResources().openRawResource(R.raw.start60);
         inputStreams[2] = getResources().openRawResource(R.raw.start90);
-        if (appLogManager.isDeveloperVersion()) {
+        if (isDeveloperVersion) {
             inputStreams[3] = getResources().openRawResource(R.raw.start_test);
         }
         return inputStreams;
@@ -66,4 +88,13 @@ public class RunningPlanApplication extends Application implements SportsLibrary
         return sportsLibrary;
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(Global.PreferencesKeys.debugMode)) {
+            debugMode = sharedPreferences.getBoolean(key, false);
+        }
+        if (key.equals(Global.PreferencesKeys.sendDebugLog)) {
+            canSendDebugLogs = sharedPreferences.getBoolean(key, false);
+        }
+    }
 }

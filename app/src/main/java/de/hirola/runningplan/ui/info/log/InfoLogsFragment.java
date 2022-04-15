@@ -10,9 +10,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.util.AppLogManager;
+import de.hirola.runningplan.RunningPlanApplication;
 import de.hirola.runningplan.util.ModalOptionDialog;
-import de.hirola.sportslibrary.util.LogManager;
+import de.hirola.sportslibrary.SportsLibrary;
+import de.hirola.sportslibrary.util.LogContent;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -25,13 +26,13 @@ import de.hirola.sportslibrary.util.LogManager;
  */
 public class InfoLogsFragment extends Fragment implements View.OnClickListener {
 
-    private AppLogManager appLogManager;
+    private SportsLibrary sportsLibrary;
     private InfoLogsFileRecyclerView listAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        appLogManager = AppLogManager.getInstance(requireContext());
+        sportsLibrary = ((RunningPlanApplication) requireContext().getApplicationContext()).getSportsLibrary();
     }
 
     @Override
@@ -39,9 +40,7 @@ public class InfoLogsFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View infoLogView = inflater.inflate(R.layout.fragment_info_log, container, false);
-        // show list of all log files
-        AppLogManager appLogManager = AppLogManager.getInstance(requireContext());
-        listAdapter = new InfoLogsFileRecyclerView(requireContext(), appLogManager.getLogContent());
+        listAdapter = new InfoLogsFileRecyclerView(requireContext(), sportsLibrary.getLogContent());
         listAdapter.setOnClickListener(this); // view log file content on click
         // recycler view list adapter
         RecyclerView recyclerView = infoLogView.findViewById(R.id.fgmt_info_log_recyclerview);
@@ -56,7 +55,7 @@ public class InfoLogsFragment extends Fragment implements View.OnClickListener {
             // view the content of the selected log file
             if (view.getId() == R.id.log_file_row_button) {
                 // get the selected log content
-                LogManager.LogContent logContent = listAdapter.getSelectedLogContent();
+                LogContent logContent = listAdapter.getSelectedLogContent();
                 // open in new fragment
                 InfoLogContentFragment infoLogContentFragment = new InfoLogContentFragment(logContent);
                 // hide this fragment
@@ -75,7 +74,7 @@ public class InfoLogsFragment extends Fragment implements View.OnClickListener {
                         getString(R.string.ok), getString(R.string.cancel),
                         button -> {
                             if (button == ModalOptionDialog.Button.OK) {
-                                if (!appLogManager.sendDebugLog()) {
+                                if (!sportsLibrary.sendDebugLogs()) {
                                     ModalOptionDialog.showMessageDialog(
                                             ModalOptionDialog.DialogStyle.WARNING,
                                             requireContext(), null,

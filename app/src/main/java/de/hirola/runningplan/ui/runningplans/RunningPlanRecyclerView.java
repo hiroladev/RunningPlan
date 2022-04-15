@@ -3,7 +3,8 @@ package de.hirola.runningplan.ui.runningplans;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
-import de.hirola.runningplan.util.AppLogManager;
+import de.hirola.runningplan.RunningPlanApplication;
+import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.model.RunningPlan;
 
 import android.content.res.Resources;
@@ -28,7 +29,7 @@ import java.util.List;
  */
 public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final AppLogManager appLogManager;
+    private final SportsLibrary sportsLibrary;
     private final Context context;
     private final List<RunningPlan> runningPlans;
     private View.OnClickListener onClickListener;
@@ -36,7 +37,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
     public RunningPlanRecyclerView(Context context, List<RunningPlan> runningPlans) {
         this.context = context;
         this.runningPlans = runningPlans;
-        appLogManager = AppLogManager.getInstance(context);
+        sportsLibrary = ((RunningPlanApplication) context.getApplicationContext()).getSportsLibrary();
     }
 
     @NonNull
@@ -71,7 +72,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
                 //    viewHolder.statusImageView.setImageResource(R.drawable.aborted20x20);
                 //}
             } catch (Resources.NotFoundException exception) {
-                if (appLogManager.isDebugMode()) {
+                if (sportsLibrary.isDebugMode()) {
                     Logger.debug(exception);
                 }
             }
@@ -90,7 +91,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
                     }
                 } catch (Resources.NotFoundException exception) {
                     viewHolder.remarksTextView.setText(R.string.no_remarks);
-                    if (appLogManager.isDebugMode()) {
+                    if (sportsLibrary.isDebugMode()) {
                         Logger.debug(null, exception);
                     }
                 }

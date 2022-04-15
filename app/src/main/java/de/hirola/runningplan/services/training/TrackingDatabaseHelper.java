@@ -8,7 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import de.hirola.runningplan.util.AppLogManager;
+import de.hirola.runningplan.RunningPlanApplication;
+import de.hirola.sportslibrary.SportsLibrary;
 import de.hirola.sportslibrary.model.LocationData;
 import de.hirola.sportslibrary.model.Track;
 import de.hirola.sportslibrary.tables.TrackColumns;
@@ -40,11 +41,11 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_DROP_TRACK_TABLE =
             "DROP TABLE IF EXISTS " + TrackLocationColumns.TABLE_NAME;
 
-    private final AppLogManager appLogManager; // app logging
+    private final SportsLibrary sportsLibrary; // app logging
 
     public TrackingDatabaseHelper(@NonNull Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        appLogManager = AppLogManager.getInstance(context);
+        sportsLibrary = ((RunningPlanApplication) context.getApplicationContext()).getSportsLibrary();
     }
 
     @Override
@@ -113,7 +114,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                     new String[]{String.valueOf(trackId.getId())});
             sqLiteDatabase.close();
             if (updatedRows > 1) {
-                if (appLogManager.isDebugMode()) {
+                if (sportsLibrary.isDebugMode()) {
                     Logger.debug("More as one rows are updated.");
                 }
             }
@@ -210,7 +211,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 }
                 return null;
             } catch (IllegalArgumentException exception) {
-                if (appLogManager.isDebugMode()) {
+                if (sportsLibrary.isDebugMode()) {
                     Logger.debug("Column (index) does not exists", exception);
                 }
                 return null;
@@ -234,7 +235,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             String[] trackLocationsSelectionArgs = { String.valueOf(trackId.getId()) };
             // Issue SQL statement.
             int deletedTrackLocationRows = sqLiteDatabase.delete(TrackLocationColumns.TABLE_NAME, trackLocationsSelection, trackLocationsSelectionArgs);
-            if (appLogManager.isDebugMode()) {
+            if (sportsLibrary.isDebugMode()) {
                 String logMessage = "There have been " + deletedTrackLocationRows + " location rows deleted";
                 Logger.debug(logMessage);
             }
@@ -245,7 +246,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             String[] trackSelectionArgs = { String.valueOf(trackId.getId()) };
             // Issue SQL statement.
             int deletedTrackRows = sqLiteDatabase.delete(TrackLocationColumns.TABLE_NAME, trackSelection, trackSelectionArgs);
-            if (appLogManager.isDebugMode()) {
+            if (sportsLibrary.isDebugMode()) {
                 String logMessage = "There have been " +  deletedTrackRows + " track rows deleted";
                 Logger.debug(logMessage);
             }
@@ -293,7 +294,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
             }
             return trackIds;
         } catch (IllegalArgumentException exception) {
-            if (appLogManager.isDebugMode()) {
+            if (sportsLibrary.isDebugMode()) {
                 Logger.debug("Column (index) does not exists", exception);
             }
             return null;
@@ -329,7 +330,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
         long updatedTracks = sqLiteDatabase.update(TrackColumns.TABLE_NAME, values,
                 whereClauseTracks, whereClauseTracksArgs);
         sqLiteDatabase.close();
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             String message = String.format("%s track states was set to false.", updatedTracks);
             Logger.debug(message);
         }
@@ -356,7 +357,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 + ")";
         int deletedLocations = sqLiteDatabase.delete(TrackLocationColumns.TABLE_NAME,whereClauseLocations, null);
         sqLiteDatabase.close();
-        if (appLogManager.isDebugMode()) {
+        if (sportsLibrary.isDebugMode()) {
             String message = String.format("%s locations and %s tracks deleted.",
                     deletedLocations, deletedTracks);
             Logger.debug(message);
@@ -441,7 +442,7 @@ public class TrackingDatabaseHelper extends SQLiteOpenHelper {
                 }
                 return locations;
             } catch (IllegalArgumentException exception) {
-                if (appLogManager.isDebugMode()) {
+                if (sportsLibrary.isDebugMode()) {
                     Logger.debug("Column (index) does not exists", exception);
                 }
                 return null;

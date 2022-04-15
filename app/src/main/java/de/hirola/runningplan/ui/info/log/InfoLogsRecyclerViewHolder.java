@@ -22,7 +22,7 @@ public class InfoLogsRecyclerViewHolder extends RecyclerView.ViewHolder {
     final TextView dateTextView;
     final Button detailsButton;
 
-    public InfoLogsRecyclerViewHolder(@NonNull @NotNull View itemView) {
+    public InfoLogsRecyclerViewHolder(@NonNull View itemView) {
         super(itemView);
         dateTextView = itemView.findViewById(R.id.log_file_row_date_label);
         detailsButton = itemView.findViewById(R.id.log_file_row_button);
