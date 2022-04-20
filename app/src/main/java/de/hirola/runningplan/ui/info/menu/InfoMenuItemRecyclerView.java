@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.RunningPlanApplication;
-import de.hirola.sportslibrary.SportsLibrary;
+import de.hirola.sportsapplications.SportsLibrary;
 import org.tinylog.Logger;
 
 import java.util.*;

@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.RunningPlanApplication;
 import de.hirola.runningplan.util.ModalOptionDialog;
-import de.hirola.sportslibrary.SportsLibrary;
-import de.hirola.sportslibrary.util.LogContent;
+import de.hirola.sportsapplications.SportsLibrary;
+import de.hirola.sportsapplications.util.LogContent;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting

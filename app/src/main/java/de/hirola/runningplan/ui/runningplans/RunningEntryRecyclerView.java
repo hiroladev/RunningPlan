@@ -10,11 +10,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.RunningPlanApplication;
-import de.hirola.sportslibrary.SportsLibrary;
-import de.hirola.sportslibrary.model.MovementType;
-import de.hirola.sportslibrary.model.RunningPlan;
-import de.hirola.sportslibrary.model.RunningPlanEntry;
-import de.hirola.sportslibrary.model.RunningUnit;
+import de.hirola.sportsapplications.SportsLibrary;
+import de.hirola.sportsapplications.model.MovementType;
+import de.hirola.sportsapplications.model.RunningPlan;
+import de.hirola.sportsapplications.model.RunningPlanEntry;
+import de.hirola.sportsapplications.model.RunningUnit;
 import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 

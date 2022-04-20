@@ -27,10 +27,10 @@ import de.hirola.runningplan.services.training.TrainingServiceConnection;
 import de.hirola.runningplan.ui.runningplans.RunningPlansFragment;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.runningplan.util.TrainingNotificationManager;
-import de.hirola.sportslibrary.Global;
-import de.hirola.sportslibrary.SportsLibrary;
-import de.hirola.sportslibrary.model.UUID;
-import de.hirola.sportslibrary.model.*;
+import de.hirola.sportsapplications.Global;
+import de.hirola.sportsapplications.SportsLibrary;
+import de.hirola.sportsapplications.model.UUID;
+import de.hirola.sportsapplications.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 
@@ -878,24 +878,9 @@ public class TrainingFragment extends Fragment
                 StringBuilder unitsAsString = new StringBuilder();
                 MovementType movementType = runningUnit.getMovementType();
                 if (movementType != null) {
-                    // the type of movement
-                    try {
-                        // load strings from res dynamically
-                        String movementKeyString = movementType.getStringForKey();
-                        if (movementKeyString.length() > 0) {
-                            int remarksResourceStringId = requireContext()
-                                    .getResources()
-                                    .getIdentifier(movementKeyString, "string", requireContext().getPackageName());
-                            unitsAsString.append(getString(remarksResourceStringId));
-                        } else {
-                            unitsAsString.append(R.string.movement_type_not_found);
-                        }
-                    } catch (Resources.NotFoundException exception) {
-                        unitsAsString.append(R.string.movement_type_not_found);
-                        if (sportsLibrary.isDebugMode()) {
-                            Logger.debug(null, exception);
-                        }
-                    }
+                    // the name of movement type
+                    // localizations from sports library
+                    unitsAsString.append(movementType.getName());
                     // running unit duration
                     unitsAsString.append(" (");
                     unitsAsString.append(runningUnit.getDuration());
@@ -949,22 +934,11 @@ public class TrainingFragment extends Fragment
     private void showNotificationForNextUnit() {
         if (useNotifications) {
             // build the message
-            int resID = 0;
+            String movementTypeName = runningUnit.getMovementType().getName();
             long duration = 0;
-            if (runningUnit != null) {
-                resID = getResources().getIdentifier(
-                        runningUnit.getMovementType().getStringForKey(),
-                        "string",
-                        requireActivity().getPackageName());
-                duration = runningUnit.getDuration();
-            }
-            if (resID == 0) {
-                // movement type not found
-                resID = R.string.movement_type_not_found;
-            }
             String notificationMessage = getString(R.string.new_training_unit_starts)
                     + ": "
-                    + getString(resID) + " (" + duration + " min)";
+                    + movementTypeName + " (" + duration + " min)";
             notificationManager.sendNotification(notificationMessage);
             Vibrator vibrator;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

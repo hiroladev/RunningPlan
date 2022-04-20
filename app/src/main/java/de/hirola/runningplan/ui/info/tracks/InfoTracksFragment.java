@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.services.training.TrackManager;
 import de.hirola.runningplan.util.ModalOptionDialog;
-import de.hirola.sportslibrary.model.Track;
+import de.hirola.sportsapplications.model.Track;
 
 import java.util.List;
 

@@ -12,8 +12,8 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import de.hirola.runningplan.R;
 
-import de.hirola.sportslibrary.Global;
-import de.hirola.sportslibrary.util.LogContent;
+import de.hirola.sportsapplications.Global;
+import de.hirola.sportsapplications.util.LogContent;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting

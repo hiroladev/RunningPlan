@@ -3,10 +3,10 @@ package de.hirola.runningplan;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import de.hirola.sportslibrary.Global;
-import de.hirola.sportslibrary.SportsLibrary;
-import de.hirola.sportslibrary.SportsLibraryApplication;
-import de.hirola.sportslibrary.SportsLibraryException;
+import de.hirola.sportsapplications.Global;
+import de.hirola.sportsapplications.SportsLibrary;
+import de.hirola.sportsapplications.SportsLibraryApplication;
+import de.hirola.sportsapplications.SportsLibraryException;
 
 import java.io.File;
 import java.io.InputStream;

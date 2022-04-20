@@ -16,7 +16,7 @@ import de.hirola.runningplan.ui.info.log.InfoLogsFragment;
 import de.hirola.runningplan.ui.info.menu.InfoMenuItemRecyclerView;
 import de.hirola.runningplan.ui.info.menu.MenuItem;
 import de.hirola.runningplan.ui.info.tracks.InfoTracksFragment;
-import de.hirola.sportslibrary.SportsLibrary;
+import de.hirola.sportsapplications.SportsLibrary;
 
 import java.util.HashMap;
 import java.util.List;

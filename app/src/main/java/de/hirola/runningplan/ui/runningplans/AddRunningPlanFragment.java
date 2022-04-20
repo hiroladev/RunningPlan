@@ -16,12 +16,12 @@ import android.view.ViewGroup;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.RunningPlanApplication;
 import de.hirola.runningplan.model.RunningPlanViewModel;
-import de.hirola.sportslibrary.SportsLibrary;
-import de.hirola.sportslibrary.SportsLibraryException;
-import de.hirola.sportslibrary.model.RunningPlan;
+import de.hirola.sportsapplications.SportsLibrary;
+import de.hirola.sportsapplications.SportsLibraryException;
+import de.hirola.sportsapplications.model.RunningPlan;
 import de.hirola.runningplan.util.ModalOptionDialog;
-import de.hirola.sportslibrary.util.RunningPlanTemplate;
-import de.hirola.sportslibrary.util.TemplateLoader;
+import de.hirola.sportsapplications.util.RunningPlanTemplate;
+import de.hirola.sportsapplications.util.TemplateLoader;
 import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;

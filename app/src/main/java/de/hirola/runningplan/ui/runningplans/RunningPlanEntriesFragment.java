@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
 import de.hirola.runningplan.model.RunningPlanViewModel;
-import de.hirola.sportslibrary.model.RunningPlan;
-import de.hirola.sportslibrary.model.UUID;
+import de.hirola.sportsapplications.model.RunningPlan;
+import de.hirola.sportsapplications.model.UUID;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting

@@ -3,11 +3,11 @@ package de.hirola.runningplan.model;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.RunningPlanApplication;
-import de.hirola.sportslibrary.database.DatastoreDelegate;
-import de.hirola.sportslibrary.database.PersistentObject;
-import de.hirola.sportslibrary.SportsLibrary;
-import de.hirola.sportslibrary.SportsLibraryException;
-import de.hirola.sportslibrary.model.*;
+import de.hirola.sportsapplications.database.DatastoreDelegate;
+import de.hirola.sportsapplications.database.PersistentObject;
+import de.hirola.sportsapplications.SportsLibrary;
+import de.hirola.sportsapplications.SportsLibraryException;
+import de.hirola.sportsapplications.model.*;
 import android.app.Application;
 
 import java.util.List;

@@ -45,7 +45,7 @@ configurations.all {
 }
 
 dependencies {
-    implementation 'de.hirola:sportslibrary:0.1-SNAPSHOT'
+    implementation 'de.hirola:sportsapplications:0.1-SNAPSHOT'
     implementation 'org.tinylog:tinylog-impl:2.5.0-M1.1'
     implementation 'org.tinylog:tinylog-api:2.5.0-M1.1'
     implementation 'org.dizitart:nitrite:3.4.3'

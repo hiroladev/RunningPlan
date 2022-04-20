@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
-import de.hirola.sportslibrary.model.Track;
+import de.hirola.sportsapplications.model.Track;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

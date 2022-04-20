@@ -7,7 +7,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import de.hirola.sportslibrary.model.Track;
+import de.hirola.sportsapplications.model.Track;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting

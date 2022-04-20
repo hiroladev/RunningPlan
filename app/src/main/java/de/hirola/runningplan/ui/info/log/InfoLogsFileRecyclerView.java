@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
-import de.hirola.sportslibrary.util.LogContent;
+import de.hirola.sportsapplications.util.LogContent;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;

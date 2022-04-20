@@ -16,10 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import de.hirola.runningplan.model.RunningPlanViewModel;
-import de.hirola.sportslibrary.Global;
-import de.hirola.sportslibrary.model.RunningPlan;
+import de.hirola.sportsapplications.Global;
+import de.hirola.sportsapplications.model.RunningPlan;
 import de.hirola.runningplan.util.ModalOptionDialog;
-import de.hirola.sportslibrary.model.UUID;
+import de.hirola.sportsapplications.model.UUID;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

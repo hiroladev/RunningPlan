@@ -9,11 +9,11 @@ import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.hirola.runningplan.RunningPlanApplication;
-import de.hirola.sportslibrary.SportsLibrary;
-import de.hirola.sportslibrary.model.LocationData;
-import de.hirola.sportslibrary.model.Track;
-import de.hirola.sportslibrary.tables.TrackColumns;
-import de.hirola.sportslibrary.tables.TrackLocationColumns;
+import de.hirola.sportsapplications.SportsLibrary;
+import de.hirola.sportsapplications.model.LocationData;
+import de.hirola.sportsapplications.model.Track;
+import de.hirola.sportsapplications.tables.TrackColumns;
+import de.hirola.sportsapplications.tables.TrackLocationColumns;
 import org.tinylog.Logger;
 
 import java.util.ArrayList;
