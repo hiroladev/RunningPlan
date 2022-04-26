@@ -29,7 +29,7 @@ import java.util.Map;
  * The content fragment for infos.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class InfoContentFragment extends Fragment implements View.OnClickListener {
 

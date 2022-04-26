@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * Custom adapter for a track to view in a list.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class InfoTrackRecyclerViewHolder extends RecyclerView.ViewHolder {
 

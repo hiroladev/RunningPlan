@@ -2,306 +2,306 @@
     "name": "Start90",
     "orderNumber": 3,
     "remarks": "running_plan_start_90_remarks",
-    "trainingUnits" : [
+    "runningEntries" : [
         {
         "week": 1,
 		"day": 1,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 1,
 		"day": 2,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 1,
 		"day": 3,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 1,
 		"day": 4,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 1,
 		"day": 6,
-		"units": [ "60", "LDL" ]
+		"runningUnits": [ "60", "LDL" ]
        },
        {
 		"week": 1,
 		"day": 7,
-		"units": [ "60", "LDL" ]
+		"runningUnits": [ "60", "LDL" ]
        },
        {
 		"week": 2,
 		"day": 1,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 2,
 		"day": 2,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 2,
 		"day": 3,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 2,
 		"day": 4,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 2,
 		"day": 6,
-		"units": [ "70", "LDL" ]
+		"runningUnits": [ "70", "LDL" ]
        },
        {
 		"week": 2,
 		"day": 7,
-		"units": [ "70", "LDL" ]
+		"runningUnits": [ "70", "LDL" ]
        },
        {
 		"week": 3,
 		"day": 1,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 3,
 		"day": 2,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 3,
 		"day": 3,
-		"units": [ "50", "LDL" ]
+		"runningUnits": [ "50", "LDL" ]
        },
        {
 		"week": 3,
 		"day": 4,
-		"units": [ "50", "LDL" ]
+		"runningUnits": [ "50", "LDL" ]
        },
        {
 		"week": 3,
 		"day": 6,
-		"units": [ "70", "LDL" ]
+		"runningUnits": [ "70", "LDL" ]
        },
        {
 		"week": 3,
 		"day": 7,
-		"units": [ "70", "LDL" ]
+		"runningUnits": [ "70", "LDL" ]
        },
        {
 		"week": 4,
 		"day": 1,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 4,
 		"day": 2,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 4,
 		"day": 3,
-		"units": [ "30", "LDL" ]
+		"runningUnits": [ "30", "LDL" ]
        },
        {
 		"week": 4,
 		"day": 4,
-		"units": [ "30", "LDL" ]
+		"runningUnits": [ "30", "LDL" ]
        },
        {
 		"week": 4,
 		"day": 6,
-		"units": [ "60", "LDL" ]
+		"runningUnits": [ "60", "LDL" ]
        },
        {
 		"week": 4,
 		"day": 7,
-		"units": [ "60", "LDL" ]
+		"runningUnits": [ "60", "LDL" ]
        },
        {
 		"week": 5,
 		"day": 1,
-		"units": [ "50", "LDL" ]
+		"runningUnits": [ "50", "LDL" ]
        },
        {
 		"week": 5,
 		"day": 2,
-		"units": [ "50", "LDL" ]
+		"runningUnits": [ "50", "LDL" ]
        },
        {
 		"week": 5,
 		"day": 3,
-		"units": [ "10", "EL", "20", "ZDL", "10", "LDL" ]
+		"runningUnits": [ "10", "EL", "20", "ZDL", "10", "LDL" ]
        },
        {
 		"week": 5,
 		"day": 4,
-		"units": [ "10", "EL", "20", "ZDL", "10", "LDL" ]
+		"runningUnits": [ "10", "EL", "20", "ZDL", "10", "LDL" ]
        },
        {
 		"week": 5,
 		"day": 6,
-		"units": [ "70", "LDL" ]
+		"runningUnits": [ "70", "LDL" ]
        },
        {
 		"week": 5,
 		"day": 7,
-		"units": [ "70", "LDL" ]
+		"runningUnits": [ "70", "LDL" ]
        },
        {
 		"week": 6,
 		"day": 1,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 6,
 		"day": 2,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 6,
 		"day": 3,
-		"units": [ "10", "EL", "20", "ZDL", "20", "LDL" ]
+		"runningUnits": [ "10", "EL", "20", "ZDL", "20", "LDL" ]
        },
        {
 		"week": 6,
 		"day": 4,
-		"units": [ "10", "EL", "20", "ZDL", "20", "LDL" ]
+		"runningUnits": [ "10", "EL", "20", "ZDL", "20", "LDL" ]
        },
        {
 		"week": 6,
 		"day": 6,
-		"units": [ "80", "LDL" ]
+		"runningUnits": [ "80", "LDL" ]
        },
        {
 		"week": 6,
 		"day": 7,
-		"units": [ "80", "LDL" ]
+		"runningUnits": [ "80", "LDL" ]
        },
        {
 		"week": 7,
 		"day": 1,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 7,
 		"day": 2,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 7,
 		"day": 3,
-		"units": [ "10", "EL", "20", "ZDL", "10", "LDL" ]
+		"runningUnits": [ "10", "EL", "20", "ZDL", "10", "LDL" ]
        },
        {
 		"week": 7,
 		"day": 4,
-		"units": [ "10", "EL", "20", "ZDL", "10", "LDL" ]
+		"runningUnits": [ "10", "EL", "20", "ZDL", "10", "LDL" ]
        },
        {
 		"week": 7,
 		"day": 6,
-		"units": [ "90", "LDL" ]
+		"runningUnits": [ "90", "LDL" ]
        },
        {
 		"week": 7,
 		"day": 7,
-		"units": [ "90", "LDL" ]
+		"runningUnits": [ "90", "LDL" ]
        },
        {
 		"week": 8,
 		"day": 1,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 8,
 		"day": 2,
-		"units": [ "40", "LDL" ]
+		"runningUnits": [ "40", "LDL" ]
        },
        {
 		"week": 8,
 		"day": 3,
-		"units": [ "30", "LDL" ]
+		"runningUnits": [ "30", "LDL" ]
        },
        {
 		"week": 8,
 		"day": 4,
-		"units": [ "30", "LDL" ]
+		"runningUnits": [ "30", "LDL" ]
        },
        {
 		"week": 8,
 		"day": 6,
-		"units": [ "60", "LDL" ]
+		"runningUnits": [ "60", "LDL" ]
        },
        {
 		"week": 8,
 		"day": 7,
-		"units": [ "60", "LDL" ]
+		"runningUnits": [ "60", "LDL" ]
        },
        {
 		"week": 9,
 		"day": 1,
-		"units": [ "50", "LDL" ]
+		"runningUnits": [ "50", "LDL" ]
        },
        {
 		"week": 9,
 		"day": 2,
-		"units": [ "50", "LDL" ]
+		"runningUnits": [ "50", "LDL" ]
        },
        {
 		"week": 9,
 		"day": 3,
-		"units": [ "10", "EL", "20", "ZDL", "10", "LDL" ]
+		"runningUnits": [ "10", "EL", "20", "ZDL", "10", "LDL" ]
        },
        {
 		"week": 9,
 		"day": 4,
-		"units": [ "10", "EL", "20", "ZDL", "10", "LDL" ]
+		"runningUnits": [ "10", "EL", "20", "ZDL", "10", "LDL" ]
        },
        {
 		"week": 9,
 		"day": 6,
-		"units": [ "90", "LDL" ]
+		"runningUnits": [ "90", "LDL" ]
        },
        {
 		"week": 9,
 		"day": 7,
-		"units": [ "90", "LDL" ]
+		"runningUnits": [ "90", "LDL" ]
        },
        {
 		"week": 10,
 		"day": 1,
-		"units": [ "20", "LDL" ]
+		"runningUnits": [ "20", "LDL" ]
        },
        {
 		"week": 10,
 		"day": 2,
-		"units": [ "20", "LDL" ]
+		"runningUnits": [ "20", "LDL" ]
        },
        {
 		"week": 10,
 		"day": 3,
-		"units": [ "20", "LDL" ]
+		"runningUnits": [ "20", "LDL" ]
        },
        {
 		"week": 10,
 		"day": 4,
-		"units": [ "20", "LDL" ]
+		"runningUnits": [ "20", "LDL" ]
        },
        {
 		"week": 10,
 		"day": 6,
-		"units": [ "90", "LDL" ]
+		"runningUnits": [ "90", "LDL" ]
        },
        {
 		"week": 10,
 		"day": 7,
-		"units": [ "90", "LDL" ]
+		"runningUnits": [ "90", "LDL" ]
        }
     ]
 }

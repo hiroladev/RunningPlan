@@ -2,41 +2,41 @@
   "name": "Start-Test",
   "orderNumber": 4,
   "remarks":"running_plan_start_test_remarks",
-  "trainingUnits" : [
+  "runningEntries" : [
     {
       "week": 1,
       "day": 1,
-      "units": [ "1", "ZG" ]
+      "runningUnits": [ "1", "ZG" ]
     },
     {
       "week": 1,
       "day": 3,
-      "units": [ "1", "ZG", "1", "L" ]
+      "runningUnits": [ "1", "ZG", "1", "L" ]
     },
     {
       "week": 1,
       "day": 5,
-      "units": [ "1", "ZG", "2", "L", "1", "ZG", "2", "L" ]
+      "runningUnits": [ "1", "ZG", "2", "L", "1", "ZG", "2", "L" ]
     },
     {
       "week": 1,
       "day": 6,
-      "units": [ "2", "ZG" ]
+      "runningUnits": [ "2", "ZG" ]
     },
     {
       "week": 2,
       "day": 2,
-      "units": [ "1", "ZG" ]
+      "runningUnits": [ "1", "ZG" ]
     },
     {
       "week": 2,
       "day": 4,
-      "units": [ "1", "ZG", "1", "L" ]
+      "runningUnits": [ "1", "ZG", "1", "L" ]
     },
     {
       "week": 2,
       "day": 6,
-      "units": [ "1", "ZG", "3", "L", "2", "ZG", "1", "L" ]
+      "runningUnits": [ "1", "ZG", "3", "L", "2", "ZG", "1", "L" ]
     }
   ]
 }

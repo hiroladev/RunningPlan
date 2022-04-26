@@ -6,7 +6,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -15,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * Custom adapter for a track to view in a list.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class InfoLogsRecyclerViewHolder extends RecyclerView.ViewHolder {
 

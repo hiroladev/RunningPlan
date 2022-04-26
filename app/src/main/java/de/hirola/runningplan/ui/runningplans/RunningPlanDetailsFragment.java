@@ -36,7 +36,7 @@ import java.util.List;
  * A fragment to edit running plan details.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class RunningPlanDetailsFragment extends Fragment
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {

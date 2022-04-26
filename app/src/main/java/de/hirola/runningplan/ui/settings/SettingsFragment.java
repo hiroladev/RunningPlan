@@ -30,7 +30,7 @@ import java.util.Map;
  * Fragment for app settings.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class SettingsFragment extends PreferenceFragmentCompat
         implements Preference.OnPreferenceChangeListener, EditTextPreference.OnBindEditTextListener {

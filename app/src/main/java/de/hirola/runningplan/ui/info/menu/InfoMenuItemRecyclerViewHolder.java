@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * Custom adapter for an info menu item to view in list.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class InfoMenuItemRecyclerViewHolder extends RecyclerView.ViewHolder {
 

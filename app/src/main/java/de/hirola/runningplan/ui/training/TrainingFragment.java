@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.*;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.location.LocationManager;
 import android.os.*;
 import android.view.LayoutInflater;
@@ -46,7 +45,7 @@ import java.util.*;
  * Fragment for the training.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class TrainingFragment extends Fragment
         implements AdapterView.OnItemSelectedListener, TrainingServiceCallback {

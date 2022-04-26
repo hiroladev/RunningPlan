@@ -14,7 +14,7 @@ import java.time.ZoneId;
  * A helper class to calculate distance, speed and others for a recorded track.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class TrackPoint {
 

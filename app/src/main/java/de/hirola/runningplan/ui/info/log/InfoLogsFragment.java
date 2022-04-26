@@ -22,7 +22,7 @@ import de.hirola.sportsapplications.util.LogContent;
  * Fragment to view and send debug logs.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class InfoLogsFragment extends Fragment implements View.OnClickListener {
 

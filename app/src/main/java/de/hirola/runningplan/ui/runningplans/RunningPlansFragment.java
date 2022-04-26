@@ -1,5 +1,6 @@
 package de.hirola.runningplan.ui.runningplans;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
@@ -17,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import de.hirola.runningplan.model.RunningPlanViewModel;
 import de.hirola.sportsapplications.Global;
+import de.hirola.sportsapplications.database.DatastoreDelegate;
+import de.hirola.sportsapplications.database.PersistentObject;
 import de.hirola.sportsapplications.model.RunningPlan;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.sportsapplications.model.UUID;
@@ -34,12 +37,14 @@ import java.util.stream.Stream;
  *
 
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
-public class RunningPlansFragment extends Fragment implements View.OnClickListener {
+public class RunningPlansFragment extends Fragment
+        implements View.OnClickListener, DatastoreDelegate {
 
     private RunningPlanViewModel viewModel;
     private RecyclerView recyclerView; // recycler view list adapter
+    private RunningPlanRecyclerView listAdapter;
     private int lastSelectedIndex; // last selected running plan (list index)
     private List<RunningPlan> runningPlans;  // cached list of running plans
 
@@ -52,7 +57,7 @@ public class RunningPlansFragment extends Fragment implements View.OnClickListen
         }
         // load the running plans
         // data
-        viewModel = new RunningPlanViewModel(requireActivity().getApplication(), null);
+        viewModel = new RunningPlanViewModel(requireActivity().getApplication(), this);
         runningPlans = viewModel.getRunningPlans();
     }
 
@@ -66,7 +71,6 @@ public class RunningPlansFragment extends Fragment implements View.OnClickListen
                 requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
         boolean hideTemplates = sharedPreferences.getBoolean(Global.PreferencesKeys.hideTemplates,false);
         // visualize the list of running plans
-        RunningPlanRecyclerView listAdapter;
         if (hideTemplates) {
             Stream<RunningPlan> filteredStream = runningPlans.stream().filter(runningPlan -> !runningPlan.isTemplate());
             listAdapter = new RunningPlanRecyclerView(requireContext(), filteredStream.collect(Collectors.toList()));
@@ -88,6 +92,7 @@ public class RunningPlansFragment extends Fragment implements View.OnClickListen
                         return false;
                     }
 
+                    @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
                         // TODO: show menu on swipe (https://www.freecodecamp.org/news/how-to-implement-swipe-for-options-in-recyclerview/)
@@ -164,6 +169,20 @@ public class RunningPlansFragment extends Fragment implements View.OnClickListen
         showDetailsForRunningPlanAtIndex(itemPosition);
     }
 
+    @Override
+    public void didObjectAdded(PersistentObject persistentObject) {
+        if (persistentObject instanceof RunningPlan) {
+            refreshRunningPlans();
+        }
+    }
+
+    @Override
+    public void didObjectRemoved(PersistentObject persistentObject) {
+        if (persistentObject instanceof RunningPlan) {
+            refreshRunningPlans();
+        }
+    }
+
     private void showDetailsForRunningPlanAtIndex(int index) {
         if (runningPlans.size() > index) {
             lastSelectedIndex = index;
@@ -199,4 +218,9 @@ public class RunningPlansFragment extends Fragment implements View.OnClickListen
         fragmentTransaction.commit();
     }
 
+    private void refreshRunningPlans() {
+        runningPlans.clear();
+        runningPlans = viewModel.getRunningPlans();
+        listAdapter.setRunningPlans(runningPlans);
+    }
 }

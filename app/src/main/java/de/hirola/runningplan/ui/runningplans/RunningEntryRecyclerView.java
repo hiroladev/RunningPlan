@@ -30,7 +30,7 @@ import java.util.*;
  * Custom Adapter for running plan units to view in list.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

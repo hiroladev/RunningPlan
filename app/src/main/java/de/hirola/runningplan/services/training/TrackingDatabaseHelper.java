@@ -27,7 +27,7 @@ import java.util.List;
  * Database helper to create and upgrade sqlite database for tracks (locations).
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class TrackingDatabaseHelper extends SQLiteOpenHelper {
 

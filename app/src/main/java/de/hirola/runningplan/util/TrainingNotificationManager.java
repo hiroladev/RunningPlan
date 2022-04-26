@@ -20,7 +20,7 @@ import de.hirola.runningplan.services.training.TrainingService;
  * Manager to send notification from timer service.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class TrainingNotificationManager {
 

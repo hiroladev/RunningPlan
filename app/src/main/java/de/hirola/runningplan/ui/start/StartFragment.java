@@ -26,7 +26,7 @@ import java.util.List;
  * Fragment for an overview of trainings, like a dashboard.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class StartFragment extends Fragment {
 

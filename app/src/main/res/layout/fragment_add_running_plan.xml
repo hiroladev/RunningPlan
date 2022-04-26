@@ -60,7 +60,7 @@ This software us licensed under the AGPL-3.0 or later.
     <EditText
             android:id="@+id/fgmt_add_running_plan_remarks_edittext"
             android:layout_width="362dp"
-            android:layout_height="216dp"
+            android:layout_height="100dp"
             android:inputType="textMultiLine"
             android:gravity="start|top"
             android:ems="10"

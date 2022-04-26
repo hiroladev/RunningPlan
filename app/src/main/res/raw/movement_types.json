@@ -1,86 +1,86 @@
 [
     {
         "key": "P",
-        "stringForKey": "P",
         "speed": 0.0,
         "pace": 0.0,
         "colorKeyString": "green"
     },
     {
         "key": "LG",
-        "stringForKey": "LG",
         "speed": 3.0,
         "pace": 20.0,
-        "colorKeyString": "green"
+        "colorKeyString": "blue"
     },
     {
         "key": "ZG",
-        "stringForKey": "ZG",
         "speed": 5.0,
         "pace": 12.0,
-        "colorKeyString": "green"
+        "colorKeyString": "blue"
     },
     {
         "key": "EL",
-        "stringForKey": "EL",
         "speed": 8.75,
         "pace": 7.06,
-        "colorKeyString": "green"
+        "colorKeyString": "blue"
     },
     {
         "key": "LL",
-        "stringForKey": "LL",
         "speed": 9.23,
         "pace": 6.3,
-        "colorKeyString": "green"
+        "colorKeyString": "blue"
     },
     {
         "key": "LDL",
-        "stringForKey": "LDL",
         "speed": 10.00,
         "pace": 6.0,
-        "colorKeyString": "green"
+        "colorKeyString": "blue"
+    },
+    {
+        "key": "LODL",
+        "speed": 9.23,
+        "pace": 6.3,
+        "colorKeyString": "blue"
     },
     {
         "key": "ZDL",
-        "stringForKey": "ZDL",
         "speed": 12.00,
         "pace": 5.0,
-        "colorKeyString": "green"
+        "colorKeyString": "blue"
+    },
+    {
+        "key": "TDL",
+        "speed": 12.00,
+        "pace": 5.0,
+        "colorKeyString": "blue"
     },
     {
         "key": "L",
-        "stringForKey": "L",
         "speed": 10.00,
         "pace": 6.0,
-        "colorKeyString": "green"
+        "colorKeyString": "blue"
     },
     {
         "key": "FL",
-        "stringForKey": "FL",
         "speed": 10.91,
         "pace": 5.3,
-        "colorKeyString": "green"
+        "colorKeyString": "blue"
     },
     {
         "key": "SL",
-        "stringForKey": "SL",
         "speed": 12.00,
         "pace": 5.0,
-        "colorKeyString": "green"
+        "colorKeyString": "blue"
     },
     {
         "key": "SSL",
-        "stringForKey": "SSL",
         "speed": 13.33,
         "pace": 4.3,
-        "colorKeyString": "green"
+        "colorKeyString": "blue"
     },
     {
         "key": "SP",
-        "stringForKey": "SP",
         "speed": 15.00,
         "pace": 4.0,
-        "colorKeyString": "green"
+        "colorKeyString": "blue"
     }
 ]

@@ -16,7 +16,7 @@ import de.hirola.sportsapplications.model.Track;
  * Connection to the background service.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class TrainingServiceConnection implements ServiceConnection {
 

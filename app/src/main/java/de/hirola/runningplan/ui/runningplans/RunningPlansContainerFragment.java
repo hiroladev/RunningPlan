@@ -14,7 +14,7 @@ import de.hirola.runningplan.R;
  * The main fragment for the running plans.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class RunningPlansContainerFragment extends Fragment {
 

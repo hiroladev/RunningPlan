@@ -14,7 +14,7 @@ import de.hirola.runningplan.R;
  * Fragment to view and edit saved trainings.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class InfoTrainingsFragment extends Fragment {
 

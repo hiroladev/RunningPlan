@@ -24,7 +24,7 @@ import java.util.List;
  * Custom adapter for a track to view in a list.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class InfoTrackRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

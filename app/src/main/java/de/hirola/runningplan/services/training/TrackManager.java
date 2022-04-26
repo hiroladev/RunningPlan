@@ -26,7 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Manager to handle the recorded track locations.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class TrackManager {
 

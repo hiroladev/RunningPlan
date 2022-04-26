@@ -23,7 +23,7 @@ import java.util.List;
  * Fragment to view and edit recorded tracks.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class InfoTracksFragment extends Fragment implements View.OnClickListener {
 

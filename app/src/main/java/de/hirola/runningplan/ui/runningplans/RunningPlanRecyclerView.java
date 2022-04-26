@@ -1,5 +1,6 @@
 package de.hirola.runningplan.ui.runningplans;
 
+import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
@@ -25,13 +26,13 @@ import java.util.List;
  * Custom Adapter for RunningPlans to view in list.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final SportsLibrary sportsLibrary;
     private final Context context;
-    private final List<RunningPlan> runningPlans;
+    private List<RunningPlan> runningPlans;
     private View.OnClickListener onClickListener;
 
     public RunningPlanRecyclerView(Context context, List<RunningPlan> runningPlans) {
@@ -140,6 +141,12 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setRunningPlans(List<RunningPlan> runningPlans) {
+        this.runningPlans = runningPlans;
+        notifyDataSetChanged();
     }
 
 }

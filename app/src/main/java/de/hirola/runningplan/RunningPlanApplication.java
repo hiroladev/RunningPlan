@@ -20,7 +20,7 @@ import java.io.InputStream;
  * In all activities you can access to this object.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class RunningPlanApplication extends Application
         implements SportsLibraryApplication, SharedPreferences.OnSharedPreferenceChangeListener {

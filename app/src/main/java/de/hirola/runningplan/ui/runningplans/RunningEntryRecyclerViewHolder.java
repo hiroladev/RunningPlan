@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * Custom Adapter for running plan units to view in list.
  *
  * @author Michael Schmidt (Hirola)
- * @since 0.1
+ * @since v0.1
  */
 public class RunningEntryRecyclerViewHolder extends RecyclerView.ViewHolder {
 
