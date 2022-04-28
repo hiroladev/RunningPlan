@@ -150,7 +150,8 @@ public class TrainingFragment extends Fragment
                         // show training infos
                         showLastTraining();
                         // save training
-                        boolean saveTrainings = sharedPreferences.getBoolean(Global.PreferencesKeys.saveTrainings, false);
+                        boolean saveTrainings = sharedPreferences
+                                .getBoolean(Global.UserPreferencesKeys.SAVE_TRAINING, false);
                         if (saveTrainings) {
                             if (!saveTraining(recordedTrack)) {
                                 // error while saving the training
@@ -193,10 +194,10 @@ public class TrainingFragment extends Fragment
         // set the flag - can we send notifications?
         SharedPreferences sharedPreferences =
                 requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
-        useNotifications = sharedPreferences.getBoolean(Global.PreferencesKeys.useNotifications, true);
+        useNotifications = sharedPreferences.getBoolean(Global.UserPreferencesKeys.USE_NOTIFICATIONS, true);
 
         // checking location permissions
-        useLocationData = sharedPreferences.getBoolean(Global.PreferencesKeys.useLocationData, false);
+        useLocationData = sharedPreferences.getBoolean(Global.UserPreferencesKeys.USE_LOCATIONS, false);
         locationPermissionRequest =
             registerForActivityResult(new ActivityResultContracts
                             .RequestMultiplePermissions(), result -> {

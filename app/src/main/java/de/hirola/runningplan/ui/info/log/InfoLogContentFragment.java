@@ -49,7 +49,7 @@ public class InfoLogContentFragment extends Fragment {
         SharedPreferences sharedPreferences =
                 requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
         sendDebugLogButton.setEnabled(sharedPreferences
-                .getBoolean(Global.PreferencesKeys.sendDebugLog, false));
+                .getBoolean(Global.UserPreferencesKeys.SEND_DEBUG_LOG, false));
         logContentTextView.setText(logContent.contentString);
         logContentTextView.setMovementMethod(new ScrollingMovementMethod());
         return logContentView;

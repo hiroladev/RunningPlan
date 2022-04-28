@@ -70,37 +70,36 @@ public class SettingsFragment extends PreferenceFragmentCompat
         // boolean preferences
         if (preference instanceof SwitchPreferenceCompat) {
             // add trainings
-            if (key.equalsIgnoreCase(Global.PreferencesKeys.saveTrainings)) {
+            if (key.equalsIgnoreCase(Global.UserPreferencesKeys.SAVE_TRAINING)) {
                 editor.putBoolean(key, (Boolean) newValue);
             }
             // use location data
-            if (key.equalsIgnoreCase(Global.PreferencesKeys.useLocationData)) {
+            if (key.equalsIgnoreCase(Global.UserPreferencesKeys.USE_LOCATIONS)) {
                 // TODO: request for..
                 editor.putBoolean(key, (Boolean) newValue);
             }
             // use fine location data
-            if (key.equalsIgnoreCase(Global.PreferencesKeys.useFineLocationData))
+            if (key.equalsIgnoreCase(Global.UserPreferencesKeys.USE_LOCATIONS))
             {
                 // TODO: request for..
                 editor.putBoolean(key, (Boolean) newValue);
             }
             // use notifications
-            if (key.equalsIgnoreCase(Global.PreferencesKeys.useNotifications)) {
+            if (key.equalsIgnoreCase(Global.UserPreferencesKeys.USE_NOTIFICATIONS)) {
                 editor.putBoolean(key, (Boolean) newValue);
             }
             // use sync
-            if (key.equalsIgnoreCase(Global.PreferencesKeys.useSync))
+            if (key.equalsIgnoreCase(Global.UserPreferencesKeys.USE_SYNC))
             {
-                // TODO: kinto dialog
                 editor.putBoolean(key, (Boolean) newValue);
             }
             // set debug mode
-            if (key.equalsIgnoreCase(Global.PreferencesKeys.debugMode))
+            if (key.equalsIgnoreCase(Global.UserPreferencesKeys.DEBUG_MODE))
             {
                 editor.putBoolean(key, (Boolean) newValue);
             }
             // send debug logs or not
-            if (key.equalsIgnoreCase(Global.PreferencesKeys.sendDebugLog))
+            if (key.equalsIgnoreCase(Global.UserPreferencesKeys.SEND_DEBUG_LOG))
             {
                 editor.putBoolean(key, (Boolean) newValue);
             }
@@ -108,14 +107,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
         // text preferences
         if (preference instanceof EditTextPreference) {
             // email address
-            if (key.equalsIgnoreCase(Global.PreferencesKeys.userEmailAddress)) {
+            if (key.equalsIgnoreCase(Global.UserPreferencesKeys.USER_EMAIL_ADDRESS)) {
                 // TODO: check if valid email format
                 String emailAddress = (String) newValue;
                 editor.putString(key, emailAddress);
                 appUser.setEmailAddress(emailAddress);
             }
             // max pulse
-            if (key.equalsIgnoreCase(Global.PreferencesKeys.userMaxPulse)) {
+            if (key.equalsIgnoreCase(Global.UserPreferencesKeys.USER_MAX_PULSE)) {
                 String maxPulse = (String) newValue;
                 try {
                     Integer.parseInt(maxPulse);
@@ -141,7 +140,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     }
                 }
                 // gender
-                if (key.equalsIgnoreCase(Global.PreferencesKeys.userGender)) {
+                if (key.equalsIgnoreCase(Global.UserPreferencesKeys.USER_GENDER)) {
                     editor.putString(key, value);
                     // try to calculate the max pulse
                     calculateMaxPulse();
@@ -162,7 +161,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     }
                 }
                 // training level
-                if (key.equalsIgnoreCase(Global.PreferencesKeys.userTrainingLevel)) {
+                if (key.equalsIgnoreCase(Global.UserPreferencesKeys.USER_TRAINING_LEVEL)) {
                     editor.putString(key, value);
                     try {
                         appUser.setTrainingLevel(Integer.parseInt(value));
@@ -181,7 +180,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                     }
                 }
                     // birthday
-                if (key.equalsIgnoreCase(Global.PreferencesKeys.userBirthday)) {
+                if (key.equalsIgnoreCase(Global.UserPreferencesKeys.USER_BIRTHDAY)) {
                     // build a birthday from selected year
                     editor.putString(key, value);
                     // try to calculate the max pulse
@@ -238,9 +237,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
         // use notification by default
         // do not look at your phone all the time while running
         boolean useNotifications =
-                sharedPreferences.getBoolean(Global.PreferencesKeys.useNotifications, true);
+                sharedPreferences.getBoolean(Global.UserPreferencesKeys.USE_NOTIFICATIONS, true);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Global.PreferencesKeys.useNotifications, useNotifications);
+        editor.putBoolean(Global.UserPreferencesKeys.USE_NOTIFICATIONS, useNotifications);
         editor.apply();
     }
 
@@ -264,7 +263,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                         }
                     }
                 } else if (preference instanceof ListPreference) {
-                    if (key.equalsIgnoreCase(Global.PreferencesKeys.userGender)) {
+                    if (key.equalsIgnoreCase(Global.UserPreferencesKeys.USER_GENDER)) {
                         // gender: fill the list dynamically with values
                         // Integer = entryValues, String = entries
                         Map<Integer, String> genderValues = Global.TrainingParameter.genderValues;
@@ -300,7 +299,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                             index++;
                         }
                         ((ListPreference) preference).setEntryValues(entryValues);
-                    } else if (key.equalsIgnoreCase(Global.PreferencesKeys.userTrainingLevel)) {
+                    } else if (key.equalsIgnoreCase(Global.UserPreferencesKeys.USER_TRAINING_LEVEL)) {
                         // training level: fill the list dynamically with values
                         // Integer = entryValues, String = entries
                         Map<Integer, String> trainingLevel = Global.TrainingParameter.trainingLevel;
@@ -336,7 +335,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                             index++;
                         }
                         ((ListPreference) preference).setEntryValues(entryValues);
-                    } else if (key.equalsIgnoreCase(Global.PreferencesKeys.userBirthday)) {
+                    } else if (key.equalsIgnoreCase(Global.UserPreferencesKeys.USER_BIRTHDAY)) {
                         {
                             // birthday(year)
                             // fill the list dynamically with values
@@ -361,7 +360,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
                         ((EditTextPreference) preference)
                                 .setText(sharedPreferences.getString(preference.getKey(), ""));
                         // in some preferences only numbers allowed
-                        if (preference.getKey().equalsIgnoreCase(Global.PreferencesKeys.userMaxPulse)) {
+                        if (preference.getKey().equalsIgnoreCase(Global.UserPreferencesKeys.USER_MAX_PULSE)) {
                             ((EditTextPreference) preference).setOnBindEditTextListener(this);
                         }
                     } catch (ClassCastException exception) {
@@ -375,8 +374,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
         }
         // set the use location of true
         // dependency by xml -> Exception if preferences not exist
-        Preference useLocationDataPref = findPreference(Global.PreferencesKeys.useLocationData);
-        Preference useFineLocationDataPref = findPreference(Global.PreferencesKeys.useFineLocationData);
+        Preference useLocationDataPref = findPreference(Global.UserPreferencesKeys.USE_LOCATIONS);
+        Preference useFineLocationDataPref = findPreference(Global.UserPreferencesKeys.USE_FINE_LOCATIONS);
         if (useLocationDataPref != null && useFineLocationDataPref != null) {
             useFineLocationDataPref.setDependency(useLocationDataPref.getKey());
         }
@@ -436,10 +435,10 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
         // add to preferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Global.PreferencesKeys.userMaxPulse, String.valueOf(maxPulse));
+        editor.putString(Global.UserPreferencesKeys.USER_MAX_PULSE, String.valueOf(maxPulse));
         editor.apply();
         // reload the preference in ui
-        Preference preference = findPreference(Global.PreferencesKeys.userMaxPulse);
+        Preference preference = findPreference(Global.UserPreferencesKeys.USER_MAX_PULSE);
         if (preference instanceof EditTextPreference) {
             ((EditTextPreference) preference).setText(String.valueOf(maxPulse));
         }

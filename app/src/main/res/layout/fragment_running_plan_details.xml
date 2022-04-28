@@ -19,7 +19,7 @@ This software us licensed under the AGPL-3.0 or later.
 
             <EditText
                     android:id="@+id/fgmt_running_plan_details_name_label"
-                    android:layout_width="152dp"
+                    android:layout_width="100dp"
                     android:layout_height="48dp"
                     android:inputType="none"
                     android:text="@string/running_plan_name"
@@ -37,8 +37,8 @@ This software us licensed under the AGPL-3.0 or later.
 
             <EditText
                     android:id="@+id/fgmt_add_running_plan_name_edittext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
                     android:inputType="textPersonName"
                     android:ems="10"
                     app:layout_constraintStart_toEndOf="@+id/fgmt_running_plan_details_name_label"
@@ -48,7 +48,7 @@ This software us licensed under the AGPL-3.0 or later.
 
             <EditText
                     android:id="@+id/fgmt_running_plan_details_remarks_label"
-                    android:layout_width="368dp"
+                    android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:inputType="none"
                     android:text="@string/remarks"
@@ -65,7 +65,7 @@ This software us licensed under the AGPL-3.0 or later.
 
             <EditText
                     android:id="@+id/fgmt_running_plan_details_remarks_edittext"
-                    android:layout_width="362dp"
+                    android:layout_width="0dp"
                     android:layout_height="150dp"
                     android:inputType="textMultiLine"
                     android:gravity="start|top"

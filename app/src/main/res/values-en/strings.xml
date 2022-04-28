@@ -35,7 +35,7 @@
     <string name="training_day">Training day</string>
     <string name="movement_type_not_found">Unknown</string>
     <string name="running_plan">Running plan</string>
-    <string name="running_plan_name">Running plan name</string>
+    <string name="running_plan_name">Name</string>
     <string name="select_training_date">Select training day</string>
     <string name="total_time">Total time</string>
     <string name="running_unit">Running unit</string>

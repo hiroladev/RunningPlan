@@ -153,7 +153,7 @@
 
     <!-- Running Plans -->
     <string name="running_plan">Laufplan</string>
-    <string name="running_plan_name">Laufplan-Name</string>
+    <string name="running_plan_name">Name</string>
     <string name="actual_running_plan">Aktueller Laufplan</string>
     <string name="select_training_date">Trainingstag wählen</string>
     <string name="total_time">Gesamtdauer</string>

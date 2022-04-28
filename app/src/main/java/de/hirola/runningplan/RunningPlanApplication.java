@@ -39,13 +39,13 @@ public class RunningPlanApplication extends Application
             Context context = getApplicationContext();
             SharedPreferences sharedPreferences =
                     context.getSharedPreferences(context.getString(R.string.preference_file), Context.MODE_PRIVATE);
-            debugMode = sharedPreferences.getBoolean(Global.PreferencesKeys.debugMode, false);
+            debugMode = sharedPreferences.getBoolean(Global.UserPreferencesKeys.DEBUG_MODE, false);
             // while app is using, the user change settings
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-            canSendDebugLogs = sharedPreferences.getBoolean(Global.PreferencesKeys.sendDebugLog, false);
+            canSendDebugLogs = sharedPreferences.getBoolean(Global.UserPreferencesKeys.SEND_DEBUG_LOG, false);
             // initialize the SportsLibrary, e.g. local datastore and logging,
             // import the templates on first start
-            sportsLibrary = SportsLibrary.getInstance(debugMode, appDirectory,this);
+            sportsLibrary = SportsLibrary.getInstance(debugMode, null, appDirectory,this);
         } catch (SportsLibraryException | InstantiationException exception) {
             throw new RuntimeException("An exception occurred while initialize the app: "
                     + exception);
@@ -90,10 +90,10 @@ public class RunningPlanApplication extends Application
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(Global.PreferencesKeys.debugMode)) {
+        if (key.equals(Global.UserPreferencesKeys.DEBUG_MODE)) {
             debugMode = sharedPreferences.getBoolean(key, false);
         }
-        if (key.equals(Global.PreferencesKeys.sendDebugLog)) {
+        if (key.equals(Global.UserPreferencesKeys.SEND_DEBUG_LOG)) {
             canSendDebugLogs = sharedPreferences.getBoolean(key, false);
         }
     }

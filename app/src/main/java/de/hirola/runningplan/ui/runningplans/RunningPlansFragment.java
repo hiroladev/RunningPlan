@@ -69,7 +69,7 @@ public class RunningPlansFragment extends Fragment
         // should I hide templates?
         SharedPreferences sharedPreferences =
                 requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
-        boolean hideTemplates = sharedPreferences.getBoolean(Global.PreferencesKeys.hideTemplates,false);
+        boolean hideTemplates = sharedPreferences.getBoolean(Global.UserPreferencesKeys.HIDE_TEMPLATES,false);
         // visualize the list of running plans
         if (hideTemplates) {
             Stream<RunningPlan> filteredStream = runningPlans.stream().filter(runningPlan -> !runningPlan.isTemplate());

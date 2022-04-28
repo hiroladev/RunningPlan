@@ -47,6 +47,7 @@ import java.io.InputStream;
     private TextView importFileNameLabel;
     private Button selectImportFileButton;
     private Button importRunningPlanButton;
+    private SwitchCompat importAsTemplateSwitch;
 
     public AddRunningPlanFragment() {
         // Required empty public constructor
@@ -103,7 +104,7 @@ import java.io.InputStream;
         importRunningPlanButton = view.findViewById(R.id.fgmt_add_running_plan_import_button);
         importRunningPlanButton.setOnClickListener(this);
         // initialize the switch
-        SwitchCompat importAsTemplateSwitch = view.findViewById(R.id.fgmt_add_running_plan_template_switch);
+        importAsTemplateSwitch = view.findViewById(R.id.fgmt_add_running_plan_template_switch);
     }
 
     private void selectTemplateFile() {
@@ -159,6 +160,9 @@ import java.io.InputStream;
                     runningPlan.setName(name);
                     runningPlan.setRemarks(remarks);
                     sportsLibrary.add(runningPlan);
+                    if (importAsTemplateSwitch.isChecked()) {
+                        runningPlan.setAsTemplate(true);
+                    }
                     if (viewModel.addObject(runningPlan)) {
                         // info to user
                         ModalOptionDialog.showMessageDialog(
