@@ -133,10 +133,9 @@
         version.
     </string>
     <string name="enable_sync_summary_off">No data will be synced.</string>
-    <string name="enable_debug_mode_summary_on">Logs are generated. Helpful for troubleshooting.\
-        Only available in the next version.</string>
+    <string name="enable_debug_mode_summary_on">Logs are generated. Helpful for troubleshooting.</string>
     <string name="enable_debug_mode_summary_off">No logs are generated.</string>
-    <string name="send_debug_logs_summary_on">Errors can be reported.</string>
+    <string name="send_debug_logs_summary_on">Errors can be reported. Only available in the next version.</string>
     <string name="send_debug_logs_summary_off">Errors cannot be reported.</string>
     <string name="menu_item_logs">Debug logs</string>
     <string name="clear_all_logs">Clear all logs</string>

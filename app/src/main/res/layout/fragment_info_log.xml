@@ -14,7 +14,7 @@ This software us licensed under the AGPL-3.0 or later.
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fgmt_info_log_recyclerview"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"

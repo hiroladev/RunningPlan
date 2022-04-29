@@ -185,9 +185,9 @@
     <string name="enable_notifications_summary_off">Es werden keine Benachrichtigungen angezeigt.</string>
     <string name="enable_sync_summary_on">Daten werden synchronisiert. Steht erst in der nächsten Version zur Verfügung.</string>
     <string name="enable_sync_summary_off">Es werden keine Daten synchronisiert.</string>
-    <string name="enable_debug_mode_summary_on">Es werden Logs erzeugt. Hilfreich für die Fehlersuche. Steht erst in der nächsten Version zur Verfügung.</string>
+    <string name="enable_debug_mode_summary_on">Es werden Logs erzeugt. Hilfreich für die Fehlersuche.</string>
     <string name="enable_debug_mode_summary_off">Es werden keine Logs erzeugt.</string>
-    <string name="send_debug_logs_summary_on">Fehler können gemeldet werden.</string>
+    <string name="send_debug_logs_summary_on">Fehler können gemeldet werden. Steht erst in der nächsten Version zur Verfügung.</string>
     <string name="send_debug_logs_summary_off">Fehler können nicht gemeldet werden.</string>
 
 </resources>
