@@ -4,14 +4,20 @@ Copyright 2021 by Michael Schmidt, Hirola Consulting
 This software us licensed under the AGPL-3.0 or later.
 </copyright-->
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
+        xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_info_container"
+    <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="match_parent" tools:ignore="SpeakableTextPresentCheck">
+
+        <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

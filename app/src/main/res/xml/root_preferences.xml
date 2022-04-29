@@ -47,7 +47,7 @@
             app:title="@string/title_location">
 
         <SwitchPreferenceCompat
-                app:key="use_location_data"
+                app:key="use_locations"
                 app:title="@string/use_location_data"
                 app:summaryOn="@string/use_locations_summary_on"
                 app:summaryOff="@string/use_locations_summary_off" />

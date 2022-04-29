@@ -3,6 +3,8 @@ package de.hirola.runningplan;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.LocaleList;
 import de.hirola.sportsapplications.Global;
 import de.hirola.sportsapplications.SportsLibrary;
 import de.hirola.sportsapplications.SportsLibraryApplication;
@@ -10,6 +12,7 @@ import de.hirola.sportsapplications.SportsLibraryException;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Locale;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -45,15 +48,13 @@ public class RunningPlanApplication extends Application
             canSendDebugLogs = sharedPreferences.getBoolean(Global.UserPreferencesKeys.SEND_DEBUG_LOG, false);
             // initialize the SportsLibrary, e.g. local datastore and logging,
             // import the templates on first start
-            sportsLibrary = SportsLibrary.getInstance(debugMode, null, appDirectory,this);
+            // get the actual locale
+            Locale locale = LocaleList.getDefault().get(0);
+            sportsLibrary = SportsLibrary.getInstance(debugMode, locale, appDirectory,this);
         } catch (SportsLibraryException | InstantiationException exception) {
             throw new RuntimeException("An exception occurred while initialize the app: "
                     + exception);
         }
-    }
-
-    public boolean isCanSendDebugLogs() {
-        return canSendDebugLogs;
     }
 
     @Override
@@ -97,4 +98,5 @@ public class RunningPlanApplication extends Application
             canSendDebugLogs = sharedPreferences.getBoolean(key, false);
         }
     }
+
 }

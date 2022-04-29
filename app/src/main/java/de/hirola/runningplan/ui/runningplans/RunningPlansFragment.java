@@ -66,17 +66,7 @@ public class RunningPlansFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_running_plans, container, false);
-        // should I hide templates?
-        SharedPreferences sharedPreferences =
-                requireContext().getSharedPreferences(requireContext().getString(R.string.preference_file), Context.MODE_PRIVATE);
-        boolean hideTemplates = sharedPreferences.getBoolean(Global.UserPreferencesKeys.HIDE_TEMPLATES,false);
-        // visualize the list of running plans
-        if (hideTemplates) {
-            Stream<RunningPlan> filteredStream = runningPlans.stream().filter(runningPlan -> !runningPlan.isTemplate());
-            listAdapter = new RunningPlanRecyclerView(requireContext(), filteredStream.collect(Collectors.toList()));
-        } else {
-            listAdapter = new RunningPlanRecyclerView(requireContext(), runningPlans);
-        }
+        listAdapter = new RunningPlanRecyclerView(requireContext(), runningPlans);
         // details on click
         listAdapter.setOnClickListener(this);
         recyclerView = view.findViewById(R.id.fgmt_running_plans_recyclerview);
@@ -125,7 +115,7 @@ public class RunningPlansFragment extends Fragment
                                             }
                                         });
                             } else {
-                                //TODO: Nutzer informieren
+                                //TODO: info to the user
                                 listAdapter.notifyDataSetChanged();
                             }
 

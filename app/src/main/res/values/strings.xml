@@ -27,7 +27,7 @@
     <!-- Menu -->
     <string name="menu_image_alt_text">Menu</string>
     <string name="about_link" translatable="false">Info</string>
-    <string name="licenses_link">Lizenzen / Bibliotheken</string>
+    <string name="licenses_link">Lizenzen</string>
     <string name="faq_link" translatable="false">FAQ</string>
     <string name="help_link">Hilfe</string>
     <string name="issues_link">Fehler / Wünsche</string>
@@ -134,18 +134,6 @@
 
     <!-- Movement Data -->
     <string name="movement_type_not_found">Unbekannt</string>
-    <string name="P">Pause</string>
-    <string name="EL">Einlaufen</string>
-    <string name="LG">Langsames Gehen</string>
-    <string name="ZG">Zügiges Gehen</string>
-    <string name="LL">Langsames Laufen</string>
-    <string name="FL">Flottes Laufen</string>
-    <string name="SL">Schnelles Laufen</string>
-    <string name="SSL">Sehr schnelles Laufen</string>
-    <string name="LDL">Langsamer Dauerlauf</string>
-    <string name="ZDL">Zügiger Dauerlauf</string>
-    <string name="L">Laufen</string>
-    <string name="R">Rennen</string>
     <string name="movement_type_summary">Arten der Bewegung während des Lauftrainings</string>
 
     <!-- Location Data -->

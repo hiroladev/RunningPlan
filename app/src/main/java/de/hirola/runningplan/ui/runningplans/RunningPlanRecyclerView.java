@@ -1,6 +1,7 @@
 package de.hirola.runningplan.ui.runningplans;
 
 import android.annotation.SuppressLint;
+import android.os.LocaleList;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hirola.runningplan.R;
@@ -18,6 +19,7 @@ import org.tinylog.Logger;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -100,15 +102,15 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
                 // user's running plans
                 viewHolder.remarksTextView.setText(runningPlan.getRemarks());
             }
-            // Startdatum
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            // start date, get the actual locale
+            Locale locale = LocaleList.getDefault().get(0);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withLocale(locale);
             viewHolder.startDateTextView.setText(formatter.format(runningPlan.getStartDate()));
-            // Gesamtdauer des Trainings (komplette Trainingszeit in Minuten!)
+            // total duration of the training (total training time in minutes!)
             viewHolder.durationTextView.setText("");
             long duration = runningPlan.getDuration();
             if (duration > 0) {
-                //  Darstellung in hh:mm
-                //  in h und min umrechnen
+                //  presentation in hh:mm, convert to hours and minutes
                 long hours = duration / 60;
                 long minutes = duration % 60;
                 String durationString;
@@ -126,7 +128,7 @@ public class RunningPlanRecyclerView extends RecyclerView.Adapter<RecyclerView.V
             } else {
                 viewHolder.durationTextView.setText(R.string.duration_null_hours_minutes);
             }
-            // Laufplan abgeschlossen in Prozent
+            // running plan complete percentage
             viewHolder.percentCompletedTextView.setText(String.valueOf(runningPlan.percentCompleted()));
         }
     }

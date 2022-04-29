@@ -1,8 +1,13 @@
 package de.hirola.runningplan.model;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import de.hirola.runningplan.R;
 import de.hirola.runningplan.RunningPlanApplication;
+import de.hirola.runningplan.ui.runningplans.RunningPlanRecyclerView;
+import de.hirola.sportsapplications.Global;
 import de.hirola.sportsapplications.database.DatastoreDelegate;
 import de.hirola.sportsapplications.database.PersistentObject;
 import de.hirola.sportsapplications.SportsLibrary;
@@ -11,6 +16,8 @@ import de.hirola.sportsapplications.model.*;
 import android.app.Application;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Copyright 2021 by Michael Schmidt, Hirola Consulting
@@ -25,10 +32,12 @@ import java.util.List;
  */
 public class RunningPlanViewModel {
 
+    private final Application application;
     private final SportsLibrary sportsLibrary;
 
     public RunningPlanViewModel(@NonNull Application application, @Nullable DatastoreDelegate delegate)  {
         // initialize attributes
+        this.application = application;
         sportsLibrary = ((RunningPlanApplication) application).getSportsLibrary();
         if (delegate != null) {
             sportsLibrary.addDelegate(delegate);
@@ -47,12 +56,25 @@ public class RunningPlanViewModel {
 
     /**
      * Get the list of running plans, sorted by order number.
+     * If the user setting HIDE_TEMPLATES is <B>true</B>, the list only contains plans
+     * that were not defined as a template (isTemplate).
      * The list can be empty.
      *
-     * @return A list of running plans, sorted by order number.
+     * @return A list of (filtered) running plans, sorted by order number.
+     * @see RunningPlan
      */
     public List<RunningPlan> getRunningPlans() {
-        return sportsLibrary.getRunningPlans();
+        List<RunningPlan> runningPlans = sportsLibrary.getRunningPlans();
+        // should I hide templates?
+        SharedPreferences sharedPreferences =
+                application.getSharedPreferences(application.getString(R.string.preference_file), Context.MODE_PRIVATE);
+        boolean hideTemplates = sharedPreferences.getBoolean(Global.UserPreferencesKeys.HIDE_TEMPLATES,false);
+        // filter the list
+        if (hideTemplates) {
+            Stream<RunningPlan> filteredStream = runningPlans.stream().filter(runningPlan -> !runningPlan.isTemplate());
+            return filteredStream.collect(Collectors.toList());
+        }
+        return runningPlans;
     }
 
     /**

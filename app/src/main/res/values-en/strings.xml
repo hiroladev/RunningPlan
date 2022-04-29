@@ -93,23 +93,11 @@
     <string name="title_actual_running_units">Running units</string>
     <string name="menu_image_alt_text">Menu</string>
     <string name="no_content">The content could not be loaded.</string>
-    <string name="P">Pause</string>
-    <string name="LG">Slow Going</string>
-    <string name="ZG">Speedy Going</string>
-    <string name="L">Running</string>
-    <string name="LL">Slow Running</string>
-    <string name="FL">Fast Running</string>
-    <string name="SL">Speedy Running</string>
-    <string name="SSL">More speedy Running</string>
     <string name="movement_type_summary">Types of movement during running training</string>
-    <string name="R">Race</string>
     <string name="clear_all_tracks">Clear all tracks</string>
     <string name="menu_item_track">Tracks</string>
     <string name="ask_before_clear_all_tracks">Do you want to delete all tracks?</string>
     <string name="no_active_running_plan">Please select a running plan for training.</string>
-    <string name="EL">Run in</string>
-    <string name="LDL">Slow continuous run</string>
-    <string name="ZDL">Fast continuous run</string>
     <string name="running_plan_start_remarks">Running plan to start running</string>
     <string name="running_plan_start_test_remarks">Running plan for App tests</string>
     <string name="running_plan_start_60_remarks">Continuation of the running plan Start</string>
@@ -133,22 +121,23 @@
     <string name="no_trainings">No training data available yet.</string>
     <string name="total_durations">Total duration</string>
     <string name="total_distance">Total distance</string>
-    <string name="use_locations_summary_on" translatable="false">Runs can be recorded (distance, speed).</string>
-    <string name="use_locations_summary_off" translatable="false">Runs are not recorded.</string>
-    <string name="save_trainings_summary_on" translatable="false">Training data with recorded tracks are saved.</string>
-    <string name="save_trainings_summary_off" translatable="false">Training data is not saved.</string>
-    <string name="hide_templates_summary_on" translatable="false">Only own running plans are displayed.</string>
-    <string name="hide_templates_summary_off" translatable="false">All running plans are displayed.</string>
-    <string name="enable_notifications_summary_on" translatable="false">Notifications are displayed.</string>
-    <string name="enable_notifications_summary_off" translatable="false">Notifications are not displayed.</string>
-    <string name="enable_sync_summary_on" translatable="false">Data is synchronized. Only available in the next
+    <string name="use_locations_summary_on">Runs can be recorded (distance, speed).</string>
+    <string name="use_locations_summary_off">Runs are not recorded.</string>
+    <string name="save_trainings_summary_on">Training data with recorded tracks are saved.</string>
+    <string name="save_trainings_summary_off" >Training data is not saved.</string>
+    <string name="hide_templates_summary_on">Only own running plans are displayed.</string>
+    <string name="hide_templates_summary_off">All running plans are displayed.</string>
+    <string name="enable_notifications_summary_on">Notifications are displayed.</string>
+    <string name="enable_notifications_summary_off">Notifications are not displayed.</string>
+    <string name="enable_sync_summary_on">Data is synchronized. Only available in the next
         version.
     </string>
-    <string name="enable_sync_summary_off" translatable="false">No data will be synced.</string>
-    <string name="enable_debug_mode_summary_on" translatable="false">Logs are generated. Helpful for troubleshooting. Only available in the next version.</string>
-    <string name="enable_debug_mode_summary_off" translatable="false">No logs are generated.</string>
-    <string name="send_debug_logs_summary_on" translatable="false">Errors can be reported.</string>
-    <string name="send_debug_logs_summary_off" translatable="false">Errors cannot be reported.</string>
+    <string name="enable_sync_summary_off">No data will be synced.</string>
+    <string name="enable_debug_mode_summary_on">Logs are generated. Helpful for troubleshooting.\
+        Only available in the next version.</string>
+    <string name="enable_debug_mode_summary_off">No logs are generated.</string>
+    <string name="send_debug_logs_summary_on">Errors can be reported.</string>
+    <string name="send_debug_logs_summary_off">Errors cannot be reported.</string>
     <string name="menu_item_logs">Debug logs</string>
     <string name="clear_all_logs">Clear all logs</string>
     <string name="ask_before_clear_all_logs">Do you want to delete all logs?</string>
@@ -156,11 +145,7 @@
     <string name="sending_failed">Sending failed.</string>
     <string name="recorded_track_not_completed">The track could not be completed.</string>
     <string name="developer_version">Developer Version</string>
-    <string name="help_link">
-        <a href="https://github.com/hiroladev/RunningPlan/wiki/Help">Help</a>
-    </string>
-    <string name="licenses_link">
-        <a href="https://github.com/hiroladev/RunningPlan/wiki/Licenses">Licenses / Libraries</a>
-    </string>
+    <string name="help_link">Help</string>
+    <string name="licenses_link">Licenses</string>
     <string name="issues_link">Issues / Requests</string>
 </resources>

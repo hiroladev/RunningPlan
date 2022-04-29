@@ -35,14 +35,12 @@ import java.util.Locale;
  */
 public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final Context context;
     private final SportsLibrary sportsLibrary;
     private final RunningPlan runningPlan;
     private final List<RunningPlanEntry> runningPlanEntries;
     private final List<String> trainingDaysAsString;
 
     public RunningEntryRecyclerView(Context context, @NonNull RunningPlan runningPlan) {
-        this.context = context;
         this.runningPlan = runningPlan;
         this.runningPlanEntries = runningPlan.getEntries();
         trainingDaysAsString = getTrainingDaysAsStrings();
@@ -84,32 +82,12 @@ public class RunningEntryRecyclerView extends RecyclerView.Adapter<RecyclerView.
             int loop = 1;
             for (RunningUnit runningUnit: runningUnits) {
                 MovementType movementType = runningUnit.getMovementType();
-                String key = movementType.getKey();
                 String durationString = String.valueOf(runningUnit.getDuration());
                 unitsAsString.append(durationString).append(" min ");
-                // load the string dynamically
-                int movementTypeResourceStringId = context
-                        .getResources()
-                        .getIdentifier(key, "string", context.getPackageName());
                     if (loop < runningUnits.size()) {
-                        try {
-
-                            unitsAsString.append(context.getString(movementTypeResourceStringId)).append("\n");
-                        } catch (Resources.NotFoundException exception) {
-                            unitsAsString.append(key).append("\n");
-                            if (sportsLibrary.isDebugMode()) {
-                                Logger.debug("Movement type resource not found,", exception);
-                            }
-                        }
+                        unitsAsString.append(movementType.getName()).append("\n");
                     } else {
-                        try {
-                            unitsAsString.append(context.getString(movementTypeResourceStringId));
-                        } catch (Resources.NotFoundException exception) {
-                            unitsAsString.append(key);
-                            if (sportsLibrary.isDebugMode()) {
-                                Logger.debug("Movement type resource not found,", exception);
-                            }
-                        }
+                        unitsAsString.append(movementType.getName());
                     }
 
                 loop++;
