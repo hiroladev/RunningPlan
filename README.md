@@ -106,6 +106,7 @@ in the PlayStore, as well as in F-Droid.
 Until then, you can find the directly installable APK on Github. You can view the source code here and
 just have to trust me.
 
+
 ## Screenshots
 
 |                                                                **Overview**                                                                 | **Training** |                                                              **Running plans**                                                              |
@@ -115,6 +116,13 @@ just have to trust me.
 |                                                     **Details of running plan**                                                     | |
 |:-------------------------------------------------------------------------------------------------------------------------------------------:| :---: | 
 | <img src="https://user-images.githubusercontent.com/48058062/159231070-c5fea648-cc87-4493-b562-3b19f4fd6285.png" width="270" height="480"/> | <img src="https://user-images.githubusercontent.com/48058062/159231123-4fdbaa20-5915-4db7-831b-cd6fcb22e716.png" width="270" height="480"/> |
+
+
+## Requests, criticism, errors, comments, suggestions for improvement ...
+
+Bring it on! :+1: Please write me everything. The app is supposed to be useful.
+Either you use the same [page](https://github.com/hiroladev/RunningPlan/issues) or\
+You write me an <a href="mailto:development@hirola.de">E-Mail<a>.
 
 
 ## Links
