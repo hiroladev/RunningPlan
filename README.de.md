@@ -116,6 +116,11 @@ müssten mir einfach vertrauen.
 | :---: | :---: | 
 | <img src="https://user-images.githubusercontent.com/48058062/159231070-c5fea648-cc87-4493-b562-3b19f4fd6285.png" width="270" height="480"/> | <img src="https://user-images.githubusercontent.com/48058062/159231123-4fdbaa20-5915-4db7-831b-cd6fcb22e716.png" width="270" height="480"/> |
 
+## Wünsche, Kritik, Fehler, Anmerkungen, Verbesserungsvorschläge ...
+
+Her damit! :+1: Bitte schreiben Sie mir alles. Die App soll ja nutzbringend sein.
+Entweder Sie nutzen gleiche diese [Seite](https://github.com/hiroladev/RunningPlan/issues) oder\
+Sie schreiben mir eine [development@hirola.de](E-Mail).
 
 ## Links
 
