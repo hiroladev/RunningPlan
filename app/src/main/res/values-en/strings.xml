@@ -61,7 +61,7 @@
     <string name="error">Error</string>
     <string name="warning">Warning</string>
     <string name="import_running_plan">Import</string>
-    <string name="select_import_file">Select import file</string>
+    <string name="select_import_file">Select import file (*.json)</string>
     <string name="mark_as_template">Mark as template</string>
     <string name="import_succeed">Import succeed</string>
     <string name="import_failed">Import failed</string>
@@ -147,4 +147,5 @@
     <string name="help_link">Help</string>
     <string name="licenses_link">Licenses</string>
     <string name="issues_link">Issues / Requests</string>
+    <string name="wrong_import_file">The file does not contain a running plan template.</string>
 </resources>

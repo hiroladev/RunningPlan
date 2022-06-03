@@ -51,6 +51,7 @@
     <string name="reset_running_plan">Soll der abgeschlossene Laufplan wieder zurückgesetzt werden?</string>
     <string name="ask_for_cancel_training">Soll das Training wirklich abgebrochen werden?</string>
     <string name="error_saving_training">Das Training konnte nicht gespeichert werden.</string>
+    <string name="wrong_import_file">Die Datei enthält keine Laufplan-Vorlage.</string>
     <string name="no_file_selected">Es wurde keine Datei ausgewählt.</string>
     <string name="ask_before_delete_running_plan">Soll der Laufplan wirklich gelöscht werden?</string>
     <string name="recorded_track_not_found">Die Aufzeichnung des Trainings wurde nicht gefunden.</string>
@@ -87,7 +88,7 @@
     <string name="reset">Zurücksetzen</string>
     <string name="details" translatable="false">Details</string>
     <string name="import_running_plan">Importieren</string>
-    <string name="select_import_file">Importdatei auswählen</string>
+    <string name="select_import_file">Importdatei (*.json) auswählen</string>
     <string name="loading_file_succeed">Einlesen der Datei erfolgreich</string>
     <string name="mark_as_template">als Vorlage markieren</string>
     <string name="import_failed">Der Import ist fehlgeschlagen.</string>

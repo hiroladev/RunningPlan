@@ -109,10 +109,10 @@ import java.io.InputStream;
 
     private void selectTemplateFile() {
         // start the select file dialog
+        //  Android does NOT support "json"
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT)
             .addCategory(Intent.CATEGORY_OPENABLE)
             .setType("*/*");
-
         someActivityResultLauncher.launch((Intent.createChooser(intent, getString(R.string.select_import_file))));
     }
 
@@ -123,13 +123,23 @@ import java.io.InputStream;
             try {
                 InputStream inputStream = requireActivity().getContentResolver().openInputStream(uri);
                 TemplateLoader templateLoader = new TemplateLoader(sportsLibrary, runningPlanApplication);
-                importFileNameLabel.setText(getString(R.string.loading_file_succeed));
-                // load the template from json
+                // issue #2 - check the import file
+                if (!templateLoader.isValidTemplate(inputStream)) {
+                    ModalOptionDialog.showMessageDialog(
+                            ModalOptionDialog.DialogStyle.WARNING,
+                            requireContext(),
+                            null,
+                            getString(R.string.wrong_import_file),
+                            null);
+                    return;
+                }
+                // try to load the template from json
                 runningPlan = templateLoader.loadRunningPlanFromJSON(inputStream);
                 // show data from template in ui
                 runningPlanNameTextView.setText(runningPlan.getName());
                 runningPlanRemarksTextView.setText(runningPlan.getRemarks());
                 // enable the import button
+                importFileNameLabel.setText(getString(R.string.loading_file_succeed));
                 importRunningPlanButton.setEnabled(true);
             } catch (FileNotFoundException | SportsLibraryException exception) {
                 exception.printStackTrace();
