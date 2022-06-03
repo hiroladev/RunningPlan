@@ -831,14 +831,19 @@ public class TrainingFragment extends Fragment
         if (duration < 60) {
             durationString.append(duration);
         } else {
-            //  in h und min umrechnen
+            //  convert to hours and minutes
             long hours = duration / 60;
             long minutes = duration % 60;
-            durationString.append(hours);
-            durationString.append(" h : ");
-            durationString.append(minutes);
+            if (minutes > 0) {
+                durationString.append(hours);
+                durationString.append(" h : ");
+                durationString.append(minutes);
+                durationString.append(" min");
+            } else {
+                durationString.append(hours);
+                durationString.append(" h");
+            }
         }
-        durationString.append(" min");
         return durationString.toString();
     }
 
