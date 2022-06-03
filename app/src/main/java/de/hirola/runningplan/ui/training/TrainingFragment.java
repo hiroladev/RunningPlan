@@ -832,8 +832,8 @@ public class TrainingFragment extends Fragment
             durationString.append(duration);
         } else {
             //  in h und min umrechnen
-            long hours = (duration * 60) / 3600;
-            long minutes = (duration / 60) % 60;
+            long hours = duration / 60;
+            long minutes = duration % 60;
             durationString.append(hours);
             durationString.append(" h : ");
             durationString.append(minutes);
