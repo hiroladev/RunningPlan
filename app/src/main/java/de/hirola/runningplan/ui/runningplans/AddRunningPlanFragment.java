@@ -21,9 +21,11 @@ import de.hirola.sportsapplications.SportsLibraryException;
 import de.hirola.sportsapplications.model.RunningPlan;
 import de.hirola.runningplan.util.ModalOptionDialog;
 import de.hirola.sportsapplications.util.TemplateLoader;
+import org.apache.commons.io.IOUtils;
 import org.tinylog.Logger;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -131,8 +133,11 @@ import java.io.InputStream;
                             null,
                             getString(R.string.wrong_import_file),
                             null);
+                    importFileNameLabel.setText(getString(R.string.wrong_import_file_short));
                     return;
                 }
+                // get the input stream again to avoid java.io.IOException: Stream Closed
+                inputStream = requireActivity().getContentResolver().openInputStream(uri);
                 // try to load the template from json
                 runningPlan = templateLoader.loadRunningPlanFromJSON(inputStream);
                 // show data from template in ui
@@ -141,7 +146,7 @@ import java.io.InputStream;
                 // enable the import button
                 importFileNameLabel.setText(getString(R.string.loading_file_succeed));
                 importRunningPlanButton.setEnabled(true);
-            } catch (FileNotFoundException | SportsLibraryException exception) {
+            } catch (IOException | SportsLibraryException exception) {
                 exception.printStackTrace();
             }
         } else {

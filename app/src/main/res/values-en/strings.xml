@@ -148,4 +148,5 @@
     <string name="licenses_link">Licenses</string>
     <string name="issues_link">Issues / Requests</string>
     <string name="wrong_import_file">The file does not contain a running plan template.</string>
+    <string name="wrong_import_file_short">Not a valid template</string>
 </resources>
